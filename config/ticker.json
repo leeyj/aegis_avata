@@ -1,0 +1,11 @@
+{
+    "_comment1": "관심 주식 종목 티커 매핑 (KOSDAQ 등 국가 코드를 포함하세요.)",
+    "tickers": {
+        "캠트로스": "220260.KQ",
+        "MAIN": "MAIN"
+    },
+    "_comment2": "업데이트 주기(분), 급등락 알람 기준점(%) 및 알림 쿨다운(분)입니다.",
+    "interval_min": 2,
+    "alert_threshold": 3.0,
+    "briefing_cooldown_min": 30
+}

@@ -1,0 +1,121 @@
+<div id="ui-layer">
+
+    <!-- 타이틀 패널 -->
+    <div class="glass-panel title-unit size-1-5" id="p-title">
+        <h1 id="main-title">AEGIS INTELLIGENCE</h1>
+        <div id="sub-title">TACTICAL CORE v4.8</div>
+    </div>
+
+    <!-- 시계 패널 -->
+    <div class="glass-panel size-1-5" id="p-clock">
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+
+    <!-- 아바타 선택 패널 -->
+    <div class="glass-panel size-1" id="p-unit">
+        <div class="panel-label">UNIT SELECTION</div>
+        <select id="model-select"></select>
+    </div>
+    
+    <!-- 날씨 패널 -->
+    <div class="glass-panel size-1" id="p-weather">
+        <div class="panel-label">ENVIRONMENT</div>
+        <div class="weather-content">
+            <img id="weather-icon" src="" alt="Weather Icon" style="display: none;">
+            <div>
+                <div id="weather-status">SYNCING...</div>
+                <div id="weather-temp">--°C</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 수익률 패널 -->
+    <div class="glass-panel size-1" id="p-profit" style="text-align: right;">
+        <div class="panel-label">ALGO PROFIT</div>
+        <div class="profit-val" id="profit-val">+0.00%</div>
+        <div id="status-tag">CORE ONLINE</div>
+    </div>
+
+    <!-- 시장 지수 패널 -->
+    <div class="glass-panel size-1-5" id="p-finance">
+        <div class="panel-label">MARKET INDICES</div>
+        <div id="finance-list">
+            <div class="loading-text">Fetching Market Data...</div>
+        </div>
+    </div>
+
+    <!-- 뉴스 브리핑 패널 -->
+    <div class="glass-panel size-2" id="p-news" style="overflow: hidden;">
+        <div class="panel-label">
+            NEWS BRIEFING
+            <button class="widget-brief-btn" onclick="triggerWidgetBriefing('news')" title="AI 뉴스 브리핑">🔊</button>
+        </div>
+        <div id="news-ticker">
+            <div class="loading-text">Loading latest intelligence...</div>
+        </div>
+    </div>
+
+    <!-- 캘린더 일정 패널 -->
+    <div class="glass-panel size-1-5 scrollable" id="p-calendar">
+        <div class="panel-label">DAILY SCHEDULE</div>
+        <div id="calendar-list">
+            <div class="loading-text">Syncing with Google...</div>
+        </div>
+    </div>
+
+    <!-- 할 일 목록 패널 -->
+    <div class="glass-panel size-1-5 scrollable" id="p-todo">
+        <div class="panel-label">TODO LIST</div>
+        <div id="todo-list">
+            <div class="loading-text">Fetching tasks...</div>
+        </div>
+    </div>
+
+    <!-- Gmail 패널 -->
+    <div class="glass-panel size-2 scrollable" id="p-gmail">
+        <div class="panel-label">GMAIL INBOX</div>
+        <div id="gmail-list">
+            <div class="loading-text">Accessing workspace...</div>
+        </div>
+    </div>
+
+    <!-- 시스템 상태 패널 -->
+    <div class="glass-panel size-1-5 scrollable" id="p-system">
+        <div class="panel-label">SYSTEM RESOURCES</div>
+        <div id="system-stats-content">
+            <div class="loading-text">Analyzing hardware...</div>
+        </div>
+    </div>
+
+    <!-- 주식 모니터 패널 -->
+    <div class="glass-panel size-1-5 scrollable" id="p-stock">
+        <div class="panel-label">TICKER MONITOR</div>
+        <div id="stock-list">
+            <div class="loading-text">Connecting to market...</div>
+        </div>
+    </div>
+
+    <!-- 유튜브 뮤직 전용 위젯 -->
+    <div class="glass-panel size-1-5" id="p-youtube">
+        <div class="panel-label">YOUTUBE MUSIC</div>
+        <div class="yt-content">
+            <div id="yt-player-core"></div>
+            <div class="yt-info">
+                <img id="yt-thumbnail" src="" class="yt-thumb">
+                <div class="yt-text">
+                    <div id="yt-track-title" class="truncate">Wait for Load...</div>
+                    <div id="yt-track-artist" class="truncate yt-artist">Select Playlist</div>
+                </div>
+            </div>
+            <div class="yt-controls">
+                <select id="yt-mode-select" class="yt-select" onchange="changeYTPlaylist(this.value)"></select>
+                <div class="yt-btns">
+                    <button class="yt-btn" onclick="toggleYTPlay(true)">▶</button>
+                    <button class="yt-btn" onclick="toggleYTPlay(false)">⏸</button>
+                    <button class="yt-btn" onclick="playNextYT()">⏭</button>
+                    <input type="range" id="yt-volume" class="yt-vol-slider" min="0" max="100" value="30" oninput="setYTVolume(this.value)">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

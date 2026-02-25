@@ -1,0 +1,30 @@
+/* 
+   AEGIS Tactical Core CSS - Main Entry
+   This file imports modularized CSS components for better maintainability.
+*/
+
+@import url('base.css');
+@import url('layout.css');
+@import url('components/dashboard.css');
+@import url('components/sidebar.css');
+@import url('components/terminal.css');
+@import url('components/weather.css');
+@import url('components/youtube.css');
+
+/* --- Specific Widget Fine-tuning (Non-shared) --- */
+.weather-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#weather-status {
+    font-size: 16px;
+    color: var(--neon);
+    font-weight: 700;
+}
+
+#weather-temp {
+    font-size: 24px;
+    font-family: 'Orbitron';
+}

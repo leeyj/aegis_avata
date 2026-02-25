@@ -1,0 +1,99 @@
+/* --- YouTube Music Widget --- */
+.yt-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.yt-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.yt-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    display: none;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.yt-text {
+    flex: 1;
+    overflow: hidden;
+}
+
+#yt-track-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--neon);
+}
+
+.yt-artist {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+.yt-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.yt-select {
+    width: 100%;
+    margin: 5px 0;
+    font-size: 11px;
+    padding: 5px;
+}
+
+.yt-btns {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.yt-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--neon);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.yt-btn:hover {
+    background: rgba(0, 242, 255, 0.1);
+    box-shadow: 0 0 10px var(--neon);
+}
+
+.yt-vol-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+    width: 60px;
+}
+
+.yt-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: var(--neon);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px var(--neon);
+}

@@ -1,0 +1,30 @@
+# === Credentials & API Keys ===
+config/secrets.json
+config/credentials.json
+config/token_*.json
+config/weather.json
+config/system.json
+headers_auth.txt
+headers_auth.json
+
+# === Server Deploy Script ===
+tools/deploy.py
+
+# === User Specific UI States ===
+settings.json
+
+# === Cache, Media, Logs ===
+static/audio/tts_cache/
+static/audio/*.mp3
+static/audio/*.txt
+*.log
+
+# === Python / Environment ===
+__pycache__/
+venv/
+.env
+.pytest_cache/
+.vscode/
+.idea/
+test/
+docs/

@@ -1,0 +1,13 @@
+{
+    "_comment1": "구글 연동 위젯들의 허용 아이템 최대 개수 및 데이터 갱신 주기(분)입니다.",
+    "max_events": 5,
+    "max_tasks": 10,
+    "max_emails": 2,
+    "refresh_interval_min": 1,
+    "_comment2": "일정(calendar), 할일(tasks), 이메일(gmail)에 사용할 인증 토큰 파일명 매핑입니다.",
+    "auth": {
+        "calendar": "token_personal.json",
+        "tasks": "token_personal.json",
+        "gmail": "token_work.json"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "_comment": "위젯 패널의 위치(uiPositions)와 활성화 여부(panelVisibility) 등 대시보드 화면 배치를 저장하는 설정입니다.",
+    "test_mode": false,
+    "last_model": "akari_vts",
+    "userZoom": 3.0,
+    "offsetX": 0.0,
+    "offsetY": 0.0,
+    "uiPositions": {},
+    "panelVisibility": {
+        "p-clock": true,
+        "p-weather": true,
+        "p-news": true
+    }
+}

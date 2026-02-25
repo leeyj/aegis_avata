@@ -1,0 +1,7 @@
+{
+    "_comment": "시계 위젯 렌더링 설정 (포맷 형태 참고: YYYY-MM-DD)",
+    "format": "YYYY-MM-DD \\n HH:mm:ss",
+    "font_size": "32px",
+    "show_date": true,
+    "color": "#00f2ff"
+}

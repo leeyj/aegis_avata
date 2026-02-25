@@ -1,0 +1,92 @@
+/* --- Shared Widget Elements --- */
+.panel-label {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-brief-btn {
+    background: transparent;
+    border: none;
+    color: var(--neon);
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.5;
+    transition: all 0.2s;
+    padding: 2px 5px;
+}
+
+.widget-brief-btn:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--neon);
+}
+
+/* --- Stats & Indicators --- */
+.stat-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* --- Common UI Parts --- */
+.clock {
+    font-family: 'Orbitron';
+    font-size: 32px;
+    text-shadow: 0 0 15px var(--neon);
+}
+
+.profit-val {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--neon);
+}
+
+select {
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--neon);
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-family: 'Rajdhani';
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.logout-btn {
+    color: #ff4b4b;
+    text-decoration: none;
+    font-family: 'Orbitron';
+    font-size: 12px;
+    letter-spacing: 2px;
+    border: 1px solid rgba(255, 75, 75, 0.3);
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 75, 75, 0.1);
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.2);
+}
+
+#sub-title {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 5px;
+    letter-spacing: 2px;
+}

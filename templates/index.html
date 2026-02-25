@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AEGIS Tactical Intelligence Dashboard - AI Assisted Core Management">
+    <title>AEGIS Intelligence Dashboard</title>
+    
+    <!-- CSS & Fonts -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components/dashboard.css">
+    <link rel="stylesheet" href="/static/css/components/sidebar.css">
+    <link rel="stylesheet" href="/static/css/components/terminal.css">
+    <link rel="stylesheet" href="/static/css/components/weather.css">
+    <link rel="stylesheet" href="/static/css/components/youtube.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Core Engine Scripts (Synchronous) -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="/static/js/pixi.min.js"></script>
+    <script src="/static/js/live2d.min.js"></script>
+    <script src="/static/js/live2dcubismcore.min.js"></script>
+    <script src="/static/js/index.min.js"></script>
+</head>
+<body>
+    <!-- Weather Dynamics Layer -->
+    <div id="weather-background" class="weather-bg"></div>
+    <div id="weather-effects" class="weather-effects"></div>
+
+    <!-- Background Elements -->
+    <div class="scan-line"></div>
+    <canvas id="live2d-canvas"></canvas>
+
+    <!-- UI Components -->
+    {% include 'components/sidebar.html' %}
+    
+    <main id="main-content">
+        {% include 'components/dashboard.html' %}
+    </main>
+
+    {% include 'components/terminal.html' %}
+
+    <!-- Framework & UI Scripts -->
+    <script src="/static/js/animation_manager.js" defer></script>
+    <script src="/static/js/reaction_engine.js" defer></script>
+    <script src="/static/js/core.js" defer></script>
+    <script src="/static/js/ui.js" defer></script>
+    
+    <!-- Widget Modules (Deferred) -->
+    <script src="/static/js/widgets/tts.js" defer></script>
+    <script src="/static/js/widgets/clock.js" defer></script>
+    <script src="/static/js/widgets/weather.js" defer></script>
+    <script src="/static/js/widgets/system.js" defer></script>
+    <script src="/static/js/widgets/finance.js" defer></script>
+    <script src="/static/js/widgets/news.js" defer></script>
+    <script src="/static/js/widgets/calendar.js" defer></script>
+    <script src="/static/js/widgets/todo.js" defer></script>
+    <script src="/static/js/widgets/gmail.js" defer></script>
+    <script src="/static/js/widgets/stock.js" defer></script>
+    <script src="/static/js/widgets/system_stats.js" defer></script>
+    <script src="/static/js/widgets/weather_theme.js" defer></script>
+    <script src="/static/js/widgets/terminal.js" defer></script>
+    <script src="/static/js/widgets/visualizer.js" defer></script>
+    <script src="/static/js/widgets/proactive_agent.js" defer></script>
+    <script src="/static/js/widgets/youtube_music.js" defer></script>
+    
+    <!-- Entry Point & Debug Tools -->
+    {% if settings.get('test_mode') %}
+    <script src="/static/js/animation_tester.js" defer></script>
+    {% endif %}
+    <script src="/static/js/widgets.js" defer></script>
+</body>
+</html>

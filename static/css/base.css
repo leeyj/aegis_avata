@@ -1,0 +1,84 @@
+:root {
+    --neon: #00f2ff;
+    --bg: #05060a;
+    --glass: rgba(15, 20, 30, 0.8);
+    --border: rgba(0, 242, 255, 0.3);
+
+    /* Grid System Config */
+    --grid-unit: 220px;
+    --grid-gap: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    background: radial-gradient(circle at center, #1a2030 0%, #05060a 100%);
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- Base Animations --- */
+.scan-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 242, 255, 0.1);
+    z-index: 5;
+    animation: scan 8s infinite linear;
+}
+
+@keyframes scan {
+    from {
+        top: -10%;
+    }
+
+    to {
+        top: 110%;
+    }
+}
+
+.loading-pulse {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* --- Utility Classes --- */
+.scrollable {
+    overflow-y: auto !important;
+}
+
+.hide {
+    display: none !important;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.loading-text {
+    font-size: 12px;
+    opacity: 0.5;
+    font-style: italic;
+}

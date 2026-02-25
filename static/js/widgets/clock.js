@@ -1,0 +1,38 @@
+/**
+ * AEGIS Widget Module - Clock & Trading Profit
+ */
+async function startClock() {
+    const clockEl = document.getElementById('clock');
+    if (!clockEl) return;
+
+    let config = { format: "HH:mm:ss", font_size: "32px" };
+    try {
+        const res = await fetch('/clock_config');
+        config = await res.json();
+    } catch (e) { }
+
+    clockEl.style.fontSize = config.font_size;
+    if (config.color) clockEl.style.color = config.color;
+
+    const updateTime = () => {
+        const now = new Date();
+        const year = now.getFullYear(), month = String(now.getMonth() + 1).padStart(2, '0'), day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0'), minutes = String(now.getMinutes()).padStart(2, '0'), seconds = String(now.getSeconds()).padStart(2, '0');
+
+        let str = config.format || "HH:mm:ss";
+        str = str.replace(/YYYY/g, year).replace(/MM/g, month).replace(/DD/g, day).replace(/HH/g, hours).replace(/mm/g, minutes).replace(/ss/g, seconds).replace(/SS/g, seconds);
+        clockEl.innerHTML = str.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+    };
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Trading Profit 데이터 업데이트 (Clock 모듈에 포함 혹은 별도 분리 가능)
+    const updateTrading = () => {
+        fetch('/trading_data').then(r => r.json()).then(d => {
+            const el = document.getElementById('profit-val');
+            if (el) el.innerText = d.profit;
+        });
+    };
+    updateTrading();
+    setInterval(updateTrading, 60000);
+}

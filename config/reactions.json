@@ -1,0 +1,149 @@
+{
+    "stock": {
+        "rise": {
+            "condition": "change_pct >= 3",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "file": "Love.motion3.json"
+                },
+                {
+                    "type": "EMOTION",
+                    "file": "EyesLove.exp3.json"
+                },
+                {
+                    "type": "TTS",
+                    "template": "대박 뉴스입니다! {name} 주가가 전일 대비 {change_pct_abs}퍼센트나 급등했어요! 현재가는 {price}입니다."
+                }
+            ]
+        },
+        "fall": {
+            "condition": "change_pct <= -3",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "file": "Shock.motion3.json"
+                },
+                {
+                    "type": "EMOTION",
+                    "file": "EyesCry.exp3.json"
+                },
+                {
+                    "type": "TTS",
+                    "template": "안좋은 소식이에요. {name} 주가가 전일 대비 {change_pct_abs}퍼센트 하락했습니다. 현재가는 {price}입니다."
+                }
+            ]
+        }
+    },
+    "weather": {
+        "bad": {
+            "condition": "['RAINY', 'STORM'].includes(status)",
+            "actions": [
+                {
+                    "type": "EMOTION",
+                    "file": "EyesCry.exp3.json"
+                },
+                {
+                    "type": "MOTION",
+                    "file": "Idle_2.motion3.json"
+                }
+            ]
+        },
+        "good": {
+            "condition": "status === 'SUNNY'",
+            "actions": [
+                {
+                    "type": "EMOTION",
+                    "file": "EyesLove.exp3.json"
+                },
+                {
+                    "type": "MOTION",
+                    "file": "Love.motion3.json"
+                }
+            ]
+        }
+    },
+    "gmail": {
+        "new_mail": {
+            "condition": "count > 0",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "file": "Shock.motion3.json"
+                },
+                {
+                    "type": "EMOTION",
+                    "file": "SignShock.exp3.json"
+                },
+                {
+                    "type": "TTS",
+                    "template": "{sender}님이 발송한 메일이 도착했습니다."
+                }
+            ]
+        }
+    },
+    "proactive": {
+        "alert": {
+            "condition": "triggered === true",
+            "actions": [
+                {
+                    "type": "SENTIMENT",
+                    "value": "{sentiment}"
+                },
+                {
+                    "type": "TTS",
+                    "template": "{text}",
+                    "audioUrl": "{audio_url}",
+                    "visualType": "{visual_type}"
+                }
+            ]
+        }
+    },
+    "terminal": {
+        "response": {
+            "condition": "true",
+            "actions": [
+                {
+                    "type": "SENTIMENT",
+                    "value": "{sentiment}"
+                },
+                {
+                    "type": "TTS",
+                    "template": "{response}",
+                    "visualType": "none"
+                }
+            ]
+        }
+    },
+    "finance": {
+        "manual_briefing": {
+            "condition": "true",
+            "actions": [
+                {
+                    "type": "TTS",
+                    "template": "{name} 지수는 현재 {price} 이며, 전일 대비 {change_pct} {direction_text} 중입니다."
+                }
+            ]
+        }
+    },
+    "youtube": {
+        "playing": {
+            "condition": "state === 'PLAYING'",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "MUSIC_START"
+                }
+            ]
+        },
+        "stopped": {
+            "condition": "['PAUSED', 'ENDED'].includes(state)",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "MUSIC_STOP"
+                }
+            ]
+        }
+    }
+}

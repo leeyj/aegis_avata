@@ -1,0 +1,14 @@
+{
+    "_comment": "AI 선제적 알림 에이전트의 확인 주기(분)와 각 상황별 임계치(Threshold) 설정입니다.",
+    "check_interval_min": 5,
+    "thresholds": {
+        "finance_change_abs": 1.5,
+        "calendar_lead_time_min": 15,
+        "system_cpu_percent": 90
+    },
+    "last_alerts": {
+        "finance": null,
+        "calendar": null,
+        "system": null
+    }
+}

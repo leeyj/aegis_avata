@@ -1,0 +1,42 @@
+<!-- Sidebar Menu -->
+<button class="sidebar-toggle" id="sidebar-toggle">•••</button>
+<div class="sidebar" id="sidebar">
+    <div class="menu-section">
+        <h3>PANEL CONTROL</h3>
+        {% set panels = [
+            ('vis-title', 'p-title', 'System Title', True),
+            ('vis-clock', 'p-clock', 'System Clock', True),
+            ('vis-weather', 'p-weather', 'Environmental Info', True),
+            ('vis-profit', 'p-profit', 'Trading Profit', True),
+            ('vis-finance', 'p-finance', 'Market Indices', True),
+            ('vis-news', 'p-news', 'News Briefing', True),
+            ('vis-calendar', 'p-calendar', 'Daily Schedule', True),
+            ('vis-todo', 'p-todo', 'Todo List', True),
+            ('vis-gmail', 'p-gmail', 'Gmail Inbox', True),
+            ('vis-stock', 'p-stock', 'Ticker Monitor', True),
+            ('vis-youtube', 'p-youtube', 'YouTube Music', True),
+            ('vis-unit', 'p-unit', 'Unit Selection', True),
+            ('vis-system', 'p-system', 'System Stats', True)
+        ] %}
+        
+        {% for id, target, label, checked in panels %}
+        <div class="menu-item">
+            <label for="{{ id }}">{{ label }}</label>
+            <label class="switch">
+                <input type="checkbox" id="{{ id }}" {% if checked %}checked{% endif %} onchange="togglePanel('{{ target }}', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        {% endfor %}
+        
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+        
+        <div class="menu-item" style="flex-direction: column; gap: 10px;">
+            <button onclick="persistToServer().then(ok => ok && alert('Layout synced to server.'))" 
+                    style="width: 100%; padding: 10px; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s;">
+                SAVE CLOUD SETTINGS
+            </button>
+            <a href="/logout" class="logout-btn" style="width: 100%; text-align: center;">SYSTEM LOGOUT</a>
+        </div>
+    </div>
+</div>
