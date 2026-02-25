@@ -31,6 +31,12 @@ pip install -r requirements.txt
 
 > **Note:** 위 파일들은 `.gitignore`에 등록되어 본인의 민감한 인증 정보가 다시 Github에 노출되지 않도록 보호됩니다.
 
+### 3. Live2D 아바타 모델 준비
+라이선스 정책에 의해 GitHub 리포지토리에는 기본 아바타 모델(`models/` 디렉토리 내용물)이 포함되어 있지 않습니다.
+1. [Live2D 공식 샘플 모델 배포처](https://www.live2d.com/en/learn/sample/)에서 원하시는 샘플 모델(예: 아카리, 히요리 등)을 다운로드 받습니다.
+2. 다운로드 받은 파일들의 압축을 푼 뒤, 프로젝트 루트 디렉토리 안에 있는 `models/` 폴더 내부에 모델별 폴더명(예: `models/akari_vts`)으로 모두 붙여넣습니다.
+3. 캐릭터 사용 시 `settings.json`의 `"last_model"` 값을 본인이 다운로드해 지정한 폴더 이름(예: `"akari_vts"`)으로 일치시켜야 정상적으로 화면에 나타납니다.
+
 ---
 
 ## ⚙️ 외부 API 설정 가이드
