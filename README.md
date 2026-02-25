@@ -26,8 +26,8 @@ AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실�
 ### 1. 패키지 설치
 이 프로젝트는 Python 3.10 이상 환경을 권장합니다.
 ```bash
-git clone https://github.com/YourUsername/aegis-dashboard.git
-cd aegis-dashboard
+git clone https://github.com/leeyj/aegis_avata.git
+cd aegis_avata
 pip install -r requirements.txt
 ```
 
