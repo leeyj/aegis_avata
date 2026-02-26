@@ -46,9 +46,20 @@ class DataService:
 
         # 4. 구글 일정 및 이메일 수집
         try:
-            context["calendar"] = google_calendar.get_today_events()
-            context["emails"] = google_calendar.get_recent_emails()
+            cal_res = google_calendar.get_today_events()
+            if isinstance(cal_res, dict) and cal_res.get("status") == "SUCCESS":
+                context["calendar"] = cal_res.get("events", [])
+            else:
+                context["calendar"] = []
+
+            email_res = google_calendar.get_recent_emails()
+            if isinstance(email_res, dict) and email_res.get("status") == "SUCCESS":
+                context["emails"] = email_res.get("emails", [])
+            else:
+                context["emails"] = []
         except Exception as e:
             print(f"[DataService] Google Service Error: {e}")
+            context["calendar"] = []
+            context["emails"] = []
 
         return context

@@ -18,8 +18,17 @@ AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실�
 ![대시보드 화면](img/main1.png)
 
 
-
+![대시보드 화면](img/main3.png)
 ---
+
+## ✨ 애니메이션 기능
+- **음성 브리핑, 유튜브 뮤직(프리미엄 계정필요) 리듬에 맞추어 애니메이션이 움직입니다.**:
+![애니메이션1](img/ani1.gif)
+
+- **메일 수신, 주식 급등락, 일정 임박 등 알림 발생시 애니메이션이 움직이며 음성이 출력됩니다.**:
+![애니메이션2](img/ani2.gif)
+
+![애니메이션3](img/ani3.gif)
 
 ## 🚀 설치 및 실행 방법
 
@@ -46,7 +55,12 @@ pip install -r requirements.txt
 2. 다운로드 받은 파일들의 압축을 푼 뒤, 프로젝트 루트 디렉토리 안에 있는 `models/` 폴더 내부에 모델별 폴더명(예: `models/akari_vts`)으로 모두 붙여넣습니다.
 3. 캐릭터 사용 시 `settings.json`의 `"last_model"` 값을 본인이 다운로드해 지정한 폴더 이름(예: `"akari_vts"`)으로 일치시켜야 정상적으로 화면에 나타납니다.
 
-** 현재 기본 디폴트 설정은 akari_vts 모델로 설정되어 있습니다. **
+### 4. 모델 검증 및 자동화 도구 (선택 사항)
+다양한 Live2D 모델의 모션/표정 파일명을 표준화된 별명(Alias)으로 통합 관리할 수 있는 도구를 제공합니다.
+*   **파일 검증 및 알리아스 생성**: `python test_models/check_assets.py --alias`
+*   **누락 모델 확인**: `python test_models/check_missing_alias.py`
+*   상세한 사용법은 [**자산 검증 및 알리아스 가이드(ASSET_GUIDE.md)**](test_models/ASSET_GUIDE.md)를 참고하세요.
+
 ---
 
 ## ⚙️ 외부 API 설정 가이드

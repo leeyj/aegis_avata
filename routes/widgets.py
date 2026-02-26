@@ -116,6 +116,25 @@ def todo_list():
     return jsonify(google_calendar.get_today_tasks())
 
 
+@widgets_bp.route("/add_todo", methods=["POST"])
+@login_required
+def add_todo():
+    title = request.json.get("title")
+    if not title:
+        return jsonify({"status": "ERROR", "message": "No title provided"}), 400
+    return jsonify(google_calendar.add_task(title))
+
+
+@widgets_bp.route("/complete_todo", methods=["POST"])
+@login_required
+def complete_todo():
+    tasklist_id = request.json.get("tasklist_id")
+    task_id = request.json.get("task_id")
+    if not tasklist_id or not task_id:
+        return jsonify({"status": "ERROR", "message": "Missing info"}), 400
+    return jsonify(google_calendar.complete_task(tasklist_id, task_id))
+
+
 @widgets_bp.route("/recent_emails")
 @login_required
 def recent_emails():

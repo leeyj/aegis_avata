@@ -10,7 +10,8 @@ const AvatarEvents = {
     TTS_START: 'TTS_START',
     TTS_STOP: 'TTS_STOP',
     EMOTION: 'EMOTION',
-    MOTION: 'MOTION'
+    MOTION: 'MOTION',
+    HAPPY_DANCE: 'HAPPY_DANCE'
 };
 
 class AnimationManager {
@@ -20,6 +21,8 @@ class AnimationManager {
         this.ttsActive = false;
         this.currentEmotion = null;
         this.motionQueue = [];
+        this.happyDanceTimer = null;
+        this.emotionResetTimer = null;
 
         console.log("%c[AnimationManager] Initialized.", "color: #00ffff; font-weight: bold;");
     }
@@ -51,14 +54,63 @@ class AnimationManager {
                 else this.state = AvatarEvents.IDLE;
                 break;
             case AvatarEvents.EMOTION:
-                if (window.playExpression) window.playExpression(payload.file);
+                if (window.playExpression) {
+                    let targetFile = payload.file;
+                    if (payload.alias && window.modelAssets && window.modelAssets.aliases.expressions) {
+                        targetFile = window.modelAssets.aliases.expressions[payload.alias] || targetFile;
+                    }
+                    if (targetFile) {
+                        window.playExpression(targetFile);
+                        this._scheduleEmotionReset(payload.duration || 10000);
+                    }
+                }
                 break;
             case AvatarEvents.MOTION:
-                if (window.playMotionFile) window.playMotionFile(payload.file);
+                if (window.playMotionFile) {
+                    let targetFile = payload.file;
+                    if (payload.alias && window.modelAssets && window.modelAssets.aliases.motions) {
+                        targetFile = window.modelAssets.aliases.motions[payload.alias] || targetFile;
+                    }
+                    if (targetFile) window.playMotionFile(targetFile);
+                }
+                break;
+            case AvatarEvents.HAPPY_DANCE:
+                this._startHappyDance(payload.duration || 5000);
                 break;
             default:
                 console.warn(`[AnimationManager] Unknown Event Type: ${type}`);
         }
+    }
+
+    _startHappyDance(duration) {
+        if (this.happyDanceTimer) clearTimeout(this.happyDanceTimer);
+
+        this.happyDanceMode = true;
+        this.state = AvatarEvents.HAPPY_DANCE;
+
+        // 기쁜 표정 자동 재생 (모델의 f04 또는 f02 등 일반적인 기쁨 표정 시도)
+        if (window.playExpression) window.playExpression("f02");
+
+        this.happyDanceTimer = setTimeout(() => {
+            this.happyDanceMode = false;
+            this.state = AvatarEvents.IDLE;
+            this.happyDanceTimer = null;
+            if (window.logger) window.logger.info("[AnimationManager] Happy Dance Ended.");
+        }, duration);
+    }
+
+    _scheduleEmotionReset(duration) {
+        if (this.emotionResetTimer) clearTimeout(this.emotionResetTimer);
+
+        this.emotionResetTimer = setTimeout(() => {
+            if (window.playExpression) {
+                // 기본 표정(f01 또는 빈 값)으로 복원
+                // 모델마다 다르지만 보통 빈 문자열이나 f01이 리셋 역할
+                window.playExpression("");
+                if (window.logger) window.logger.info("[AnimationManager] Emotion Reset to Default.");
+            }
+            this.emotionResetTimer = null;
+        }, duration);
     }
 
     /**
@@ -80,6 +132,16 @@ class AnimationManager {
 
             // 음악에 맞춰 더 빠르게 입을 벙긋거림 (리듬 상승)
             params.mouthOpen = Math.abs(Math.sin(time * 4.0)) * 0.8;
+        }
+
+        // 1-2. Happy Dance Logic (더 강렬하고 무작위적인 느낌)
+        if (this.happyDanceMode) {
+            // 위아래로 점프하는 느낌 (Body X를 Y처럼 활용하거나 Angle Z를 크게)
+            params.angleZ += Math.sin(time * 8.0) * 15; // 매우 빠른 까닥거림
+            params.bodyX += Math.cos(time * 4.0) * 10;  // 큰 스웨이
+
+            // 기뻐서 입을 크게 벌림
+            params.mouthOpen = Math.max(params.mouthOpen, 0.5 + Math.abs(Math.sin(time * 10.0)) * 0.5);
         }
 
         // 2. TTS Lip Sync Logic (Random or based on volume if possible)

@@ -99,11 +99,15 @@ def save_settings(data):
 def get_model_list(models_dir):
     """지정된 디렉토리 내의 라이브2D 모델 폴더 목록을 반환"""
     try:
-        return [
-            d
-            for d in os.listdir(models_dir)
-            if os.path.isdir(os.path.join(models_dir, d))
-        ]
+        if not os.path.exists(models_dir):
+            return []
+        return sorted(
+            [
+                d
+                for d in os.listdir(models_dir)
+                if os.path.isdir(os.path.join(models_dir, d))
+            ]
+        )
     except Exception:
         return []
 
@@ -113,12 +117,16 @@ def get_model_info(models_dir, model_name):
     model_path = os.path.join(models_dir, model_name)
     info = {"motions": [], "expressions": []}
 
-    # 애니메이션 탐색
-    anim_path = os.path.join(model_path, "animations")
-    if os.path.exists(anim_path):
-        info["motions"] = [
-            f for f in os.listdir(anim_path) if f.endswith(".motion3.json")
-        ]
+    if not os.path.exists(model_path):
+        return info
+
+    # 애니메이션 탐색 (animations 또는 motions 폴더)
+    for sub in ["animations", "motions"]:
+        p = os.path.join(model_path, sub)
+        if os.path.exists(p):
+            info["motions"].extend(
+                [f"{sub}/{f}" for f in os.listdir(p) if f.endswith(".motion3.json")]
+            )
 
     # 표정 탐색
     exp_path = os.path.join(model_path, "expressions")
@@ -126,5 +134,18 @@ def get_model_info(models_dir, model_name):
         info["expressions"] = [
             f for f in os.listdir(exp_path) if f.endswith(".exp3.json")
         ]
+
+    # 모델 설정 파일 탐색 (.model3.json)
+    for f in os.listdir(model_path):
+        if f.endswith(".model3.json"):
+            info["model_settings_file"] = f
+            break
+
+    # Alias 설정 로드 (alias.json)
+    alias_path = os.path.join(model_path, "alias.json")
+    if os.path.exists(alias_path):
+        info["aliases"] = load_json_config(alias_path)
+    else:
+        info["aliases"] = {"motions": {}, "expressions": {}}
 
     return info

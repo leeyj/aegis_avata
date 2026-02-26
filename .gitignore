@@ -27,6 +27,14 @@ venv/
 .vscode/
 .idea/
 test/
-docs/
 OLD/
+
+# === Project Assets & Models ===
+# 대용량 모델 데이터는 제외
 models/
+test_models/*/
+
+# 특정 파일은 포함 (문서 및 도구)
+!docs/*.md
+!test_models/*.md
+!test_models/*.py

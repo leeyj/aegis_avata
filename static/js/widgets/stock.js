@@ -5,6 +5,21 @@
 
 let stockInterval = null;
 let stockCooldown = 600000; // 기본 10분
+let allowStartTime = "0900";
+let allowEndTime = "1500";
+
+function isWithinStockAlertTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${h}${m}`;
+
+    if (allowStartTime <= allowEndTime) {
+        return currentTime >= allowStartTime && currentTime <= allowEndTime;
+    } else {
+        return currentTime >= allowStartTime || currentTime <= allowEndTime;
+    }
+}
 
 async function initStockWidget() {
     // console.log("[Stock] Initializing Ticker Monitor...");
@@ -15,6 +30,8 @@ async function initStockWidget() {
         const interval = (config.interval_min || 2) * 60 * 1000;
         const threshold = config.alert_threshold || 3.0;
         stockCooldown = (config.briefing_cooldown_min || 10) * 60 * 1000;
+        allowStartTime = config.bref_allow_start_time || "0900";
+        allowEndTime = config.bref_allow_end_time || "1500";
 
         // 초기 업데이트
         updateStockData(threshold);
@@ -66,7 +83,11 @@ async function updateStockData(threshold) {
 
             // 알림 기준(threshold) 체크
             if (Math.abs(info.change_pct) >= threshold) {
-                triggerStockAlert(name, info);
+                if (isWithinStockAlertTime()) {
+                    triggerStockAlert(name, info);
+                } else if (window.logger) {
+                    window.logger.info(`[Stock] 알림 설정 시간외(${allowStartTime}~${allowEndTime}): ${name} 알림 무시`);
+                }
             }
         }
         listContainer.innerHTML = html;
@@ -84,6 +105,6 @@ function triggerStockAlert(name, info) {
             name: name,
             price: info.price,
             change_pct: info.change_pct
-        }, stockCooldown);
+        }, stockCooldown, name);
     }
 }

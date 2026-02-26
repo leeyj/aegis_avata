@@ -4,12 +4,13 @@
             "condition": "change_pct >= 3",
             "actions": [
                 {
-                    "type": "MOTION",
-                    "file": "Love.motion3.json"
+                    "type": "EVENT",
+                    "value": "HAPPY_DANCE",
+                    "duration": 8000
                 },
                 {
                     "type": "EMOTION",
-                    "file": "EyesLove.exp3.json"
+                    "alias": "joy"
                 },
                 {
                     "type": "TTS",
@@ -22,11 +23,11 @@
             "actions": [
                 {
                     "type": "MOTION",
-                    "file": "Shock.motion3.json"
+                    "alias": "shock"
                 },
                 {
                     "type": "EMOTION",
-                    "file": "EyesCry.exp3.json"
+                    "alias": "sad"
                 },
                 {
                     "type": "TTS",
@@ -41,11 +42,11 @@
             "actions": [
                 {
                     "type": "EMOTION",
-                    "file": "EyesCry.exp3.json"
+                    "alias": "sad"
                 },
                 {
                     "type": "MOTION",
-                    "file": "Idle_2.motion3.json"
+                    "alias": "idle"
                 }
             ]
         },
@@ -53,12 +54,13 @@
             "condition": "status === 'SUNNY'",
             "actions": [
                 {
-                    "type": "EMOTION",
-                    "file": "EyesLove.exp3.json"
+                    "type": "EVENT",
+                    "value": "HAPPY_DANCE",
+                    "duration": 5000
                 },
                 {
-                    "type": "MOTION",
-                    "file": "Love.motion3.json"
+                    "type": "EMOTION",
+                    "alias": "joy"
                 }
             ]
         }
@@ -69,11 +71,11 @@
             "actions": [
                 {
                     "type": "MOTION",
-                    "file": "Shock.motion3.json"
+                    "alias": "shock"
                 },
                 {
                     "type": "EMOTION",
-                    "file": "SignShock.exp3.json"
+                    "alias": "shock"
                 },
                 {
                     "type": "TTS",

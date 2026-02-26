@@ -40,6 +40,9 @@
                 <button id="btn-tts-start" style="flex:1">🗣️ TTS On</button>
                 <button id="btn-tts-stop" style="flex:1">🤐 Off</button>
             </div>
+            <div style="display: flex; gap: 6px;">
+                <button id="btn-happy-dance" style="flex:1; background: rgba(255, 105, 180, 0.2); border-color: #ff69b4; color: #ff69b4;">💖 Happy Dance</button>
+            </div>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin: 8px 0;">
             
             <div id="tester-expressions" style="display: grid; gap: 5px; max-height: 250px; overflow-y: auto; padding-right: 8px;">
@@ -91,6 +94,7 @@
     document.getElementById('btn-music-stop').onclick = () => dispatchAvatarEvent('MUSIC_STOP');
     document.getElementById('btn-tts-start').onclick = () => dispatchAvatarEvent('TTS_START');
     document.getElementById('btn-tts-stop').onclick = () => dispatchAvatarEvent('TTS_STOP');
+    document.getElementById('btn-happy-dance').onclick = () => dispatchAvatarEvent('HAPPY_DANCE', { duration: 5000 });
     document.getElementById('btn-refresh-tester').onclick = () => window.updateTesterUI();
 
     // 초기 버튼 스타일 적용
