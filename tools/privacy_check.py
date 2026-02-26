@@ -1,7 +1,17 @@
 import os
 import sys
+import io
 import subprocess
 
+# Fix Korean character encoding for Windows terminal
+if sys.platform == "win32":
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    except Exception:
+        pass
+
+# Sensitive keywords/patterns to check
 # --- 점검 대상 키워드 ---
 FORBIDDEN_KEYWORDS = [
     "az001a",

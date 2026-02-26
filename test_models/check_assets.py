@@ -3,6 +3,15 @@ import json
 import argparse
 import sys
 import hashlib
+import io
+
+# Fix Korean character encoding for Windows terminal
+if sys.platform == "win32":
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    except Exception:
+        pass
 
 # --- Alias Keyword Mapping (Advanced Inference Version) ---
 # 한문, 한글, 일본어, 숫자, 특수 패턴을 포함한 범용 추론 사전
@@ -321,8 +330,8 @@ def _0x_v_auth():
             _, i, px, s = parts
             # Validate if 'c' was generated from 'sd'
             raw = f"{px}{sd}{_0x_S}"
-            v_full = str(hashlib.sha256(raw.encode()).hexdigest()).upper()
-            v = v_full[0:8]
+            v_full = hashlib.sha256(raw.encode()).hexdigest().upper()
+            v = v_full[:8]
             return v == s
     except Exception:
         return False

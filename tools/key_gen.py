@@ -1,6 +1,16 @@
 import hashlib
 import random
 import string
+import sys
+import io
+
+# Fix Korean character encoding for Windows terminal
+if sys.platform == "win32":
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    except Exception:
+        pass
 
 # === SECURITY CONFIGURATION (Must match check_assets.py) ===
 _SALT = "AEGIS_CORE_V48_SECRET_SALT_2026"
@@ -26,10 +36,9 @@ def generate_key(member_id):
     )
 
     # Part 3: Secure Hash (SHA256)
-    # Signature is tied to the EXACT member_id (seed value)
     raw_data = f"{prefix}{member_id}{_SALT}"
-    signature_full = str(hashlib.sha256(raw_data.encode()).hexdigest()).upper()
-    signature = signature_full[0:8]
+    sig_full = hashlib.sha256(raw_data.encode()).hexdigest().upper()
+    signature = sig_full[:8]
 
     # Final Format: AEGIS-ID-PREFIX-SIGNATURE
     final_key = f"AEGIS-{clean_id}-{prefix}-{signature}"

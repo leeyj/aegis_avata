@@ -29,7 +29,24 @@ AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실�
 ![애니메이션2](img/ani2.gif)
 
 ![애니메이션3](img/ani3.gif)
-
+ 
+## 💎 후원자 혜택 (Sponsorship Benefits)
+ 
+AEGIS 프로젝트의 지속적인 발전을 위해 후원해 주시는 분들께는 다음과 같은 프리미엄 기능을 제공합니다.
+ 
+| 분류 | 기능 | 일반 사용자 | 후원자 (Sponsor) |
+|:---:|---|:---:|:---:|
+| **대시보드** | 날씨, 뉴스, 주식, 일정 위젯 | O | O |
+| **아바타** | Live2D 캐릭터 렌더링 및 상호작용 | O | O |
+| **설정** | 커스텀 모드 및 테마 설정 | O | O |
+| **자동화** | **지능형 알리아스(Alias) 자동 생성 도구** | X | **O (Sponsor Key)** |
+| **댄스 모듈** | **YouTube Music 비트 싱크 댄스 로직** | 기본 | **고도화 예정** |
+| **보안 도구** | 개인정보 유출 방지 및 배포 도구 | - | **O (전체 제공)** |
+| **지원** | 기술 지원 및 기능 요청 우선순위 | - | **최우선 반영** |
+ 
+> [!TIP]
+> 후원은 [**GitHub Sponsors**](https://github.com/sponsors/leeyj)를 통해 진행하실 수 있으며, 후원 시 전용 **Sponsor Key**와 **Seed Value**를 발급해 드립니다.
+ 
 ## 🚀 설치 및 실행 방법
 
 ### 1. 패키지 설치
@@ -165,7 +182,24 @@ It collects and briefs users on their daily schedules, stock/financial market da
 ![Animation 2](img/ani2.gif)
 
 ![Animation 3](img/ani3.gif)
-
+ 
+## 💎 Sponsorship Benefits
+ 
+We provide premium features to those who support the continuous development of the AEGIS project.
+ 
+| Category | Feature | Free User | Sponsor |
+|:---:|---|:---:|:---:|
+| **Dashboard** | Weather, News, Stocks, Calendar Widgets | O | O |
+| **Avatar** | Live2D Character Rendering & Interaction | O | O |
+| **Settings** | Custom Modes and Theme Settings | O | O |
+| **Automation** | **Intelligent Alias Auto-Generation Tool** | X | **O (Sponsor Key)** |
+| **Dance Mode** | **YouTube Music Beat-Synced Dance Logic** | Basic | **Advanced (Planned)** |
+| **Security** | Privacy Leak Prevention & Deployment Tools | - | **O (Full Access)** |
+| **Support** | Tech Support & Feature Request Priority | - | **Top Priority** |
+ 
+> [!TIP]
+> You can support us via [**GitHub Sponsors**](https://github.com/sponsors/leeyj). Upon sponsoring, you will receive a unique **Sponsor Key** and **Seed Value**.
+ 
 ## 🚀 Setup and Execution
 
 ### 1. Package Installation
