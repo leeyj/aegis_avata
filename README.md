@@ -41,7 +41,6 @@ AEGIS 프로젝트의 지속적인 발전을 위해 후원해 주시는 분들�
 | **설정** | 커스텀 모드 및 테마 설정 | O | O |
 | **자동화** | **지능형 알리아스(Alias) 자동 생성 도구** | X | **O (Sponsor Key)** |
 | **댄스 모듈** | **YouTube Music 비트 싱크 댄스 로직** | 기본 | **고도화 예정** |
-| **보안 도구** | 개인정보 유출 방지 및 배포 도구 | - | **O (전체 제공)** |
 | **지원** | 기술 지원 및 기능 요청 우선순위 | - | **최우선 반영** |
  
 > [!TIP]
@@ -194,7 +193,6 @@ We provide premium features to those who support the continuous development of t
 | **Settings** | Custom Modes and Theme Settings | O | O |
 | **Automation** | **Intelligent Alias Auto-Generation Tool** | X | **O (Sponsor Key)** |
 | **Dance Mode** | **YouTube Music Beat-Synced Dance Logic** | Basic | **Advanced (Planned)** |
-| **Security** | Privacy Leak Prevention & Deployment Tools | - | **O (Full Access)** |
 | **Support** | Tech Support & Feature Request Priority | - | **Top Priority** |
  
 > [!TIP]
