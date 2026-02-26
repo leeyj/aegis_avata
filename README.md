@@ -43,6 +43,12 @@ AEGIS 프로젝트의 지속적인 발전을 위해 후원해 주시는 분들�
 | **댄스 모듈** | **YouTube Music 비트 싱크 댄스 로직** | 기본 | **고도화 예정** |
 | **지원** | 기술 지원 및 기능 요청 우선순위 | - | **최우선 반영** |
  
+### 💡 지능형 알리아스(Alias) 자동 생성 도구란?
+Live2D 모델마다 제각각인 파일명(예: `motion_01.json`, `표정_02.exp3.json`)을 AI가 분석하여 AEGIS 표준 별명(`idle`, `joy`, `shock` 등)으로 자동 연결해주는 강력한 도구입니다.
+*   <span style="color:red" font-weight:bold>**시간 절약**: 수십 개의 파일을 일일이 확인하고 수동으로 매핑할 필요가 없습니다. (수작업 대비 95% 시간 단축)</span>
+*   **즉각적인 리액션**: 알리아스 생성 즉시, 모델이 주가 급등락이나 날씨 변화에 맞춰 자동으로 표정을 짓기 시작합니다.
+*   **다국어 지원**: 한문, 일본어, 한국어, 영어 등으로 된 난해한 파일명도 지능적으로 추론합니다.
+ 
 > [!TIP]
 > 후원은 [**GitHub Sponsors**](https://github.com/sponsors/leeyj)를 통해 진행하실 수 있으며, 후원 시 전용 **Sponsor Key**와 **Seed Value**를 발급해 드립니다.
  
@@ -194,6 +200,12 @@ We provide premium features to those who support the continuous development of t
 | **Automation** | **Intelligent Alias Auto-Generation Tool** | X | **O (Sponsor Key)** |
 | **Dance Mode** | **YouTube Music Beat-Synced Dance Logic** | Basic | **Advanced (Planned)** |
 | **Support** | Tech Support & Feature Request Priority | - | **Top Priority** |
+ 
+### 💡 What is the Intelligent Alias Auto-Generation Tool?
+This powerful tool analyzes various filenames (e.g., `motion_01.json`, `expression_02.exp3.json`) specific to each Live2D model and automatically maps them to AEGIS standard aliases (`idle`, `joy`, `shock`, etc.).
+*   <span style="color:red">**Time Saving**: No need to manually check and map dozens of files. (Reduces setup time by over 95%)</span>
+*   **Instant Reactions**: Once aliases are generated, the model immediately starts reacting to stock fluctuations or weather changes with appropriate expressions.
+*   **Multi-language Support**: Intelligently infers meanings from complex filenames in Chinese, Japanese, Korean, and English.
  
 > [!TIP]
 > You can support us via [**GitHub Sponsors**](https://github.com/sponsors/leeyj). Upon sponsoring, you will receive a unique **Sponsor Key** and **Seed Value**.
