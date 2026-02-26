@@ -191,9 +191,10 @@ Due to licensing policies, the GitHub repository does not include default avatar
 2. Extract the downloaded files and paste them into the `models/` folder in the project root directory, using model-specific folder names (e.g., `models/akari_vts`).
 3. To use a character, match the `"last_model"` value in `settings.json` with the folder name you specified (e.g., `"akari_vts"`) for it to appear correctly on the screen.
 
-### 4. Model Validation and Automation Tools (Optional)
+### 4. Model Validation and Automation Tools (Some features for Sponsors only)
 Tools are provided to manage motion/expression filenames of various Live2D models through standardized aliases.
-*   **File Validation and Alias Generation**: `python test_models/check_assets.py --alias`
+*   **File Validation**: `python test_models/check_assets.py`
+*   **Intelligent Alias Generation [Sponsors Only]**: `python test_models/check_assets.py --alias`
 *   **Check Missing Models**: `python test_models/check_missing_alias.py`
 *   For detailed usage, refer to the [**Asset Validation and Alias Guide (ASSET_GUIDE.md)**](test_models/ASSET_GUIDE.md).
 

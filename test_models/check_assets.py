@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 import re
+import sys
 
 # --- Alias Keyword Mapping (Advanced Inference Version) ---
 # 한문, 한글, 일본어, 숫자, 특수 패턴을 포함한 범용 추론 사전
@@ -176,9 +177,9 @@ def find_best_match(file_list, target_alias, keywords_dict):
     }
     if target_alias in fallback_nums:
         num = fallback_nums[target_alias]
-        for file in sorted(file_list):
-            if num in file:
-                return file
+        for filename in sorted(file_list):
+            if num in filename:
+                return filename
 
     # 4. 강제 추론 (Idle 한정): 아무것도 없으면 가장 파일명이 짧거나 첫 번째 파일 선택
     if target_alias == "idle" and file_list:
@@ -294,18 +295,50 @@ def analyze_directory(base_dir, label, fix_naming=False, gen_alias=False):
         print(f"============================================================\n")
 
 
-def run_suite():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--fix", action="store_true")
-    parser.add_argument("--alias", action="store_true")
+def check_sponsor_key():
+    """Check for valid Sponsor Key to unlock premium features."""
+    secrets_path = os.path.join(os.getcwd(), "config", "secrets.json")
+    if not os.path.exists(secrets_path):
+        return False
+
+    try:
+        with open(secrets_path, "r", encoding="utf-8") as f:
+            secrets = json.load(f)
+            # Placeholder validation: In reality, you could use a remote verification or a specific key format
+            return bool(secrets.get("SPONSOR_KEY"))
+    except Exception:
+        return False
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Live2D Asset Validator & Alias Generator"
+    )
+    parser.add_argument(
+        "--fix", action="store_true", help="Fix file naming conventions"
+    )
+    parser.add_argument(
+        "--alias",
+        action="store_true",
+        help="[PREMIUM] Generate alias.json (Sponsors only)",
+    )
     args = parser.parse_args()
+
+    # Premium Feature Check
+    should_gen_alias = False
+    if args.alias:
+        if check_sponsor_key():
+            should_gen_alias = True
+        else:
+            print("\n" + "=" * 60)
+            print("💎 [PREMIUM FEATURE] Alias auto-generation is for Sponsors only.")
+            print("   Get your Sponsor Key at: https://github.com/sponsors/leeyj")
+            print("=" * 60 + "\n")
+            sys.exit(0)
+
     analyze_directory(
         os.path.join(os.getcwd(), "test_models"),
         "Test Models",
         fix_naming=args.fix,
-        gen_alias=args.alias,
+        gen_alias=should_gen_alias,
     )
-
-
-if __name__ == "__main__":
-    run_suite()

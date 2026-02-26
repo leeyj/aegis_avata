@@ -79,7 +79,10 @@ test_models/
 ## 🚀 4. 작업 워크플로우 (요약)
 
 1.  **모델 투입:** `test_models/`에 새로운 모델 폴더 복사.
-2.  **검사 실행:** `python test_models/check_assets.py --alias` 실행.
+2.  **지능형 알리아스 생성 (Sponsors Only)**: 파일명을 분석하여 `idle`, `joy` 등 의미 있는 별명을 자동으로 매핑합니다. (후원자 키 필요)
+    *   **사용법**:
+        1. `config/secrets.json`에 `SPONSOR_KEY`를 입력합니다.
+        2. `python test_models/check_assets.py --alias` 실행.
 3.  **결과 확인:** 생성된 `alias.json` 내용을 확인.
 4.  **수동 보정 (필요 시):** 도구가 못 잡는 파일은 파일명을 위 가이드에 맞춰 수정 후 재실행.
 5.  **최종 확인:** `python test_models/check_missing_alias.py`로 모든 모델이 '정상'인지 확인.
