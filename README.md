@@ -131,3 +131,139 @@ python routes/main.py
 
 ## 🤝 라이선스
 MIT License (※ 본 프로젝트에 포함된 Live2D 모션/모델의 경우 Live2D 공식 또는 해당 작성자의 라이선스를 따릅니다.)
+
+---
+
+# AEGIS Intelligence Dashboard (English)
+
+AEGIS is a real-time intelligent personal assistant dashboard that combines AI (Gemini) models with Edge-TTS.  
+It collects and briefs users on their daily schedules, stock/financial market data, real-time weather, the latest news headlines, unread emails, and more. It provides visual and vocal interactions through a real-time responsive 2D avatar (Live2D).
+
+
+## ✨ Key Features
+- **Integrated Dashboard**: Check weather, news, Google Calendar, To-do list, financial indices, watchlists, and system resources at a glance.
+- **AI Smart Briefing**: AI (Gemini) provides context-aware morning/evening briefings via voice, based on all currently collected data.
+- **Responsive Avatar (Live2D)**: Interactive 2D characters that change motions and expressions based on context and information (e.g., stock price surges or crashes).
+- **Background BGM Module**: Utilizes the YouTube Music API to fetch and play BGM from user-preferred playlists or queues in real-time.
+- **Proactive Agent**: Triggers immediate voice notifications when predefined thresholds are met (e.g., significant stock fluctuations, upcoming appointments).
+
+---
+![Dashboard Screen](img/main2.png)
+
+
+![Dashboard Screen](img/main1.png)
+
+
+![Dashboard Screen](img/main3.png)
+---
+
+## ✨ Animation Features
+- **Animations move in sync with voice briefings and YouTube Music rhythm (requires Premium account)**:
+![Animation 1](img/ani1.gif)
+
+- **Animations play and voice output is generated when notifications occur (email reception, stock fluctuations, upcoming schedules, etc.)**:
+![Animation 2](img/ani2.gif)
+
+![Animation 3](img/ani3.gif)
+
+## 🚀 Setup and Execution
+
+### 1. Package Installation
+This project recommends a Python 3.10 or higher environment.
+```bash
+git clone https://github.com/leeyj/aegis_avata.git
+cd aegis_avata
+pip install -r requirements.txt
+```
+
+### 2. Initial Template Configuration
+Copy the `.example` configuration files included in the repository and rename them to the actual files to be used.
+* `config/secrets.example.json` ➔ `config/secrets.json`
+* `config/weather.example.json` ➔ `config/weather.json`
+* `headers_auth.example.txt` ➔ `headers_auth.txt`
+* `settings.example.json` ➔ `settings.json`
+
+> **Note:** These files are registered in `.gitignore` to prevent your sensitive authentication information from being exposed on GitHub.
+
+### 3. Live2D Avatar Model Preparation
+Due to licensing policies, the GitHub repository does not include default avatar models (contents of the `models/` directory).
+1. Download your preferred sample models (e.g., Akari, Hiyori, etc.) from the [Live2D Official Sample Model Distribution](https://www.live2d.com/en/learn/sample/).
+2. Extract the downloaded files and paste them into the `models/` folder in the project root directory, using model-specific folder names (e.g., `models/akari_vts`).
+3. To use a character, match the `"last_model"` value in `settings.json` with the folder name you specified (e.g., `"akari_vts"`) for it to appear correctly on the screen.
+
+### 4. Model Validation and Automation Tools (Optional)
+Tools are provided to manage motion/expression filenames of various Live2D models through standardized aliases.
+*   **File Validation and Alias Generation**: `python test_models/check_assets.py --alias`
+*   **Check Missing Models**: `python test_models/check_missing_alias.py`
+*   For detailed usage, refer to the [**Asset Validation and Alias Guide (ASSET_GUIDE.md)**](test_models/ASSET_GUIDE.md).
+
+---
+
+## ⚙️ External API Configuration Guide
+
+### 1. Google API Authentication Setup (Calendar, Tasks, Gmail Integration)
+AEGIS calls Google Calendar, Tasks, and Gmail APIs in Read-only mode to fetch data. 
+1. Create a new project in the [Google Cloud Console](https://console.cloud.google.com/) and enable `Google Calendar API`, `Google Tasks API`, and `Gmail API`.
+2. In the **Credentials** tab, create an "OAuth 2.0 Client ID (Desktop App)" and download the `.json` file.
+3. Rename the downloaded file to **`credentials.json`** and place it in the `config` folder.
+4. Open the **`config/google.json`** file and set the `"auth"` entry according to your preferred account separation method.
+    * **Single Account Usage:** (Both calendar and work email on the same account)
+      ```json
+      "auth": {
+          "calendar": "token.json",
+          "tasks": "token.json",
+          "gmail": "token.json"
+      }
+      ```
+    * **Multiple Account Usage:** Map different filenames to separate personal calendars, company emails, etc.
+5. Upon the first execution, a Google login window will pop up. Once authentication is complete, the specified token file will be automatically generated and maintained.
+
+### 2. YouTube Music Header Setup (BGM Playback)
+Fetching playlists and queues requires the user's YouTube Music account information. It uses `ytmusicapi` and requires extracting browser cookie (headers) information.
+1. Log in to [YouTube Music (music.youtube.com)](https://music.youtube.com/) with your account in Chrome or Edge.
+2. Press **`F12`** to open **Developer Tools**.
+3. Go to the **Network** tab and refresh the page (F5).
+4. Click on the topmost network resource (usually `music.youtube.com/` or `browse`).
+5. In the **Headers** tab on the right, scroll down to the **Request Headers** section.
+6. Copy the necessary header entries (`User-Agent`, `Cookie`, `Authorization`, `Accept-Language`, etc.) or copy the entire `Request Headers` section.
+7. Paste the copied content into the **`headers_auth.txt`** (or `.json`) file in the root directory. 
+    * Refer to the structure of `headers_auth.example.txt` to update the `Cookie` and `Authorization` data values.
+
+### 3. OpenWeatherMap and Other Settings
+* **Weather API:** Obtain a free API key from [OpenWeatherMap](https://openweathermap.org/) and enter it in the `"api_key"` field of `config/weather.json`.
+* **Gemini API & Security Key:** Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/) and enter it in `config/secrets.json`. You can also change the administrator password for access here.
+
+### 4. Config Files and Core Feature Descriptions (Debug Mode & Character Panel)
+* **Debug Mode (Debug/Test Mode)**
+  * **Purpose**: Used to save API quotas (e.g., Gemini calls) or to quickly test frontend/UI changes without server communication.
+  * **How to Apply**: Change `"test_mode": true` in `settings.json`, or enable the `DEBUG_MODE` variable in the backend code (`routes/config.py`).
+  * **Effect**: When enabled, voice briefings will use the last stored text (cached data) and TTS file locally instead of calling the actual Gemini AI.
+
+* **Responsive Character (Live2D) Panel**
+  * **Features**: The character at the center bottom (or side) of the dashboard is not just a static image. It tracks the mouse cursor with its gaze and supports lip-syncing during briefings.
+  * **Changing Models**: You can fix the starting character by changing the `"last_model"` value in `settings.json` (e.g., `"akari_vts"`).
+  * **Interaction Actions**: Automatic emotional expressions (e.g., frowning in cloudy weather, sad motions on stock dips, surprised expressions on alarms) triggered by gathered data function according to `reactions.json` rules.
+
+* **Event Reaction Rules Engine (`config/reactions.json`) Setup**
+  * **Purpose**: A powerful feature that allows **users to directly program** what actions (expression changes, motions, voice notifications) the avatar performs based on data collection results (e.g., interest stock surge, rainy weather, new email arrival).
+  * **Key Syntax and Structure**:
+    * `"condition"`: JavaScript (JS) conditional expression. (e.g., when stock price rises by 3% or more ➔ `"change_pct >= 3"`)
+    * `"actions"`: Array of actions to perform when the condition is met.
+      * `"type": "MOTION"` or `"EMOTION"` ➔ Changes the character's animation. The `"file"` field must be set to the actual motion/expression filename of your Live2D model (e.g., `Shock.motion3.json`). **(★Since filenames differ per avatar model, ensure you verify and map them correctly.)**
+      * `"type": "TTS"` ➔ Reads the notification via the dashboard speaker. You can mix variables like `{name}`, `{price}`, `{change_pct_abs}` within the `"template"` to synthesize real-time data into speech.
+
+---
+
+## ▶️ Running the Server
+
+Once all settings are complete, run the dashboard server with the command below:
+```bash
+python gods.py
+# OR
+python routes/main.py
+```
+* Access via `http://127.0.0.1:8001` in a local browser.
+* For deployment servers, access via the production/internal network IP (e.g., `http://192.168.0.x:8001`).
+
+## 🤝 License
+MIT License (*Note: Live2D motions/models included in this project follow the official Live2D license or the license of their respective creators.)
