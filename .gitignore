@@ -7,10 +7,8 @@ config/system.json
 headers_auth.txt
 headers_auth.json
 
-# === Server Deploy & Security Tools ===
-tools/deploy.py
-tools/privacy_check.py
-tools/key_gen.py
+# === Maintenance & Security Tools ===
+tools/
 
 # === User Specific UI States ===
 settings.json
