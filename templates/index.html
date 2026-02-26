@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/static/css/components/terminal.css">
     <link rel="stylesheet" href="/static/css/components/weather.css">
     <link rel="stylesheet" href="/static/css/components/youtube.css">
+    <link rel="stylesheet" href="/static/css/components/wallpaper.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +27,10 @@
     <script src="/static/js/live2dcubismcore.min.js"></script>
     <script src="/static/js/index.min.js"></script>
 </head>
-<body>
+<body class="aegis-theme">
+    <!-- Wallpaper Engine Layer -->
+    <div id="wallpaper-image"></div>
+    <video id="wallpaper-video" muted loop playsinline></video>
     <!-- Weather Dynamics Layer -->
     <div id="weather-background" class="weather-bg"></div>
     <div id="weather-effects" class="weather-effects"></div>
@@ -73,6 +77,7 @@
     <script src="/static/js/widgets/visualizer.js" defer></script>
     <script src="/static/js/widgets/proactive_agent.js" defer></script>
     <script src="/static/js/widgets/youtube_music.js" defer></script>
+    <script src="/static/js/widgets/wallpaper.js" defer></script>
     
     <!-- Entry Point & Debug Tools -->
     {% if settings.get('test_mode') %}

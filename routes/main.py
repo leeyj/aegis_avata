@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify, request
+import os
+import json
 from routes.decorators import login_required
 
 main_bp = Blueprint("main", __name__)
@@ -34,6 +36,10 @@ def save_log():
                 level = log.get("level", "INFO")
                 dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 f.write(f"[{dt}] [{level}] {msg}\n")
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
         return jsonify({"status": "ok"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

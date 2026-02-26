@@ -32,13 +32,18 @@ async function initEngine() {
     // 2. 로컬 캐시(기기별 레이아웃) 동기화
     const localDataRaw = localStorage.getItem('aegis_layout');
     if (localDataRaw) {
-        const localData = JSON.parse(localDataRaw);
-        if (localData.uiPositions) window.uiPositions = localData.uiPositions;
-        if (localData.panelVisibility) window.panelVisibility = localData.panelVisibility;
-        if (localData.userZoom !== undefined) window.userZoom = localData.userZoom;
-        if (localData.offsetX !== undefined) window.offsetX = localData.offsetX;
-        if (localData.offsetY !== undefined) window.offsetY = localData.offsetY;
-        if (localData.last_model) window.activeModelName = localData.last_model;
+        try {
+            const localData = JSON.parse(localDataRaw);
+            // 저장된 키값(snake_case)을 현재 변수명(camelCase)으로 매핑
+            if (localData.ui_positions) window.uiPositions = localData.ui_positions;
+            if (localData.panel_visibility) window.panelVisibility = localData.panel_visibility;
+            if (localData.zoom !== undefined) window.userZoom = localData.zoom;
+            if (localData.offset_x !== undefined) window.offsetX = localData.offset_x;
+            if (localData.offset_y !== undefined) window.offsetY = localData.offset_y;
+            if (localData.last_model) window.activeModelName = localData.last_model;
+        } catch (e) {
+            console.error("[Core] Failed to parse local layout data:", e);
+        }
     }
 
     // 3. 렌더러 초기화 (renderer.js)
@@ -61,21 +66,25 @@ async function initEngine() {
 window.saveSettings = () => {
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => {
-        const state = {
+        const localState = {
             zoom: window.userZoom,
             offset_x: window.offsetX,
             offset_y: window.offsetY,
-            last_model: window.activeModelName,
             ui_positions: window.uiPositions,
-            panel_visibility: window.panelVisibility
+            panel_visibility: window.panelVisibility,
+            last_model: window.activeModelName
         };
-        // 로컬 스토리지에 기기별 설정 저장 (브라우저별 유지용)
-        localStorage.setItem('aegis_layout', JSON.stringify(state));
+        // 1. 기기별 레이아웃은 로컬 스토리지에 즉시 저장
+        localStorage.setItem('aegis_layout', JSON.stringify(localState));
 
+        // 2. 서버에는 어떤 기기에서든 동일해야 하는 정보(모델명)만 백업
+        const serverSync = {
+            last_model: window.activeModelName
+        };
         fetch('/save_settings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(state)
+            body: JSON.stringify(serverSync)
         });
     }, 500);
 }

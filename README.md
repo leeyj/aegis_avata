@@ -10,6 +10,7 @@ AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실�
 - **반응형 아바타 (Live2D)**: 상황과 정보(예: 주가 급등/급락)에 따라 모션과 표정이 달라지는 쌍방향 인터랙션.
 - **백그라운드 BGM 모듈**: YouTube Music API를 활용하여 사용자가 원하는 플레이리스트나 재생목록을 실시간으로 가져와 BGM 재생.
 - **선제적 알림(Proactive Agent)**: 설정한 임계값(예: 주가 급등락, 임박한 일정)에 도달하면 즉시 자동으로 음성 알림 발생.
+- **라이브2D 스튜디오**: 새로운 모델의 시각적 조정, 에일리어스 매니저, 리액션 시뮬레이터를 포함한 전문 관리 도구.
 
 ---
 ![대시보드 화면](img/main2.png)
@@ -38,10 +39,19 @@ AEGIS 프로젝트의 지속적인 발전을 위해 후원해 주시는 분들�
 |:---:|---|:---:|:---:|
 | **대시보드** | 날씨, 뉴스, 주식, 일정 위젯 | O | O |
 | **아바타** | Live2D 캐릭터 렌더링 및 상호작용 | O | O |
+| **스튜디오** | **Live2D 모델 에디터 및 리액션 시뮬레이터** | 테스트 모드 | **O (배포/저장 권한)** |
 | **설정** | 커스텀 모드 및 테마 설정 | O | O |
 | **자동화** | **지능형 알리아스(Alias) 자동 생성 도구** | X | **O (Sponsor Key)** |
 | **댄스 모듈** | **YouTube Music 비트 싱크 댄스 로직** | 기본 | **고도화 예정** |
 | **지원** | 기술 지원 및 기능 요청 우선순위 | - | **최우선 반영** |
+
+### 💰 후원 티어 (Sponsorship Tiers)
+
+| 티어 | 금액 | 주요 혜택 |
+| :--- | :--- | :--- |
+| **Coffee Supporter** | **$2/mo** | 단순 응원 및 후원자 명단 등재 |
+| **Standard Sponsor** | **$10/mo** | **스튜디오 모든 기능(저장/배포) 및 알리아스 자동 생성 도구 해금** |
+| **Premium Advocate** | **$25/mo** | 우선순위 기능 요청 및 1:1 기술 지원 |
  
 ### 💡 지능형 알리아스(Alias) 자동 생성 도구란?
 Live2D 모델마다 제각각인 파일명(예: `motion_01.json`, `표정_02.exp3.json`)을 AI가 분석하여 AEGIS 표준 별명(`idle`, `joy`, `shock` 등)으로 자동 연결해주는 강력한 도구입니다.
@@ -130,6 +140,13 @@ AEGIS는 Google Calendar, Tasks, Gmail API를 읽기 전용(Read-only)으로 호
   * **모델 변경**: `settings.json` 내의 `"last_model"` 값(예: `"akari_vts"`)을 변경하여 시작 캐릭터를 고정할 수 있습니다.
   * **인터랙션 액션**: 날씨가 흐릴 때 찡그림, 주식 하락 시 슬픈 모션, 알람 발생 시 놀라는 표정 등, 데이터 수집 결과에 연동된 자동 감정 표현 기능이 `reactions.json` 규칙에 의해 동작합니다.
 
+* **라이브2D 스튜디오 (Live2D Studio) 💎**
+  * **목적**: 새로운 캐릭터 모델을 AEGIS 시스템에 최적화하여 통합하기 위한 개발자용 관리 도구입니다. (`/studio` 경로)
+  * **주요 도구**:
+    * **에일리어스 매니저**: 복잡한 모션/표정 파일명을 `joy`, `shock` 등 표준 키워드에 시각적으로 매핑합니다.
+    * **리액션 시뮬레이터**: 주가 변동이나 알림 등의 상황을 가상으로 발생시켜 아바타의 반응을 즉시 테스트합니다.
+    * **운영 배포 (스폰서 전용)**: 테스트 완료된 모델과 설정을 한 번의 클릭으로 실제 운영 환경으로 내보냅니다.
+
 * **이벤트 반응 규칙 엔진 (`config/reactions.json`) 설정 방법**
   * **목적**: 데이터 수집 결과(예: 관심종목 급등, 비 오는 날씨, 새 메일 도착)에 따라 아바타가 어떤 행동(표정 변화, 모션, 음성 알림)을 할지 **사용자가 직접 프로그래밍**할 수 있는 강력한 기능입니다.
   * **주요 문법 및 구조**:
@@ -167,7 +184,8 @@ It collects and briefs users on their daily schedules, stock/financial market da
 - **AI Smart Briefing**: AI (Gemini) provides context-aware morning/evening briefings via voice, based on all currently collected data.
 - **Responsive Avatar (Live2D)**: Interactive 2D characters that change motions and expressions based on context and information (e.g., stock price surges or crashes).
 - **Background BGM Module**: Utilizes the YouTube Music API to fetch and play BGM from user-preferred playlists or queues in real-time.
-- **Proactive Agent**: Triggers immediate voice notifications when predefined thresholds are met (e.g., significant stock fluctuations, upcoming appointments).
+- **Proactive Agent**: Triggers immediate voice notifications when predefined thresholds are met.
+- **Live2D Studio**: Professional management tools including visual model adjustment, Alias Manager, and Reaction Simulator.
 
 ---
 ![Dashboard Screen](img/main2.png)
@@ -196,10 +214,19 @@ We provide premium features to those who support the continuous development of t
 |:---:|---|:---:|:---:|
 | **Dashboard** | Weather, News, Stocks, Calendar Widgets | O | O |
 | **Avatar** | Live2D Character Rendering & Interaction | O | O |
+| **Studio** | **Live2D Model Editor & Reaction Simulator** | Test Mode | **O (Deploy/Save)** |
 | **Settings** | Custom Modes and Theme Settings | O | O |
 | **Automation** | **Intelligent Alias Auto-Generation Tool** | X | **O (Sponsor Key)** |
 | **Dance Mode** | **YouTube Music Beat-Synced Dance Logic** | Basic | **Advanced (Planned)** |
 | **Support** | Tech Support & Feature Request Priority | - | **Top Priority** |
+
+### 💰 Sponsorship Tiers
+
+| Tier | Price | Key Benefits |
+| :--- | :--- | :--- |
+| **Coffee Supporter** | **$2/mo** | Support the project & get listed as a sponsor |
+| **Standard Sponsor** | **$10/mo** | **Unlock all Studio features (Save/Deploy) & Alias Auto-Generation Tool** |
+| **Premium Advocate** | **$25/mo** | Priority feature requests & 1:1 technical support |
  
 ### 💡 What is the Intelligent Alias Auto-Generation Tool?
 This powerful tool analyzes various filenames (e.g., `motion_01.json`, `expression_02.exp3.json`) specific to each Live2D model and automatically maps them to AEGIS standard aliases (`idle`, `joy`, `shock`, etc.).
@@ -288,6 +315,13 @@ Fetching playlists and queues requires the user's YouTube Music account informat
   * **Features**: The character at the center bottom (or side) of the dashboard is not just a static image. It tracks the mouse cursor with its gaze and supports lip-syncing during briefings.
   * **Changing Models**: You can fix the starting character by changing the `"last_model"` value in `settings.json` (e.g., `"akari_vts"`).
   * **Interaction Actions**: Automatic emotional expressions (e.g., frowning in cloudy weather, sad motions on stock dips, surprised expressions on alarms) triggered by gathered data function according to `reactions.json` rules.
+
+* **Live2D Studio 💎**
+  * **Purpose**: A developer-focused management tool to optimize and integrate new character models into the AEGIS system. (Access via `/studio`)
+  * **Key Tools**:
+    * **Alias Manager**: Visually maps complex motion/expression filenames to standard keywords like `joy`, `shock`, etc.
+    * **Reaction Simulator**: Virtually triggers scenarios like stock changes or notifications to instantly test the avatar's reactions.
+    * **Production Deployment (Sponsor Only)**: Exports tested models and settings to the production environment with a single click.
 
 * **Event Reaction Rules Engine (`config/reactions.json`) Setup**
   * **Purpose**: A powerful feature that allows **users to directly program** what actions (expression changes, motions, voice notifications) the avatar performs based on data collection results (e.g., interest stock surge, rainy weather, new email arrival).

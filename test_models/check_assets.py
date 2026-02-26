@@ -238,8 +238,10 @@ def analyze_directory(base_dir, label, fix_naming=False, gen_alias=False):
     print(f"[*] [{label}] 추론 엔진 가동 및 검증 시작\n")
 
     items = sorted(os.listdir(base_dir))
+
     for item in items:
         item_path = os.path.join(base_dir, item)
+
         if not os.path.isdir(item_path) or item.startswith("."):
             continue
 
@@ -248,17 +250,19 @@ def analyze_directory(base_dir, label, fix_naming=False, gen_alias=False):
 
         # 모델 설정 탐색
         for f in os.listdir(item_path):
-            if f.endswith(".model3.json"):
+            if f.endswith(".model3.json") or f.lower() == "model3.json":
                 model_config_file = f
+                print(f"    [Detect] {f}")
                 break
         if not model_config_file:
             for sub in os.listdir(item_path):
                 sub_p = os.path.join(item_path, sub)
                 if os.path.isdir(sub_p):
                     for f in os.listdir(sub_p):
-                        if f.endswith(".model3.json"):
+                        if f.endswith(".model3.json") or f.lower() == "model3.json":
                             model_config_file = f
                             current_model_path = sub_p
+                            print(f"    [Detect] {f} (in subdir)")
                             break
                     if model_config_file:
                         break
@@ -272,23 +276,34 @@ def analyze_directory(base_dir, label, fix_naming=False, gen_alias=False):
         motions_found = []
         expressions_found = []
 
-        # 자산 탐색
+        # --- [스폰서 핵심 기능] 자산 탐색 엔진 ---
+        # 구형 Live2D(2.x) 버전의 자산부터 최신(3.0+) 버전의 자산까지
+        # 모두 누락 없이 스캔하기 위한 강건한(Robust) 탐색 로직입니다.
         for sub in ["animations", "motions"]:
             p = os.path.join(current_model_path, sub)
             if os.path.exists(p):
+                # .motion3.json: Live2D 3.0 이상 규격 모션 파일
+                # .mtn: 구형 Live2D 2.x 규격 모션 파일
                 motions_found.extend(
-                    [f"{sub}/{f}" for f in os.listdir(p) if f.endswith(".motion3.json")]
+                    [
+                        f"{sub}/{f}"
+                        for f in os.listdir(p)
+                        if f.endswith((".motion3.json", ".mtn"))
+                    ]
                 )
 
         p_exp = os.path.join(current_model_path, "expressions")
         if os.path.exists(p_exp):
+            # .exp3.json: Live2D 3.0 이상 규격 표정 파일
+            # .exp.json: 구형 Live2D 규격 표정 파일
             expressions_found.extend(
                 [
                     f"expressions/{f}"
                     for f in os.listdir(p_exp)
-                    if f.endswith(".exp3.json")
+                    if f.endswith((".exp3.json", ".exp.json"))
                 ]
             )
+        # -----------------------------------------------
 
         if gen_alias:
             success, generated = generate_alias_file(

@@ -1,0 +1,267 @@
+/* Wallpaper Widget Styles */
+.wallpaper-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+}
+
+.wp-preview-container {
+    position: relative;
+    width: 100%;
+    height: 110px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.wp-preview {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+}
+
+.wp-preview-container:hover .wp-preview {
+    transform: scale(1.05);
+}
+
+.wp-preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-weight: bold;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+}
+
+.wp-preview-container:hover .wp-preview-overlay {
+    opacity: 1;
+}
+
+.wp-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.wp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.wp-input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 3px 6px;
+    border-radius: 3px;
+    width: 110px;
+    font-family: inherit;
+}
+
+.wp-browse-btn {
+    background: #f1c40f;
+    color: #000;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wp-browse-btn:hover {
+    background: #f39c12;
+    transform: translateY(-1px);
+}
+
+.wp-save-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.wp-save-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.wp-footer {
+    font-size: 0.75em;
+    text-align: center;
+    color: #666;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Background Logic */
+#wallpaper-video,
+#wallpaper-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1000;
+    /* Ensure it's the absolute bottom */
+    pointer-events: none;
+    transition: opacity 1s ease-in-out;
+}
+
+#wallpaper-video {
+    object-fit: cover;
+}
+
+#wallpaper-image {
+    background-size: cover;
+    background-position: center;
+}
+
+/* Ensure global containers are transparent to show wallpaper */
+body,
+html {
+    background-color: transparent !important;
+}
+
+#main-canvas-container {
+    background: transparent !important;
+}
+
+/* Gallery Modal Styles */
+.wp-gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wp-gallery-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.wp-gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.wp-gallery-content {
+    position: relative;
+    background: #1e1e24;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+}
+
+.wp-gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wp-gallery-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.2em;
+}
+
+.wp-gallery-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.wp-gallery-close:hover {
+    transform: scale(1.2);
+    color: #f1c40f;
+}
+
+.wp-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.wp-gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    aspect-ratio: 16/9;
+    background: #000;
+}
+
+.wp-gallery-item:hover {
+    border-color: #f1c40f;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(241, 196, 15, 0.3);
+}
+
+.wp-gallery-thumb {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.wp-thumb-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}

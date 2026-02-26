@@ -23,38 +23,26 @@ async function updateWeatherTheme() {
 }
 
 function applyTheme(status) {
-    const bg = document.getElementById('weather-background');
     const effects = document.getElementById('weather-effects');
+    if (!effects) return;
 
-    // 이전 클래스 제거
-    bg.className = 'weather-bg';
     effects.innerHTML = ''; // 이전 효과 제거
-
-    // console.log(`[WeatherTheme] Applying: ${status}`);
 
     switch (status) {
         case 'SUNNY':
-            bg.classList.add('sunny-theme');
-            createParticles(effects, 30, 'sunny');
             break;
         case 'RAINY':
-            bg.classList.add('rainy-theme');
             createParticles(effects, 100, 'rain');
             break;
         case 'CLOUDY':
-            bg.classList.add('cloudy-theme');
             break;
         case 'STORM':
-            bg.classList.add('storm-theme');
             createParticles(effects, 150, 'rain');
-            startLightning(bg);
+            startLightning(effects);
             break;
         case 'SNOWY':
-            bg.classList.add('cloudy-theme');
             createParticles(effects, 50, 'snow');
             break;
-        default:
-            bg.classList.add('sunny-theme');
     }
 }
 

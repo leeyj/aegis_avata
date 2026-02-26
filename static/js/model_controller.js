@@ -48,20 +48,34 @@ async function loadModel(name) {
         modelJson.url = url;
 
         if (window.modelAssets.expressions && window.modelAssets.expressions.length > 0) {
+            // Cubism 3/4 형식
             modelJson.FileReferences = modelJson.FileReferences || {};
             modelJson.FileReferences.Expressions = window.modelAssets.expressions.map(e => ({
-                Name: e.split('/').pop().replace('.exp3.json', ''),
+                Name: e.split('/').pop().replace('.exp3.json', '').replace('.exp.json', ''),
                 File: e
+            }));
+
+            // Cubism 2 형식
+            modelJson.expressions = window.modelAssets.expressions.map(e => ({
+                name: e.split('/').pop().replace('.exp3.json', '').replace('.exp.json', ''),
+                file: e
             }));
         }
 
         if (window.modelAssets.motions && window.modelAssets.motions.length > 0) {
+            // Cubism 3/4 형식
             modelJson.FileReferences = modelJson.FileReferences || {};
             modelJson.FileReferences.Motions = {
                 "AllMotions": window.modelAssets.motions.map(m => ({
                     File: m
                 }))
             };
+
+            // Cubism 2 형식
+            modelJson.motions = modelJson.motions || {};
+            modelJson.motions.AllMotions = window.modelAssets.motions.map(m => ({
+                file: m
+            }));
         }
 
         window.currentAvatar = await PIXI.live2d.Live2DModel.from(modelJson, { autoInteract: false });
@@ -75,26 +89,38 @@ async function loadModel(name) {
             const params = window.animationManager.getAnimationParams(0, time);
             const coreModel = window.currentAvatar.internalModel.coreModel;
 
-            if (params.angleZ !== 0) {
-                coreModel.setParameterValueById("ParamAngleZ", params.angleZ);
-            }
-            if (params.bodyX !== 0) {
-                coreModel.setParameterValueById("ParamBodyAngleX", params.bodyX);
-            }
-            if (params.mouthOpen > 0) {
-                coreModel.setParameterValueById(mouthParamId, params.mouthOpen);
-            }
+            // Cubism 3/4 (setParameterValueById) 와 Cubism 2 (setParamFloat) 통합 지원 헬퍼
+            const setParam = (id3, id2, value) => {
+                if (typeof coreModel.setParameterValueById === 'function') {
+                    coreModel.setParameterValueById(id3, value);
+                } else if (typeof coreModel.setParamFloat === 'function') {
+                    coreModel.setParamFloat(id2, value);
+                }
+            };
+
+            if (params.angleZ !== 0) setParam("ParamAngleZ", "PARAM_ANGLE_Z", params.angleZ);
+            if (params.bodyX !== 0) setParam("ParamBodyAngleX", "PARAM_BODY_ANGLE_X", params.bodyX);
+            if (params.mouthOpen > 0) setParam(mouthParamId, mouthParamId, params.mouthOpen); // mouthParamId는 아래서 자동 매핑
         });
 
         // 모델 로드 완료 시 파라미터 리스트 진단 및 입 파라미터 최적화
         window.currentAvatar.on('modelLoaded', () => {
-            const ids = window.currentAvatar.internalModel.coreModel._parameterIds;
+            const coreModel = window.currentAvatar.internalModel.coreModel;
+            const ids = coreModel._parameterIds || []; // Cubism 2는 이게 없을 수 있으므로 빈 배열로 방어
+
             if (window.logger) {
-                window.logger.info(`[Model] Loaded. DNA Count: ${ids.length}`);
+                window.logger.info(`[Model] Loaded. DNA Count: ${ids.length || 'Unknown (Cubism2)'}`);
             }
 
-            if (ids.includes("ParamMouthOpen")) mouthParamId = "ParamMouthOpen";
-            else if (ids.includes("ParamMouthOpenY")) mouthParamId = "ParamMouthOpenY";
+            // 입 파라미터 이름 자동 감지
+            if (ids.includes("ParamMouthOpen")) {
+                mouthParamId = "ParamMouthOpen";
+            } else if (ids.includes("ParamMouthOpenY")) {
+                mouthParamId = "ParamMouthOpenY";
+            } else {
+                // Cubism 2 기본 폴백 (통상적인 명칭)
+                mouthParamId = "PARAM_MOUTH_OPEN_Y";
+            }
 
             if (window.logger) window.logger.info(`[Model] Using mouth parameter: ${mouthParamId}`);
         });
@@ -128,7 +154,7 @@ async function loadModel(name) {
 window.playExpression = async (fileName) => {
     if (!window.currentAvatar || !fileName) return;
     try {
-        const expName = fileName.replace('.exp3.json', '');
+        const expName = fileName.replace('.exp3.json', '').replace('.exp.json', '');
         await window.currentAvatar.expression(expName);
     } catch (e) { }
 };

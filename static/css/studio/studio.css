@@ -1,0 +1,427 @@
+:root {
+    --bg-color: #0c0d12;
+    --accent-color: #5865f2;
+    --panel-bg: rgba(20, 22, 30, 0.95);
+    --text-color: #f2f3f5;
+    --border-radius: 16px;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#live2d-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+#live2d-canvas:active {
+    cursor: grabbing;
+}
+
+/* 네비게이션 및 대시보드 버튼 */
+.studio-nav {
+    position: absolute;
+    top: 20px;
+    left: 360px;
+    /* 컨트롤 패널 옆 */
+    z-index: 110;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: rgba(88, 101, 242, 0.2);
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: bold;
+    font-family: 'Rajdhani', sans-serif;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+}
+
+.back-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+/* 컨트롤 패널 */
+.controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 320px;
+    max-height: calc(100vh - 40px);
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    z-index: 100;
+}
+
+/* 드래그 가능 핸들 스타일 */
+.controls h2,
+.panel-header {
+    cursor: grab;
+    user-select: none;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 15px !important;
+}
+
+.controls h2:active,
+.panel-header:active {
+    cursor: grabbing;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+h3 {
+    font-size: 0.9rem;
+    color: #8e9297;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+select,
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2f3136;
+    border: 1px solid #202225;
+    color: white;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    box-sizing: border-box;
+    /* 패딩 포함 크기 계산 */
+}
+
+/* 모델 선택 그룹 특수 처리 */
+.model-select-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.model-select-container select {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.model-select-container button {
+    width: auto !important;
+    white-space: nowrap;
+    margin-bottom: 0 !important;
+    padding: 0 15px;
+}
+
+select:hover,
+button:hover {
+    background: #3c3f44;
+}
+
+button.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+.asset-list {
+    display: block;
+    /* Flex 대신 Block 사용으로 레이아웃 안정성 확보 */
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.4);
+    margin-bottom: 15px;
+}
+
+.asset-item {
+    display: block;
+    width: calc(100% - 20px);
+    padding: 14px 10px;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left: 3px solid transparent;
+    word-break: break-all;
+}
+
+.asset-item:last-child {
+    margin-bottom: 0;
+}
+
+.asset-item:hover {
+    background: rgba(88, 101, 242, 0.15);
+    color: #fff;
+    border-left: 3px solid var(--accent-color);
+    padding-left: 15px;
+    /* 호버 시 살짝 밀리는 애니메이션 */
+}
+
+.asset-item:active {
+    transform: scale(0.98);
+    background: rgba(88, 101, 242, 0.3);
+}
+
+.asset-item.active {
+    background: rgba(88, 101, 242, 0.3);
+    border-left: 3px solid var(--accent-color);
+    color: #fff;
+}
+
+/* 커스텀 스크롤바 */
+.asset-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.asset-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.asset-list::-webkit-scrollbar-thumb {
+    background: #3c3f44;
+    border-radius: 3px;
+}
+
+.asset-list::-webkit-scrollbar-thumb:hover {
+    background: #4f545c;
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+input[type="range"] {
+    width: 150px;
+}
+
+/* 가이드 오버레이 */
+.info-tab {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: var(--panel-bg);
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+/* Alias 사이드바 스타일 */
+.alias-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 340px;
+    max-height: calc(100vh - 40px);
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: -8px 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    background: #f1c40f;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.mapping-box {
+    background: rgba(88, 101, 242, 0.1);
+    border: 1px dashed var(--accent-color);
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.mapping-target {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    color: #fff;
+    word-break: break-all;
+    opacity: 0.8;
+}
+
+.key-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.key-grid button {
+    padding: 6px;
+    font-size: 0.75rem;
+    margin: 0;
+    background: #36393f;
+}
+
+.key-grid button:hover {
+    background: var(--accent-color);
+}
+
+.cancel-btn {
+    background: transparent;
+    border: 1px solid #4f545c;
+    color: #aaa;
+    font-size: 0.7rem;
+    padding: 5px;
+}
+
+.editor-box {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#alias-editor {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 250px;
+    background: #18191c;
+    color: #2ecc71;
+    font-family: 'Consolas', monospace;
+    font-size: 0.8rem;
+    padding: 10px;
+    border: 1px solid #202225;
+    border-radius: 8px;
+    resize: vertical;
+}
+
+.save-btn {
+    background: #2ecc71;
+    color: white;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.save-btn:hover {
+    background: #27ae60;
+}
+
+.save-btn:disabled {
+    background: #4f545c;
+    opacity: 0.5;
+}
+
+/* Simulator Panel */
+.simulator-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 320px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 8px 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+}
+
+.simulator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.simulator-btn {
+    padding: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background: #43b581;
+    color: white;
+    border: none !important;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    margin: 0 !important;
+}
+
+.simulator-btn:hover {
+    background: #3ca374;
+    transform: translateY(-2px);
+}
+
+.tts-preview {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--accent-color);
+}
+
+.tts-label {
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.tts-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #fff;
+}

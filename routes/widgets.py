@@ -22,7 +22,8 @@ from services import (
     stock_service,
     system_service,
 )
-from utils import load_json_config, load_settings, save_settings
+from utils import load_json_config, load_settings, save_settings, is_sponsor
+import os
 
 widgets_bp = Blueprint("widgets", __name__)
 
@@ -199,6 +200,12 @@ def system_stats():
     except Exception as e:
         print(f"[Error] /system_stats: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@widgets_bp.route("/news_config")
+@login_required
+def news_config():
+    return get_config("news")
 
 
 @widgets_bp.route("/get_settings")

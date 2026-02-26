@@ -1,103 +1,92 @@
 import os
 import json
+import hashlib
+import tempfile
 
+# 설정 파일 경로 정의
+CONFIG_DIR = "config"
+SECRETS_FILE = os.path.join(CONFIG_DIR, "secrets.json")
 SETTINGS_FILE = "settings.json"
-
-
-def load_settings():
-    """settings.json 파일 읽기"""
-    return load_json_config(SETTINGS_FILE)
+WALLPAPER_FILE = "wallpaper.json"
+_S = "AEGIS_CORE_V48_SECRET_SALT_2026"
 
 
 def load_json_config(path):
-    """지정된 경로의 JSON 파일을 안전하게 읽기 (손상 복구 포함)"""
+    """지정된 경로의 JSON 파일을 안전하게 읽기"""
     if os.path.exists(path):
         try:
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
-                if not content:
-                    return {}
-                return json.loads(content)
-        except json.JSONDecodeError as je:
-            print(f"[Utils] JSON Corrupted ({path}), resetting: {je}")
-            # 손상된 경우 빈 객체 반환 (다음 저장 시 복구됨)
-            # 파일 내용을 비워서 다음 로드 시 문제가 없도록 함
-            try:
-                with open(path, "w", encoding="utf-8") as f:
-                    f.write("{}")
-            except Exception as e_reset:
-                print(
-                    f"[Utils] Failed to reset corrupted JSON file ({path}): {e_reset}"
-                )
-            return {}
+                return json.loads(content) if content else {}
         except Exception as e:
             print(f"[Utils] Load Error ({path}): {e}")
     return {}
 
 
-def save_settings(data):
-    """settings.json 파일 저장 (키 통합 + 원자적 교체 방식)"""
-    import tempfile
-
+def save_json_config(path, data, merge=True):
+    """지정된 경로에 JSON 데이터를 안전하게/원자적으로 저장"""
     try:
-        # 1. 기존 데이터 로드
-        current = load_settings()
+        # 1. 병합 모드인 경우 기존 데이터와 합침
+        if merge and os.path.exists(path):
+            current = load_json_config(path)
+            current.update(data)
+            data = current
 
-        # 2. 키 통합 처리 (snake_case -> camelCase)
-        # 프론트엔드와 백엔드가 섞여서 생기는 중복 제거
-        key_map = {
-            "ui_positions": "uiPositions",
-            "panel_visibility": "panelVisibility",
-            "zoom": "userZoom",
-            "offset_x": "offsetX",
-            "offset_y": "offsetY",
-            "test_mode": "test_mode",  # 유지
-            "last_model": "last_model",  # 유지
-        }
+        # 2. 임시 파일에 쓰기 (원자적 쓰기)
+        base_dir = os.path.dirname(os.path.abspath(path))
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
 
-        # 새 데이터의 키 변환 및 병합
-        for k, v in data.items():
-            target_key = key_map.get(k, k)
-            if target_key in ["uiPositions", "panelVisibility"] and isinstance(v, dict):
-                # 딕셔너리 내부 업데이트
-                if target_key not in current:
-                    current[target_key] = {}
-                current[target_key].update(v)
-            else:
-                current[target_key] = v
-
-        # 구버전 키 삭제
-        for old_k in [
-            "ui_positions",
-            "panel_visibility",
-            "zoom",
-            "offset_x",
-            "offset_y",
-            "Test_mode",
-        ]:
-            current.pop(old_k, None)
-
-        # 3. 임시 파일에 쓰기
-        base_dir = os.path.dirname(os.path.abspath(SETTINGS_FILE))
         with tempfile.NamedTemporaryFile(
             "w", dir=base_dir, delete=False, encoding="utf-8", suffix=".tmp"
         ) as tf:
-            json.dump(current, tf, indent=4)
-            tf.flush()
-            os.fsync(tf.fileno())
+            json.dump(data, tf, indent=4)
             temp_path = tf.name
 
-        # 4. 원자적 교체
-        os.replace(temp_path, SETTINGS_FILE)
+        # 3. 파일 교체
+        os.replace(temp_path, path)
         return True
-
     except Exception as e:
-        print(f"[Utils] Atomic Save Error: {e}")
+        print(f"[Utils] Save Error ({path}): {e}")
         return False
 
 
+def is_sponsor():
+    """Sponsor 여부 확인"""
+    data = load_json_config(SECRETS_FILE)
+    key = data.get("SPONSOR_KEY", "")
+    seed = data.get("SEED_KEY_VALUE", "")
+    if not key.startswith("AEGIS-") or not seed:
+        return False
+    try:
+        parts = key.split("-")
+        if len(parts) != 4:
+            return False
+        _, i, px, s = parts
+        raw = f"{px}{seed}{_S}"
+        v = hashlib.sha256(raw.encode()).hexdigest().upper()[:8]
+        return v == s
+    except:
+        return False
+
+
+def load_settings():
+    return load_json_config(SETTINGS_FILE)
+
+
+def save_settings(data):
+    return save_json_config(SETTINGS_FILE, data)
+
+
+def load_wallpaper_config():
+    return load_json_config(WALLPAPER_FILE)
+
+
+def save_wallpaper_config(data):
+    return save_json_config(WALLPAPER_FILE, data)
+
+
 def get_model_list(models_dir):
-    """지정된 디렉토리 내의 라이브2D 모델 폴더 목록을 반환"""
     try:
         if not os.path.exists(models_dir):
             return []
@@ -108,44 +97,42 @@ def get_model_list(models_dir):
                 if os.path.isdir(os.path.join(models_dir, d))
             ]
         )
-    except Exception:
+    except:
         return []
 
 
 def get_model_info(models_dir, model_name):
-    """특정 모델의 애니메이션 및 표정 파일 리스트를 반환"""
     model_path = os.path.join(models_dir, model_name)
     info = {"motions": [], "expressions": []}
-
     if not os.path.exists(model_path):
         return info
 
-    # 애니메이션 탐색 (animations 또는 motions 폴더)
     for sub in ["animations", "motions"]:
         p = os.path.join(model_path, sub)
         if os.path.exists(p):
             info["motions"].extend(
-                [f"{sub}/{f}" for f in os.listdir(p) if f.endswith(".motion3.json")]
+                [
+                    f"{sub}/{f}"
+                    for f in os.listdir(p)
+                    if f.endswith((".motion3.json", ".mtn"))
+                ]
             )
 
-    # 표정 탐색
     exp_path = os.path.join(model_path, "expressions")
     if os.path.exists(exp_path):
         info["expressions"] = [
-            f for f in os.listdir(exp_path) if f.endswith(".exp3.json")
+            f for f in os.listdir(exp_path) if f.endswith((".exp3.json", ".exp.json"))
         ]
 
-    # 모델 설정 파일 탐색 (.model3.json)
     for f in os.listdir(model_path):
-        if f.endswith(".model3.json"):
+        if f.endswith(".model3.json") or f.lower() == "model3.json":
             info["model_settings_file"] = f
             break
 
-    # Alias 설정 로드 (alias.json)
     alias_path = os.path.join(model_path, "alias.json")
-    if os.path.exists(alias_path):
-        info["aliases"] = load_json_config(alias_path)
-    else:
-        info["aliases"] = {"motions": {}, "expressions": {}}
-
+    info["aliases"] = (
+        load_json_config(alias_path)
+        if os.path.exists(alias_path)
+        else {"motions": {}, "expressions": {}}
+    )
     return info

@@ -5,6 +5,8 @@ from routes.widgets import widgets_bp
 from routes.ai import ai_bp
 from routes.models import model_bp
 from routes.music import music_bp
+from routes.wallpaper import wallpaper_bp
+from routes.studio import studio_bp
 from routes.config import FLASK_SECRET_KEY
 
 
@@ -23,5 +25,14 @@ def create_app():
     app.register_blueprint(ai_bp)
     app.register_blueprint(model_bp)
     app.register_blueprint(music_bp)
+    app.register_blueprint(wallpaper_bp, url_prefix="/api/wallpaper")
+    app.register_blueprint(studio_bp)
+
+    # 템플릿 제어용 글로벌 함수 등록
+    @app.context_processor
+    def inject_globals():
+        from utils import is_sponsor
+
+        return dict(is_sponsor=is_sponsor)
 
     return app

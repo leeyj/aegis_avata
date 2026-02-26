@@ -16,7 +16,8 @@
             ('vis-stock', 'p-stock', 'Ticker Monitor', True),
             ('vis-youtube', 'p-youtube', 'YouTube Music', True),
             ('vis-unit', 'p-unit', 'Unit Selection', True),
-            ('vis-system', 'p-system', 'System Stats', True)
+            ('vis-system', 'p-system', 'System Stats', True),
+            ('vis-wallpaper', 'p-wallpaper', 'Wallpaper Control', True)
         ] %}
         
         {% for id, target, label, checked in panels %}
@@ -33,9 +34,14 @@
         
         <div class="menu-item" style="flex-direction: column; gap: 10px;">
             <button onclick="persistToServer().then(ok => ok && alert('Layout synced to server.'))" 
-                    style="width: 100%; padding: 10px; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s;">
+                    style="width: 100%; padding: 10px; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s; margin-bottom: 5px;">
                 SAVE CLOUD SETTINGS
             </button>
+            {% if is_sponsor() %}
+            <a href="/studio" class="studio-btn" style="width: 100%; text-align: center; padding: 10px; background: rgba(255, 0, 255, 0.1); border: 1px solid #ff00ff; color: #ff00ff; border-radius: 4px; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: bold; font-size: 0.9rem; transition: all 0.3s; margin-bottom: 5px;">
+                LIVE2D STUDIO
+            </a>
+            {% endif %}
             <a href="/logout" class="logout-btn" style="width: 100%; text-align: center;">SYSTEM LOGOUT</a>
         </div>
     </div>

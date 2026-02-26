@@ -9,15 +9,16 @@ headers_auth.json
 
 # === Maintenance & Security Tools ===
 tools/
+auth_helper.py
 
 # === User Specific UI States ===
 settings.json
+wallpaper.json
 
 # === Cache, Media, Logs ===
-static/audio/tts_cache/
-static/audio/*.mp3
-static/audio/*.txt
 *.log
+img/ani4.gif
+static/audio/tts_cache/
 
 # === Python / Environment ===
 __pycache__/
