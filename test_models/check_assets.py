@@ -300,24 +300,30 @@ _0x_S = "AEGIS_CORE_V48_SECRET_SALT_2026"
 
 
 def _0x_v_auth():
-    """Obfuscated security check for Sponsor Key validation."""
+    """Obfuscated security check for Sponsor Key & Seed validation."""
     p = os.path.join(os.getcwd(), "config", "secrets.json")
     if not os.path.exists(p):
         return False
     try:
         with open(p, "r", encoding="utf-8") as f:
-            c = json.load(f).get("SPONSOR_KEY", "")
-            if not c.startswith("AEGIS-"):
+            data = json.load(f)
+            c = data.get("SPONSOR_KEY", "")
+            sd = data.get("SEED_KEY_VALUE", "")
+
+            if not c.startswith("AEGIS-") or not sd:
                 return False
+
             # Key Format: AEGIS-ID-PREFIX-SIGNATURE
             parts = c.split("-")
             if len(parts) != 4:
                 return False
+
             _, i, px, s = parts
-            raw = f"{px}{i}{_0x_S}"
-            signature_full = str(hashlib.sha256(raw.encode()).hexdigest()).upper()
-            signature = signature_full[0:8]
-            return signature == s
+            # Validate if 'c' was generated from 'sd'
+            raw = f"{px}{sd}{_0x_S}"
+            v_full = str(hashlib.sha256(raw.encode()).hexdigest()).upper()
+            v = v_full[0:8]
+            return v == s
     except Exception:
         return False
 

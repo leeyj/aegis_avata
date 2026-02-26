@@ -16,15 +16,18 @@ def generate_key(member_id):
         return None
 
     # Part 1: Original ID (cleaned)
+    # Using list comprehension to avoid filter() type issues
     clean_id = "".join([c for c in member_id if c.isalnum()]).upper()
 
     # Part 2: Randomized prefix
+    # Using list comprehension to avoid random.choices issues
     prefix = "".join(
         [random.choice(string.ascii_uppercase + string.digits) for _ in range(4)]
     )
 
     # Part 3: Secure Hash (SHA256)
-    raw_data = f"{prefix}{clean_id}{_SALT}"
+    # Signature is tied to the EXACT member_id (seed value)
+    raw_data = f"{prefix}{member_id}{_SALT}"
     signature_full = str(hashlib.sha256(raw_data.encode()).hexdigest()).upper()
     signature = signature_full[0:8]
 
@@ -44,9 +47,12 @@ def main():
     if key:
         print(f"\n[SUCCESS] Generated Key for: {mid}")
         print("-" * 50)
-        print(f"SPONSOR_KEY: {key}")
+        print(f"SPONSOR_KEY    : {key}")
+        print(f"SEED_KEY_VALUE : {mid}")
         print("-" * 50)
-        print("\n* Provide this key to the sponsor to paste into their secrets.json.")
+        print(
+            "\n* Provide BOTH values to the sponsor to paste into their secrets.json."
+        )
 
 
 if __name__ == "__main__":
