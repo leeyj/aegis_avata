@@ -144,6 +144,14 @@ AEGIS는 Google Calendar, Tasks, Gmail API를 읽기 전용(Read-only)으로 호
   * **모델 변경**: `settings.json` 내의 `"last_model"` 값(예: `"akari_vts"`)을 변경하여 시작 캐릭터를 고정할 수 있습니다.
   * **인터랙션 액션**: 날씨가 흐릴 때 찡그림, 주식 하락 시 슬픈 모션, 알람 발생 시 놀라는 표정 등, 데이터 수집 결과에 연동된 자동 감정 표현 기능이 `reactions.json` 규칙에 의해 동작합니다.
 
+* **이벤트 반응 규칙 엔진 (`config/reactions.json`) 설정 방법**
+  * **목적**: 데이터 수집 결과(예: 관심종목 급등, 비 오는 날씨, 새 메일 도착)에 따라 아바타가 어떤 행동(표정 변화, 모션, 음성 알림)을 할지 **사용자가 직접 프로그래밍**할 수 있는 강력한 기능입니다.
+  * **주요 문법 및 구조**:
+    * `"condition"`: 자바스크립트(JS) 조건식입니다. (예: 주가가 3% 이상 올랐을 때 ➔ `"change_pct >= 3"`)
+    * `"actions"`: 조건이 맞을 때 수행할 행동(배열)입니다.
+      * `"type": "MOTION"` 또는 `"EMOTION"` ➔ 캐릭터의 애니메이션을 변경합니다. 이때 `"file"`에는 본인이 사용하는 Live2D 모델의 실제 모션/표정 파일명(예: `Shock.motion3.json`). (★사용하는 아바타 모델마다 파일 이름이 다르므로 반드시 확인 후 매핑해야 합니다.)
+      * `"type": "TTS"` ➔ 대시보드의 스피커를 통해 알림을 읽어줍니다. `"template"` 내에 `{name}`, `{price}`, `{change_pct_abs}` 등 변수를 섞어 넣으면 실시간 데이터가 합성되어 음성으로 재생됩니다.
+
 ## 🎨 Live2D 스튜디오 (Live2D Studio) 💎
 
 AEGIS는 단순한 대시보드를 넘어, 사용자가 직접 자신만의 Live2D 아바타를 최적화하고 관리할 수 있는 **전문가용 스튜디오 엔진**을 내장하고 있습니다. 구형 모델의 자동 복구부터 지능형 리액션 설정까지, 클릭 몇 번으로 나만의 비서를 완성할 수 있습니다.
@@ -208,13 +216,7 @@ AEGIS는 파편화된 개인의 지식을 체계적으로 관리하고 AI가 학
 | **자동화** | **지능형 정리 규칙 (Rules) 엔진** | X | **O (Sponsor Only)** |
 | **AI 연동** | **노션 데이터 기반 커스텀 RAG 브리핑** | 기본 | **고도화 버전 제공** |
 
-* **이벤트 반응 규칙 엔진 (`config/reactions.json`) 설정 방법**
-  * **목적**: 데이터 수집 결과(예: 관심종목 급등, 비 오는 날씨, 새 메일 도착)에 따라 아바타가 어떤 행동(표정 변화, 모션, 음성 알림)을 할지 **사용자가 직접 프로그래밍**할 수 있는 강력한 기능입니다.
-  * **주요 문법 및 구조**:
-    * `"condition"`: 자바스크립트(JS) 조건식입니다. (예: 주가가 3% 이상 올랐을 때 ➔ `"change_pct >= 3"`)
-    * `"actions"`: 조건이 맞을 때 수행할 행동(배열)입니다.
-      * `"type": "MOTION"` 또는 `"EMOTION"` ➔ 캐릭터의 애니메이션을 변경합니다. 이때 `"file"`에는 본인이 사용하는 Live2D 모델의 실제 모션/표정 파일명(예: `Shock.motion3.json`)을 적어주어야 작동합니다. **(★사용하는 아바타 모델마다 파일 이름이 다르므로 반드시 확인 후 매핑해야 합니다.)**
-      * `"type": "TTS"` ➔ 대시보드의 스피커를 통해 알림을 읽어줍니다. `"template"` 내에 `{name}`, `{price}`, `{change_pct_abs}` 등 변수를 섞어 넣으면 실시간 데이터가 합성되어 음성으로 재생됩니다.
+| **AI 연동** | **노션 데이터 기반 커스텀 RAG 브리핑** | 기본 | **고도화 버전 제공** |
 
 ---
 
@@ -379,6 +381,14 @@ Fetching playlists and queues requires the user's YouTube Music account informat
   * **Changing Models**: You can fix the starting character by changing the `"last_model"` value in `settings.json` (e.g., `"akari_vts"`).
   * **Interaction Actions**: Automatic emotional expressions (e.g., frowning in cloudy weather, sad motions on stock dips, surprised expressions on alarms) triggered by gathered data function according to `reactions.json` rules.
 
+* **Event Reaction Rules Engine (`config/reactions.json`) Setup**
+  * **Purpose**: A powerful feature that allows **users to directly program** what actions (expression changes, motions, voice notifications) the avatar performs based on data collection results (e.g., interest stock surge, rainy weather, new email arrival).
+  * **Key Syntax and Structure**:
+    * `"condition"`: JavaScript (JS) conditional expression. (e.g., when stock price rises by 3% or more ➔ `"change_pct >= 3"`)
+    * `"actions"`: Array of actions to perform when the condition is met.
+      * `"type": "MOTION"` or `"EMOTION"` ➔ Changes the character's animation. The `"file"` field must be set to the actual motion/expression filename of your Live2D model (e.g., `Shock.motion3.json`). (★Since filenames differ per avatar model, ensure you verify and map them correctly.)
+      * `"type": "TTS"` ➔ Reads the notification via the dashboard speaker. You can mix variables like `{name}`, `{price}`, `{change_pct_abs}` within the `"template"` to synthesize real-time data into speech.
+
 * **Live2D Studio 💎**
   * **Purpose**: A developer-focused management tool to optimize and integrate new character models into the AEGIS system. (Access via `/studio`)
   * **Key Tools**:
@@ -411,13 +421,7 @@ AEGIS provides a comprehensive **Notion integration solution** that helps you sy
 | **Automation** | **Intelligent Cleanup Rules (Rules) Engine** | X | **O (Sponsor Only)** |
 | **AI Integration** | **Notion-based Custom RAG Briefing** | Basic | **Advanced Version** |
 
-* **Event Reaction Rules Engine (`config/reactions.json`) Setup**
-  * **Purpose**: A powerful feature that allows **users to directly program** what actions (expression changes, motions, voice notifications) the avatar performs based on data collection results (e.g., interest stock surge, rainy weather, new email arrival).
-  * **Key Syntax and Structure**:
-    * `"condition"`: JavaScript (JS) conditional expression. (e.g., when stock price rises by 3% or more ➔ `"change_pct >= 3"`)
-    * `"actions"`: Array of actions to perform when the condition is met.
-      * `"type": "MOTION"` or `"EMOTION"` ➔ Changes the character's animation. The `"file"` field must be set to the actual motion/expression filename of your Live2D model (e.g., `Shock.motion3.json`). **(★Since filenames differ per avatar model, ensure you verify and map them correctly.)**
-      * `"type": "TTS"` ➔ Reads the notification via the dashboard speaker. You can mix variables like `{name}`, `{price}`, `{change_pct_abs}` within the `"template"` to synthesize real-time data into speech.
+| **AI Integration** | **Notion-based Custom RAG Briefing** | Basic | **Advanced Version** |
 
 ---
 
