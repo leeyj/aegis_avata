@@ -62,9 +62,9 @@
 - `condition`: 반응이 발동될 조건 (예: `change_pct >= 3`).
 - `actions`: 수행할 모션(`MOTION`), 표정(`EMOTION`), 대사(`TTS`)의 집합.
 
-### 3.3 `bref.json` (UI 스타일)
-- `color`: 아바타 말풍선의 배경색 및 투명도.
-- `max_width / font_size`: 말풍선 가독성 조절.
+### 3.4 `Live2D Studio` (아바타 개발 환경)
+- 신규 모델 테스트 및 `alias.json` 최적화를 위한 전용 툴입니다. (상세 내용은 [스튜디오 가이드](./live2d_studio.md) 참조)
+- `test_models/` 하위 자산 관리 및 운영 배포 기능을 지원합니다.
 
 ---
 
