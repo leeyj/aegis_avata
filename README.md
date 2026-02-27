@@ -404,6 +404,9 @@ AEGIS provides a comprehensive **Notion integration solution** that helps you sy
 ![Notion Cleanup 1](img/notion_cleanup1.png)
 *Reviewing intelligent cleanup rules and detecting unclassified items*
 
+![Notion Cleanup 2](img/notion_cleanup2.png)
+*Rule-based automated task classification and property update execution*
+
 ![Notion Cleanup 3](img/notion_cleanup3.png)
 *AI intelligent summary and voice briefing of cleanup results*
 
