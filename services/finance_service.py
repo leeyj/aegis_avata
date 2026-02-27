@@ -30,10 +30,3 @@ def get_market_indices(tickers):
             print(f"[FinanceService] Error fetching {name}({symbol}): {e}")
             continue
     return results
-
-
-def get_demo_trading_data():
-    """트레이딩 데모 데이터 생성"""
-    val = 15.42 + random.uniform(-0.1, 0.1)
-    status = "OPTIMAL" if val > 15.4 else "STABLE"
-    return {"profit": f"+{val:.2f}%", "status": status}

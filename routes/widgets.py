@@ -171,12 +171,6 @@ def market_indices():
     return jsonify(finance_service.get_market_indices(tickers))
 
 
-@widgets_bp.route("/trading_data")
-@login_required
-def trading_data():
-    return jsonify(finance_service.get_demo_trading_data())
-
-
 @widgets_bp.route("/stock_data")
 @login_required
 def stock_data():

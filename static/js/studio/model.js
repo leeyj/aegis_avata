@@ -226,7 +226,6 @@ async function fixModel() {
         btn.innerText = originalText;
 
         if (res.ok) {
-            const s = result.message; // 서버에서 반환한 stats 객체 (현재는 message 필드에 담겨있음)
             // route에서 stats를 message 필드로 보내고 있으므로 수정 필요 or 여기서 가공
 
             let report = `✨ [${name}] 최적화 완료 리포트\n\n`;

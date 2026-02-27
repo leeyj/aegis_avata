@@ -66,7 +66,7 @@ def is_sponsor():
         raw = f"{px}{seed}{_S}"
         v = hashlib.sha256(raw.encode()).hexdigest().upper()[:8]
         return v == s
-    except:
+    except Exception:
         return False
 
 
@@ -95,7 +95,7 @@ def get_model_list(models_dir):
             and d != "OLD"
             and not d.endswith("_backup")
         ]
-    except:
+    except Exception:
         return []
 
 

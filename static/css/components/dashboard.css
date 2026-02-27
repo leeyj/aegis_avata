@@ -50,11 +50,6 @@
     text-shadow: 0 0 15px var(--neon);
 }
 
-.profit-val {
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--neon);
-}
 
 select {
     background: rgba(0, 0, 0, 0.7);

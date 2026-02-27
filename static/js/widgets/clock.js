@@ -26,13 +26,5 @@ async function startClock() {
     updateTime();
     setInterval(updateTime, 1000);
 
-    // Trading Profit 데이터 업데이트 (Clock 모듈에 포함 혹은 별도 분리 가능)
-    const updateTrading = () => {
-        fetch('/trading_data').then(r => r.json()).then(d => {
-            const el = document.getElementById('profit-val');
-            if (el) el.innerText = d.profit;
-        });
-    };
-    updateTrading();
-    setInterval(updateTrading, 60000);
+
 }
