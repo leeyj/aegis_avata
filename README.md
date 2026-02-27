@@ -180,6 +180,34 @@ AEGIS는 일반 사용자에게는 스튜디오의 강력한 성능을 경험할
 > [!NOTE]
 > 일반 사용자는 스튜디오에서 모든 모델을 불러오고 시뮬레이션해 볼 수 있는 '맛보기' 모드를 지원합니다. 기능을 충분히 테스트해 보신 후, 후원을 통해 전문 관리 권한을 획득하세요!
 
+## 🧠 노션 지식 허브 (Notion Intelligence Hub)
+
+AEGIS는 파편화된 개인의 지식을 체계적으로 관리하고 AI가 학습할 수 있도록 돕는 **노션(Notion) 통합 솔루션**을 제공합니다. 터미널 명령 한 번으로 생각을 기록하고, AI가 알아서 지식을 정리하는 스마트한 환경을 경험하세요.
+
+### 🖼️ 노션 관리 및 정리 인터페이스
+![Notion Cleanup 1](img/notion_cleanup1.png)
+*지능형 정리 규칙(Rules) 검토 및 미분류 항목 감지*
+
+![Notion Cleanup 2](img/notion_cleanup2.png)
+*규획 기반 자동 과업 분류 및 속성 업데이트 실행*
+
+![Notion Cleanup 3](img/notion_cleanup3.png)
+*정리 결과에 대한 AI 지능형 요약 및 음성 브리핑*
+
+### 🛠️ 주요 제공 기능
+1.  **퀵 캡처 (Quick Capture)**: 터미널 명령(`/n`, `/todo`)을 통해 생각난 즉시 노션 데이터베이스에 메모를 기록합니다.
+2.  **멀티 워크스페이스 💎**: 업무용, 개인용 등 여러 개의 노션 워크스페이스를 별칭(`@업무`, `@개인`)으로 관리하고 명령 한 번으로 대상을 전환(`switch`)합니다.
+3.  **지능형 정리 규칙 (Cleanup Rules) 💎**: 제목의 키워드(예: `[폐기]`, `회의`)를 분석하여 속성을 자동으로 변경하고 데이터를 분류하는 자동화 엔진을 지원합니다.
+4.  **AI 지식 브리핑**: 노션에 기록된 최신 데이터를 AI가 분석하여 현재 진행 상황을 음성으로 브리핑합니다.
+
+### 💎 노션 기능 등급별 차별점
+| 기능 분야 | 세부 기능 | 일반 사용자 | 후원자 (Sponsor) |
+|:---:|---|:---:|:---:|
+| **기록** | 터미널 퀵 캡처 및 위젯 표시 | O | O |
+| **워크스페이스** | 단일 데이터베이스 연동 | O | **O (무제한 멀티 연동)** |
+| **자동화** | **지능형 정리 규칙 (Rules) 엔진** | X | **O (Sponsor Only)** |
+| **AI 연동** | **노션 데이터 기반 커스텀 RAG 브리핑** | 기본 | **고도화 버전 제공** |
+
 * **이벤트 반응 규칙 엔진 (`config/reactions.json`) 설정 방법**
   * **목적**: 데이터 수집 결과(예: 관심종목 급등, 비 오는 날씨, 새 메일 도착)에 따라 아바타가 어떤 행동(표정 변화, 모션, 음성 알림)을 할지 **사용자가 직접 프로그래밍**할 수 있는 강력한 기능입니다.
   * **주요 문법 및 구조**:
@@ -357,6 +385,31 @@ Fetching playlists and queues requires the user's YouTube Music account informat
     * **Alias Manager**: Visually maps complex motion/expression filenames to standard keywords like `joy`, `shock`, etc.
     * **Reaction Simulator**: Virtually triggers scenarios like stock changes or notifications to instantly test the avatar's reactions.
     * **Production Deployment (Sponsor Only)**: Exports tested models and settings to the production environment with a single click.
+
+## 🧠 Notion Intelligence Hub
+
+AEGIS provides a comprehensive **Notion integration solution** that helps you systematically manage fragmented personal knowledge. Record your thoughts with a single terminal command and experience a smart environment where AI organizes your knowledge automatically.
+
+### 🖼️ Notion Management & Cleanup Interface
+![Notion Cleanup 1](img/notion_cleanup1.png)
+*Reviewing intelligent cleanup rules and detecting unclassified items*
+
+![Notion Cleanup 3](img/notion_cleanup3.png)
+*AI intelligent summary and voice briefing of cleanup results*
+
+### 🛠️ Key Features
+1.  **Quick Capture**: Record notes directly to your Notion database using terminal commands (`/n`, `/todo`).
+2.  **Multi-Workspace 💎**: Manage multiple Notion workspaces (e.g., `@work`, `@personal`) and switch between them seamlessly.
+3.  **Intelligent Cleanup Rules 💎**: Analyze keywords in titles (e.g., `[Discard]`, `Meeting`) to automatically update properties and classify data.
+4.  **AI Knowledge Briefing**: AI analyzes the latest data recorded in Notion and provides a voice briefing on your current progress.
+
+### 💎 Notion Feature Tiers
+| Category | Feature | Free User | Sponsor |
+|:---:|---|:---:|:---:|
+| **Capture** | Terminal Quick Capture & Widget Display | O | O |
+| **Workspace** | Single Database Integration | O | **O (Unlimited Multi-Integration)** |
+| **Automation** | **Intelligent Cleanup Rules (Rules) Engine** | X | **O (Sponsor Only)** |
+| **AI Integration** | **Notion-based Custom RAG Briefing** | Basic | **Advanced Version** |
 
 * **Event Reaction Rules Engine (`config/reactions.json`) Setup**
   * **Purpose**: A powerful feature that allows **users to directly program** what actions (expression changes, motions, voice notifications) the avatar performs based on data collection results (e.g., interest stock surge, rainy weather, new email arrival).
