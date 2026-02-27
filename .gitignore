@@ -35,7 +35,10 @@ OLD/
 models/
 test_models/*/
 
-# 특정 파일은 포함 (문서 및 도구)
-!docs/*.md
+# === Documentation Rules ===
+# 모든 마크다운 포함하되, 개인 진행용 문서는 제외
+!docs/**/*.md
+docs/PROJECT_STATUS.md
+docs/REFACTORING_SPEC.md
 !test_models/*.md
 !test_models/*.py

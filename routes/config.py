@@ -20,6 +20,7 @@ PROACTIVE_CONFIG_PATH = os.path.join(BASE_DIR, "config", "proactive.json")
 BGM_CONFIG_PATH = os.path.join(BASE_DIR, "config", "bgm.json")
 REACTIONS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "reactions.json")
 PROMPTS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "prompts.json")
+API_CONFIG_PATH = os.path.join(BASE_DIR, "config", "api.json")
 SECRETS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "secrets.json")
 
 # Google API Paths
@@ -46,5 +47,6 @@ def _load_secrets():
 _secrets = _load_secrets()
 USER_CREDENTIALS = _secrets.get("USER_CREDENTIALS", {"admin": "admin123"})
 GEMINI_API_KEY = _secrets.get("GEMINI_API_KEY", "")
+EXTERNAL_API_KEYS = _secrets.get("EXTERNAL_API_KEYS", {})
 FLASK_SECRET_KEY = _secrets.get("FLASK_SECRET_KEY", "default_secret_key")
 DEBUG_MODE = False

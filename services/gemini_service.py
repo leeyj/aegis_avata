@@ -12,9 +12,9 @@ def get_briefing(api_key, context_data):
     client = genai.Client(api_key=api_key)
     model_id = "gemini-2.0-flash"
 
-    # 외부 프롬프트 로드
+    # 외부 프롬프트 로드 (계층 구조 반영)
     prompts = load_json_config(PROMPTS_CONFIG_PATH)
-    prompt_tpl = prompts.get("briefing", "")
+    prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("briefing", "")
 
     context_str = json.dumps(context_data, ensure_ascii=False, indent=2)
     prompt = prompt_tpl.replace("{context_data}", context_str)
@@ -46,7 +46,7 @@ def get_widget_briefing(api_key, widget_type, widget_data):
     model_id = "gemini-2.0-flash"
 
     prompts = load_json_config(PROMPTS_CONFIG_PATH)
-    prompt_tpl = prompts.get("widget_briefing", "")
+    prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("widget_briefing", "")
 
     data_str = json.dumps(widget_data, ensure_ascii=False, indent=2)
     prompt = prompt_tpl.replace("{{widget_type}}", widget_type).replace(
@@ -79,7 +79,8 @@ def process_command(api_key, command, context_data):
 
     # 외부 프롬프트 로드
     prompts = load_json_config(PROMPTS_CONFIG_PATH)
-    prompt_tpl = prompts.get("command", "")
+    # NLP_COMMAND_ENGINE 섹션에서 로드
+    prompt_tpl = prompts.get("NLP_COMMAND_ENGINE", {}).get("command_parsing", "")
 
     context_str = json.dumps(context_data, ensure_ascii=False, indent=2)
     prompt = prompt_tpl.replace("{context_data}", context_str).replace(

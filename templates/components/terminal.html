@@ -6,6 +6,17 @@
 
 <!-- Command Terminal -->
 <div id="terminal-container" class="terminal-container">
-    <span class="terminal-prompt">AEGIS >></span>
-    <input type="text" id="terminal-input" placeholder="명령을 입력하세요... (/ 도움말)" autocomplete="off">
+    <div id="terminal-toggle-btn" class="terminal-toggle-btn">
+        <span class="toggle-icon">▼</span>
+    </div>
+    <div id="terminal-log" class="terminal-log"></div>
+    <div class="terminal-prompt-row">
+        <div class="terminal-prompt-wrapper">
+            <select id="ai-model-selector" class="terminal-select">
+                <option value="gemini">AEGIS (System)</option>
+            </select>
+            <span class="prompt-arrow">>></span>
+        </div>
+        <input type="text" id="terminal-input" placeholder="명령을 입력하세요... (/ 도움말)" autocomplete="off">
+    </div>
 </div>

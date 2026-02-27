@@ -4,21 +4,219 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
     border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 5000;
+    transition: all 0.3s ease;
+}
+
+.terminal-log {
+    max-height: 250px;
+    /* 마크다운 대응을 위해 높이 상향 */
+    overflow-y: auto;
+    padding: 15px 20px;
+    /* 상하 패딩 여유분 확보 */
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+}
+
+.terminal-log.collapsed {
+    max-height: 28px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    overflow: hidden;
+}
+
+.terminal-log::-webkit-scrollbar {
+    width: 4px;
+}
+
+.terminal-log::-webkit-scrollbar-thumb {
+    background: var(--neon);
+    border-radius: 2px;
+}
+
+.terminal-prompt-row {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    z-index: 5000;
+    position: relative;
 }
 
-.terminal-prompt {
-    font-family: 'Orbitron';
+.terminal-toggle-btn {
+    position: absolute;
+    top: -15px;
+    right: 25px;
+    width: 30px;
+    height: 30px;
+    background: var(--neon);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 5010;
+    box-shadow: 0 0 15px var(--neon);
+    transition: all 0.3s ease;
+}
+
+.terminal-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px var(--neon);
+}
+
+.terminal-toggle-btn.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.log-entry {
+    display: flex;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.log-time {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 11px;
+}
+
+.log-source {
     color: var(--neon);
-    font-size: 14px;
+    font-weight: bold;
+    min-width: 60px;
+}
+
+.log-message {
+    color: #fff;
+    word-break: break-word;
+    flex: 1;
+}
+
+.log-message p {
+    margin: 0 0 8px 0;
+}
+
+.log-message p:last-child {
+    margin-bottom: 0;
+}
+
+.log-message h1,
+.log-message h2,
+.log-message h3 {
+    color: var(--neon);
+    font-size: 1.1em;
+    margin: 10px 0 5px 0;
+    text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);
+}
+
+.log-message ul,
+.log-message ol {
+    margin: 5px 0 10px 20px;
+    padding: 0;
+}
+
+.log-message li {
+    margin-bottom: 3px;
+}
+
+.log-message strong {
+    color: #ffdf00;
+    font-weight: 700;
+}
+
+.log-message code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.log-debug {
+    color: #888;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.terminal-prompt-wrapper {
+    display: flex;
+    align-items: center;
     margin-right: 15px;
-    letter-spacing: 2px;
+}
+
+.terminal-select {
+    background: transparent;
+    border: none;
+    color: var(--neon);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 242, 255, 0.5);
+}
+
+.terminal-select:hover {
+    background: rgba(0, 242, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+}
+
+.terminal-select option {
+    background: #0a0f19;
+    color: var(--neon);
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.prompt-arrow {
+    color: var(--neon);
+    font-family: 'Orbitron';
+    font-size: 14px;
+    margin-left: 5px;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
 }
 
 #terminal-input {

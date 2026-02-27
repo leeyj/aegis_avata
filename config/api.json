@@ -1,0 +1,39 @@
+{
+    "default_source": "ollama",
+    "sources": {
+        "ollama": {
+            "name": "Ollama",
+            "model": "qwen2.5-coder:7b",
+            "base_url": "http://localhost:11434/api/generate",
+            "api_type": "ollama",
+            "active": true
+        },
+        "chatgpt": {
+            "name": "ChatGPT",
+            "model": "gpt-4o",
+            "base_url": "https://api.openai.com/v1/chat/completions",
+            "api_type": "openai",
+            "active": false
+        },
+        "grok": {
+            "name": "Grok",
+            "model": "grok-4-1-fast-reasoning",
+            "base_url": "https://api.x.ai/v1/chat/completions",
+            "api_type": "openai",
+            "active": true,
+            "mock": false
+        },
+        "openclaw": {
+            "name": "OpenClaw",
+            "model": "claude-3-haiku",
+            "base_url": "http://localhost:8002/v1/chat/completions",
+            "api_type": "openai",
+            "active": false
+        },
+        "general": {
+            "name": "General Assistant",
+            "model": "gemini-2.0-flash",
+            "active": true
+        }
+    }
+}

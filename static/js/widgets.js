@@ -80,6 +80,10 @@ async function initWidgets() {
     if (typeof initStockWidget === 'function') wm.register('Stock', initStockWidget);
     if (typeof startProactiveAgent === 'function') wm.register('ProactiveAgent', startProactiveAgent);
     if (typeof startYouTubeMusic === 'function') wm.register('YouTubeMusic', startYouTubeMusic);
+    if (typeof startWallpaper === 'function') wm.register('Wallpaper', startWallpaper);
+
+    // 외부 AI 연동 시작 (매니저 독립 구동)
+    if (typeof initExternalAPI === 'function') initExternalAPI();
 
     await wm.initAll();
 }

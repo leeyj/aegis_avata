@@ -59,7 +59,13 @@ async function processTtsQueue() {
 
         bubble.onclick = () => {
             bubble.style.display = 'none';
-            if (currentAudio) currentAudio.pause();
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if (window.stopVisualizer) window.stopVisualizer();
+            window.dispatchAvatarEvent('TTS_STOP'); // 아바타 애니메이션 중단
+            clearTimeout(bubbleTimer);
             isTtsPlaying = false;
             processTtsQueue(); // 다음 항목으로 이동
         };

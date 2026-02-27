@@ -123,7 +123,7 @@ class BriefingManager:
         # 3. 트리거가 감지되면 Gemini에게 상황 보고 요청
         if triggers:
             prompts = load_json_config(PROMPTS_CONFIG_PATH)
-            prompt_tpl = prompts.get("proactive", "")
+            prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("proactive", "")
             prompt = prompt_tpl.replace("{triggers}", ", ".join(triggers))
             result = gemini_service.get_custom_response(self.api_key, prompt)
 
