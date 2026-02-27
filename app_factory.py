@@ -8,6 +8,7 @@ from routes.music import music_bp
 from routes.wallpaper import wallpaper_bp
 from routes.studio import studio_bp
 from routes.api_v1 import api_v1_bp
+from routes.notion_routes import notion_bp
 from routes.config import FLASK_SECRET_KEY
 
 
@@ -29,6 +30,7 @@ def create_app():
     app.register_blueprint(wallpaper_bp, url_prefix="/api/wallpaper")
     app.register_blueprint(studio_bp)
     app.register_blueprint(api_v1_bp)
+    app.register_blueprint(notion_bp)
 
     # 템플릿 제어용 글로벌 함수 등록
     @app.context_processor

@@ -122,3 +122,19 @@ def get_custom_response(api_key, prompt):
     except Exception as e:
         print(f"[Gemini] Custom Response Error: {e}")
         return {"text": "상황 분석 중 오류가 발생했습니다.", "sentiment": "neutral"}
+
+
+def query_gemini(prompt):
+    """
+    notion_routes.py 등에서 공통으로 사용하는 Gemini 질의 함수.
+    시스템 API 키를 자동으로 로드하여 사용합니다.
+    """
+    from routes.config import GEMINI_API_KEY
+
+    res = get_custom_response(GEMINI_API_KEY, prompt)
+
+    # notion_routes.py는 'response' 필드에서 텍스트를 찾으므로 매핑
+    if "text" in res and "response" not in res:
+        res["response"] = res["text"]
+
+    return res

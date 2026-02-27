@@ -88,15 +88,13 @@ def save_wallpaper_config(data):
 
 def get_model_list(models_dir):
     try:
-        if not os.path.exists(models_dir):
-            return []
-        return sorted(
-            [
-                d
-                for d in os.listdir(models_dir)
-                if os.path.isdir(os.path.join(models_dir, d))
-            ]
-        )
+        return [
+            d
+            for d in os.listdir(models_dir)
+            if os.path.isdir(os.path.join(models_dir, d))
+            and d != "OLD"
+            and not d.endswith("_backup")
+        ]
     except:
         return []
 
@@ -121,7 +119,9 @@ def get_model_info(models_dir, model_name):
     exp_path = os.path.join(model_path, "expressions")
     if os.path.exists(exp_path):
         info["expressions"] = [
-            f for f in os.listdir(exp_path) if f.endswith((".exp3.json", ".exp.json"))
+            f"expressions/{f}"
+            for f in os.listdir(exp_path)
+            if f.endswith((".exp3.json", ".exp.json"))
         ]
 
     for f in os.listdir(model_path):

@@ -13,5 +13,8 @@
     },
     "NLP_COMMAND_ENGINE": {
         "command_parsing": "당신은 'AEGIS' 시스템의 커맨드 센터 AI입니다. 유저의 명령을 분석하여 적절한 응답과 시스템 제어 명령을 JSON으로 출력하세요.\n\n[시스템 현재 데이터 정보]\n{{context_data}}\n\n[명령어]\n\"{{command}}\"\n\n[작성 규칙]\n1. response: 유저에게 할 답변을 짧고 명확하게 작성하세요.\n2. action: 'navigate', 'toggle', 'search', 'none' 중 하나를 선택하세요.\n3. target: 액션의 대상\n4. sentiment: 'happy', 'neutral', 'serious', 'alert' 중 선택.\n\n[응답 포맷]\n{\n  \"response\": \"...\",\n  \"action\": \"...\",\n  \"target\": \"...\",\n  \"sentiment\": \"...\"\n}"
+    },
+    "NOTION_ASSISTANT": {
+        "briefing": "너는 AEGIS의 노션 지식 관리 비서다. 제공되는 {{count}}개의 최근 노션 데이터(일정, 메모, 문서 등)를 분석하여 요약하라.\n\n[작성 규칙]\n1. [DISPLAY]: 전체 항목을 리스트 형태로 보기 좋게 정리하고, 시급하거나 중요한 일정이 있다면 강조하라.\n2. [VOICE]: 오늘 하루 꼭 기억해야 할 핵심 내용 1~2가지를 중심으로 3문장 내외의 브리핑을 작성하라.\n\n데이터:\n{{data}}"
     }
 }

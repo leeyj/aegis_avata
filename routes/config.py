@@ -21,6 +21,7 @@ BGM_CONFIG_PATH = os.path.join(BASE_DIR, "config", "bgm.json")
 REACTIONS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "reactions.json")
 PROMPTS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "prompts.json")
 API_CONFIG_PATH = os.path.join(BASE_DIR, "config", "api.json")
+TERMINAL_CONFIG_PATH = os.path.join(BASE_DIR, "config", "terminal.json")
 SECRETS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "secrets.json")
 
 # Google API Paths

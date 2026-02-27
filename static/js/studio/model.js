@@ -44,8 +44,12 @@ async function loadModel(name) {
     if (typeof cancelMapping === 'function') cancelMapping();
 
     if (window.currentAvatar) {
-        window.app.stage.removeChild(window.currentAvatar);
-        window.currentAvatar.destroy({ children: true });
+        try {
+            window.app.stage.removeChild(window.currentAvatar);
+            window.currentAvatar.destroy({ children: true });
+        } catch (e) {
+            console.warn("[Studio] Avatar destroy error (safe to ignore):", e);
+        }
         window.currentAvatar = null;
     }
 
@@ -98,6 +102,8 @@ async function loadModel(name) {
         }
 
         window.currentAvatar = await PIXI.live2d.Live2DModel.from(modelJson, { autoInteract: false });
+        window.currentAvatar.eventMode = 'static';
+
         window.app.stage.addChild(window.currentAvatar);
 
         setupAnimationLoop(window.currentAvatar);
@@ -191,3 +197,54 @@ function setupAnimationLoop(avatar) {
         else mouthParamId = "PARAM_MOUTH_OPEN_Y";
     }
 }
+
+async function fixModel() {
+    if (!window.isSponsor) {
+        alert("Sponsor only feature!");
+        return;
+    }
+    const name = document.getElementById('model-select').value;
+    if (!name) {
+        alert("Please select a model first.");
+        return;
+    }
+
+    if (!confirm(`'${name}' 모델을 최적화하시겠습니까?\n\n- 이 작업은 OLD 폴더에 백업을 생성합니다.\n- 구형 경로 및 설정을 최신 규격으로 변환합니다.`)) {
+        return;
+    }
+
+    try {
+        const btn = document.getElementById('fix-model-btn');
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "⏳";
+
+        const res = await fetch(`/studio/api/fix_model/${name}`, { method: 'POST' });
+        const result = await res.json();
+
+        btn.disabled = false;
+        btn.innerText = originalText;
+
+        if (res.ok) {
+            const s = result.message; // 서버에서 반환한 stats 객체 (현재는 message 필드에 담겨있음)
+            // route에서 stats를 message 필드로 보내고 있으므로 수정 필요 or 여기서 가공
+
+            let report = `✨ [${name}] 최적화 완료 리포트\n\n`;
+            report += `📁 폴더 구조 보정: ${result.folder_renamed ? '✅ 수행됨' : '➖ 변경없음'}\n`;
+            report += `📄 설정 파일 규격화: ${result.json_standardized ? '✅ model3.json 생성' : '➖ 유지됨'}\n`;
+            report += `🔗 내부 경로 수정: ${result.paths_fixed}개 항목\n`;
+            report += `🏷️ 에일리어스 생성: ${result.alias_generated ? '✅ 지능형 매핑 성공' : '➖ 실패/건너뜀'}\n\n`;
+            report += `📦 백업 위치: OLD 폴더 내 보관됨`;
+
+            alert(report);
+            loadModel(name);
+        } else {
+            alert("Error: " + result.message);
+        }
+    } catch (e) {
+        alert("Fix failed: " + e.message);
+        document.getElementById('fix-model-btn').disabled = false;
+        document.getElementById('fix-model-btn').innerText = "✨";
+    }
+}
+

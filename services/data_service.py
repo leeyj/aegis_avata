@@ -1,5 +1,11 @@
 from utils import load_json_config
-from services import google_calendar, weather_service, finance_service, news_service
+from services import (
+    google_calendar,
+    weather_service,
+    finance_service,
+    news_service,
+    notion_service,
+)
 
 
 class DataService:
@@ -9,6 +15,7 @@ class DataService:
 
     def __init__(self, config_paths):
         self.config_paths = config_paths
+        self.notion = notion_service.NotionService()
 
     def collect_all_context(self):
         """
@@ -61,5 +68,14 @@ class DataService:
             print(f"[DataService] Google Service Error: {e}")
             context["calendar"] = []
             context["emails"] = []
+
+        # 5. 노션 데이터 수집 (최적화)
+        try:
+            context["notion"] = self.notion.get_recent_items(
+                limit=self.notion.get_config().get("briefing_limit", 5)
+            )
+        except Exception as e:
+            print(f"[DataService] Notion Service Error: {e}")
+            context["notion"] = []
 
         return context

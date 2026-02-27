@@ -53,9 +53,24 @@
     1. `test_models/`의 원본을 `models/` 폴더로 복사 (기존 파일 존재 시 덮어쓰기).
     2. `settings.json`의 `last_model` 값을 변경하여 즉시 적용되도록 설정.
 
-### 5. `get_reactions()`
-*   **기능**: 시뮬레이터에서 사용할 `config/reactions.json`의 전체 데이터를 로드합니다.
+### 6. `fix_model(name)` 💎 (Sponsor)
+*   **기능**: 테스트 모델의 일반적인 문제들(폴더명 오류, JSON 문법 에러, 경로 불일치 등)을 감지하여 자동으로 복구하고 최적화 리포트를 반환합니다.
 *   **함수 호출 방법**:
     ```python
-    reactions = StudioService.get_reactions()
+    stats = StudioService.fix_model("akari_vts")
     ```
+*   **반환값**: 요약 리포트 딕셔너리
+    ```json
+    {
+      "backup_path": "test_models/OLD/...",
+      "folder_renamed": true,
+      "json_standardized": true,
+      "paths_fixed": 12,
+      "alias_generated": true
+    }
+    ```
+*   **내부 로직**:
+    1. `test_models/OLD` 폴더에 타임스탬프와 함께 모델 원본 백업.
+    2. `motion/` 폴더를 `motions/`로 이름 변경.
+    3. `.model.json` 형식을 신형 `model3.json`으로 변환 및 가비지 콤마 제거.
+    4. 지능형 에일리어스 자동 생성 스크립트 실행.

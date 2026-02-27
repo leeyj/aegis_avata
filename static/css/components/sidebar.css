@@ -2,15 +2,33 @@
 .sidebar {
     position: fixed;
     top: 0;
-    left: -280px;
-    width: 280px;
+    left: -230px;
+    width: 230px;
     height: 100%;
-    background: rgba(10, 15, 25, 0.9);
-    backdrop-filter: blur(20px);
+    background: rgba(10, 15, 25, 0.95);
+    backdrop-filter: blur(25px);
     border-right: 1px solid var(--border);
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2000;
-    padding: 80px 20px 20px;
+    padding: 70px 15px 20px;
+    overflow-y: auto;
+    /* 내용이 많으면 내부 스크롤 발생 */
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon) transparent;
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--neon);
+    border-radius: 2px;
 }
 
 .sidebar.active {
@@ -25,14 +43,14 @@
     background: var(--glass);
     border: 1px solid var(--border);
     color: var(--neon);
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    font-size: 18px;
     transition: all 0.3s;
     pointer-events: auto;
 }
@@ -44,14 +62,14 @@
 }
 
 .menu-section {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .menu-section h3 {
     font-family: 'Orbitron';
-    font-size: 14px;
+    font-size: 12px;
     color: var(--neon);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     letter-spacing: 1px;
 }
 
@@ -59,12 +77,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid rgba(0, 242, 255, 0.1);
 }
 
 .menu-item label {
-    font-size: 14px;
+    font-size: 12px;
     color: #fff;
     cursor: pointer;
 }

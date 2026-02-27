@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, jsonify, request
 import os
 import json
 from routes.decorators import login_required
+from routes.config import TERMINAL_CONFIG_PATH
+from utils import load_json_config
 
 main_bp = Blueprint("main", __name__)
 
@@ -13,6 +15,13 @@ def index():
 
     settings = load_settings()
     return render_template("index.html", settings=settings)
+
+
+@main_bp.route("/api/terminal/config", methods=["GET"])
+@login_required
+def get_terminal_config():
+    config = load_json_config(TERMINAL_CONFIG_PATH)
+    return jsonify({"status": "success", "config": config})
 
 
 @main_bp.route("/save_log", methods=["POST"])

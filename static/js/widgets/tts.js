@@ -25,11 +25,23 @@ async function applyBriefingConfig() {
 let ttsQueue = [];
 let isTtsPlaying = false;
 
-async function speakTTS(text, audioUrl = null, visualType = 'none') {
+/**
+ * HTML 태그를 제거하고 순수 텍스트만 추출하는 헬퍼 함수
+ */
+function stripHtml(html) {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
+
+async function speakTTS(text, audioUrl = null, visualType = 'none', speechText = null) {
     if (!text) return;
 
-    // 큐에 요청 추가
-    ttsQueue.push({ text, audioUrl, visualType });
+    // 음성으로 읽을 텍스트 결정 (명시적 speechText가 없으면 HTML 제거 후 사용)
+    const finalSpeechText = speechText || stripHtml(text);
+
+    // 큐에 요청 추가 (말풍선용 text와 음성용 speechText 분리 저장)
+    ttsQueue.push({ text, audioUrl, visualType, speechText: finalSpeechText });
 
     // 현재 재생 중이 아니라면 큐 처리 시작
     if (!isTtsPlaying) {
@@ -44,12 +56,12 @@ async function processTtsQueue() {
     }
 
     isTtsPlaying = true;
-    const { text, audioUrl, visualType } = ttsQueue.shift();
+    const { text, audioUrl, visualType, speechText } = ttsQueue.shift();
 
     // 말풍선 표시 로직
     const bubble = document.getElementById('speech-bubble');
     if (bubble) {
-        const iconMap = { 'weather': '🌤️', 'finance': '📈', 'calendar': '📅', 'email': '📧' };
+        const iconMap = { 'weather': '🌤️', 'finance': '📈', 'calendar': '📅', 'email': '📧', 'notion': '📓' };
         const icon = iconMap[visualType] || '🤖';
         const textEl = document.getElementById('bubble-text');
         if (textEl) {
@@ -111,7 +123,7 @@ async function processTtsQueue() {
             const response = await fetch('/speak', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: text })
+                body: JSON.stringify({ text: speechText })
             });
             const data = await response.json();
             if (data.status === 'success' && data.url) {

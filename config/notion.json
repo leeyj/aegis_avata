@@ -1,0 +1,21 @@
+{
+    "widget_display_limit": 10,
+    "briefing_limit": 5,
+    "search_limit": 10,
+    "polling_interval_ms": 300000,
+    "notion_version": "2022-06-28",
+    "workspaces": [
+        {
+            "name": "업무",
+            "alias": "@업무",
+            "id": "0b26805fac9c4554a3db9fb61c27afab",
+            "is_default": true
+        },
+        {
+            "name": "개인",
+            "alias": "@개인",
+            "id": "",
+            "is_default": false
+        }
+    ]
+}

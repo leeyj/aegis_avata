@@ -1,13 +1,14 @@
 /**
- * AEGIS Interactive Terminal
- * Processes commands through Gemini and executes system actions
+ * AEGIS Interactive Terminal - Main Entry Point
+ * Orchestrates commands and coordinates between UI and specialized handlers.
  */
 
 window.addEventListener('keydown', (e) => {
-    // '/' 키를 누르면 터미널로 포커스 (편의 기능)
+    // '/' 키를 누르면 터미널로 포커스
     if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
         e.preventDefault();
-        document.getElementById('terminal-input').focus();
+        const input = document.getElementById('terminal-input');
+        if (input) input.focus();
     }
 });
 
@@ -17,83 +18,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminalLog = document.getElementById('terminal-log');
     const toggleBtn = document.getElementById('terminal-toggle-btn');
 
-    let autoCollapseTimer = null;
+    if (!input || !modelSelector) return;
+
+    // 터미널 설정 로드
+    let terminalConfig = { help_message: "도움말 로드 중..." };
+
+    const init = async () => {
+        await refreshAIModels();
+        await refreshTerminalConfig();
+    };
 
     /**
-     * 터미널 확장/공간 제어
+     * AI 모델 리스트 로드 및 드롭다운 초기화
      */
-    function setTerminalState(isExpanded) {
-        if (!terminalLog) return;
-        if (isExpanded) {
-            terminalLog.classList.remove('collapsed');
-            toggleBtn?.classList.add('active');
-            resetAutoCollapse();
-        } else {
-            terminalLog.classList.add('collapsed');
-            toggleBtn?.classList.remove('active');
-        }
-    }
-
-    function resetAutoCollapse() {
-        clearTimeout(autoCollapseTimer);
-        autoCollapseTimer = setTimeout(() => {
-            setTerminalState(false);
-        }, 10000); // 10초
-    }
-
-    // 토글 버튼 클릭 이벤트
-    toggleBtn?.addEventListener('click', () => {
-        const isCollapsed = terminalLog.classList.contains('collapsed');
-        setTerminalState(isCollapsed);
-    });
-
-    // 입력창 포커스 시 확장
-    input?.addEventListener('focus', () => setTerminalState(true));
-
-    /**
-     * 터미널 로그 영역에 메시지 출력
-     */
-    function appendLog(source, message, isDebug = false) {
-        if (!terminalLog) return;
-
-        // 새 로그 발생 시 확장
-        setTerminalState(true);
-
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-
-        let formattedMessage = typeof message === 'object' ? JSON.stringify(message) : message;
-        if (!isDebug && window.marked) {
-            formattedMessage = marked.parse(formattedMessage);
-        }
-
-        entry.innerHTML = `
-            <span class="log-time">[${timeStr}]</span>
-            <span class="log-source" style="color: ${source === 'SYSTEM' ? '#ffdf00' : 'var(--neon)'}">${source}</span>
-            <span class="log-message ${isDebug ? 'log-debug' : ''}">${formattedMessage}</span>
-        `;
-
-        terminalLog.appendChild(entry);
-        terminalLog.scrollTop = terminalLog.scrollHeight;
-
-        // 로그 개수 제한 (메모리)
-        if (terminalLog.childNodes.length > 50) {
-            terminalLog.removeChild(terminalLog.firstChild);
-        }
-    }
-
-    // AI 모델 리스트 로드 및 드롭다운 초기화
     async function refreshAIModels() {
         try {
             const res = await fetch('/api/v1/external/config');
             if (res.ok) {
                 const response = await res.json();
                 const sources = response.config?.sources || {};
-
-                // 기존 옵션 유지 (Gemini) 하고 외부 모델 추가
                 modelSelector.innerHTML = '<option value="gemini">AEGIS (System)</option>';
 
                 for (const [id, source] of Object.entries(sources)) {
@@ -110,70 +53,92 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    refreshAIModels();
+    /**
+     * 터미널 설정(도움말 등) 로드
+     */
+    async function refreshTerminalConfig() {
+        try {
+            const res = await fetch('/api/terminal/config');
+            const data = await res.json();
+            if (data.status === 'success') {
+                terminalConfig = data.config;
+            }
+        } catch (e) {
+            console.error("[Terminal] Failed to load terminal config:", e);
+        }
+    }
 
-    input.addEventListener('keypress', async (e) => {
+    // UI 이벤트 리스너 연결
+    toggleBtn?.addEventListener('click', () => {
+        const isCollapsed = terminalLog?.classList.contains('collapsed');
+        window.TerminalUI.setTerminalState(isCollapsed);
+    });
+
+    input?.addEventListener('focus', () => window.TerminalUI.setTerminalState(true));
+
+    // 메인 명령어 처리
+    input?.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter') {
             const command = input.value.trim();
             if (!command) return;
 
             input.value = '';
-            input.placeholder = 'Processing command...';
+            input.placeholder = 'Processing...';
             input.disabled = true;
 
             const selectedModel = modelSelector.value;
-            appendLog('USER', command);
-            appendLog('SYSTEM', `${selectedModel.toUpperCase()} 엔진에 질의를 전송합니다...`, true);
+            window.TerminalUI.appendLog('USER', command);
 
             try {
-                const selectedModel = modelSelector.value;
-                let res;
+                // 1. 시스템 명령어 라우팅 (접두사 정규식 또는 유연한 매칭)
+                const lowerCmd = command.toLowerCase();
 
-                if (selectedModel === 'gemini') {
-                    // 기존 시스템(Gemini) 질의
-                    res = await fetch('/command', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ command: command })
-                    });
-                } else {
-                    // 외부 AI (Ollama, OpenClaw 등) 질의
-                    // v1 API 규격에 맞춰 헤더에 키 포함 (임시로 secrets에서 가져오는 대신 API 설계대로 처리)
-                    // 실제로는 서버쪽 세션이나 별도 인증이 필요할 수 있으나, 현재 구현된 /query 엔드포인트 활용
-                    res = await fetch('/api/v1/external/query', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-AEGIS-API-KEY': await getExternalKey(selectedModel) // 키를 가져오는 헬퍼 필요
-                        },
-                        body: JSON.stringify({ prompt: command })
-                    });
+                if (lowerCmd === '/도움말' || lowerCmd === '/help' || lowerCmd === '/?') {
+                    window.TerminalUI.appendLog('HELP', terminalConfig.help_message);
                 }
-
-
-                const data = await res.json();
-
-                // 데이터 매핑: 외부 AI의 'answer'를 시스템 표준인 'response'로 복사
-                if (data.answer && !data.response) {
-                    data.response = data.answer;
+                else if (lowerCmd.startsWith('/n ') || lowerCmd.startsWith('/todo ')) {
+                    await window.NotionHandler.handleAdd(command);
                 }
-                if (!data.sentiment) data.sentiment = 'neutral';
-
-                appendLog(selectedModel.toUpperCase(), data.answer || data.briefing || data.response || data.message || "Unknown response format");
-                // appendLog('DEBUG', data, true); // 연동 확인 완료 - 필요 시 주석 해제하여 확인
-
-                // 1. AI 응답 출력 (ReactionEngine 적용)
-                // 중요: 외부 AI(/query)는 서버에서 이미 이벤트를 큐에 넣고 ExternalAPIManager가 폴링하여 처리하므로,
-                // 여기서는 Gemini(System) 응답만 리액션 엔진에 전달하여 중복 재생을 방지합니다.
-                if (window.reactionEngine && selectedModel === 'gemini') {
-                    window.reactionEngine.checkAndTrigger('terminal', data, 0);
+                else if (lowerCmd.startsWith('/ns') || lowerCmd.startsWith('/search')) {
+                    // /ns 일정 또는 /ns일정 모두 대응 가능하도록 처리
+                    const queryPart = command.includes(' ') ? command.substring(command.indexOf(' ') + 1) : command.substring(3);
+                    if (queryPart.trim()) {
+                        await window.NotionHandler.handleSearch(`/ns ${queryPart.trim()}`);
+                    } else {
+                        window.TerminalUI.appendLog('ERROR', '검색어를 입력해 주세요. (예: /ns 일정)');
+                    }
                 }
+                // [ADD] 노션 정리 확정 명령어 처리 (슬래시 없이 입력하는 경우 대응)
+                else if (lowerCmd === '정리 실행' || lowerCmd === 'apply clean' || lowerCmd === '정리실행') {
+                    await window.NotionHandler.handleApplyCleanup();
+                }
+                // 2. 알 수 없는 슬래시 명령어 처리 (AI 전송 차단 및 로컬 안내)
+                else if (command.startsWith('/')) {
+                    const cleanCommand = command.substring(1).trim();
+                    window.TerminalUI.appendLog('ERROR', `❌ 알 수 없는 명령어: "/${cleanCommand}" (/? 를 입력하여 도움말을 확인하세요)`);
 
-                // 2. 명령어 액션 실행
-                executeTerminalAction(data.action, data.target);
+                    // 미리 생성된 시스템 음성 재생
+                    if (typeof window.speakTTS === 'function') {
+                        // speakTTS는 텍스트를 받으므로, 오디오를 직접 재생하거나 전용 함수 활용
+                        // 시스템 알림용 임시 오디오 객체 생성
+                        const audio = new Audio('/static/audio/system/wrong_command.mp3');
+                        audio.play().catch(e => console.error("Audio play failed:", e));
 
+                        // 말풍선만 표시
+                        window.speakTTS(`명령어 "/${cleanCommand}"를 찾을 수 없습니다.`, null, 'error', true); // 네 번째 인자로 음성 생략 옵션이 있다면 활용
+                    }
+
+                    if (typeof window.dispatchAvatarEvent === 'function') {
+                        window.dispatchAvatarEvent('MOTION', { alias: 'neutral' });
+                    }
+                }
+                // 3. 일반 AI 질의 처리
+                else {
+                    await processAIQuery(command, selectedModel);
+                }
             } catch (err) {
-                console.error("[Terminal] Command Error:", err);
+                console.error("[Terminal] Error:", err);
+                window.TerminalUI.appendLog('ERROR', `작동 중 오류 발생: ${err.message}`);
             } finally {
                 input.placeholder = '명령을 입력하세요...';
                 input.disabled = false;
@@ -181,16 +146,62 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    /**
+     * AI 엔진 질의 처리 및 아바타 연동
+     */
+    async function processAIQuery(command, selectedModel) {
+        window.TerminalUI.appendLog('SYSTEM', `${selectedModel.toUpperCase()} 엔진에 질의 중...`, true);
+
+        let res;
+        try {
+            if (selectedModel === 'gemini') {
+                res = await fetch('/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: command })
+                });
+            } else {
+                res = await fetch('/api/v1/external/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-AEGIS-API-KEY': await getExternalKey(selectedModel)
+                    },
+                    body: JSON.stringify({ prompt: command })
+                });
+            }
+
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const data = await res.json();
+
+            // 데이터 정규화
+            if (data.answer && !data.response) data.response = data.answer;
+            if (!data.sentiment) data.sentiment = 'neutral';
+
+            window.TerminalUI.appendLog(selectedModel.toUpperCase(), data.answer || data.briefing || data.response || data.message || "응답 형식이 올바르지 않습니다.");
+
+            // 아바타 리액션 및 액션 실행
+            if (window.reactionEngine && selectedModel === 'gemini') {
+                window.reactionEngine.checkAndTrigger('terminal', data, 0);
+            }
+            executeTerminalAction(data.action, data.target);
+        } catch (err) {
+            window.TerminalUI.appendLog('ERROR', `AI 엔진 응답 처리 중 오류: ${err.message}`);
+        }
+    }
+
+    init();
 });
 
+/**
+ * 명령어 결과에 따른 시스템 액션 실행
+ */
 function executeTerminalAction(action, target) {
     if (!action || action === 'none') return;
 
-    // console.log(`[Terminal Action] Executing: ${action} on ${target}`);
-
     switch (action) {
         case 'toggle':
-            // 위젯 토글 (p-weather 등)
             if (window.togglePanel) {
                 const panel = document.getElementById(target);
                 if (panel) {
@@ -200,18 +211,16 @@ function executeTerminalAction(action, target) {
             }
             break;
         case 'navigate':
-            // 페이지 이동
             window.location.href = target;
             break;
         case 'search':
-            // 외부 검색 (새 창)
             window.open(`https://www.google.com/search?q=${encodeURIComponent(target)}`, '_blank');
             break;
     }
 }
 
 /**
- * 선택된 모델에 적합한 외부 API 키를 조회합니다.
+ * 외부 AI API 키 조회
  */
 async function getExternalKey(source) {
     const secrets = {

@@ -52,6 +52,11 @@ function initInteractions() {
 
     // 4. 마우스 휠 (줌 인/아웃)
     window.addEventListener('wheel', (e) => {
+        // [FIX] 만약 이벤트 타겟이 위젯(.glass-panel)이나 스크롤 가능한 요소 내부라면 줌 작동 방지
+        if (e.target.closest('.glass-panel') || e.target.closest('.scrollable')) {
+            return;
+        }
+
         // 줌 로직은 배율(0.1 ~ 5.0) 제한
         window.userZoom = Math.min(Math.max(0.1, window.userZoom + (e.deltaY > 0 ? -0.1 : 0.1)), 5.0);
 

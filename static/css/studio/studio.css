@@ -140,6 +140,21 @@ button {
     padding: 0 15px;
 }
 
+.fix-btn {
+    background: #e67e22 !important;
+    border: 1px solid #d35400 !important;
+    font-size: 1.1rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px !important;
+}
+
+.fix-btn:hover {
+    background: #d35400 !important;
+    box-shadow: 0 0 10px rgba(230, 126, 34, 0.5);
+}
+
 select:hover,
 button:hover {
     background: #3c3f44;

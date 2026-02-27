@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/static/css/components/weather.css">
     <link rel="stylesheet" href="/static/css/components/youtube.css">
     <link rel="stylesheet" href="/static/css/components/wallpaper.css">
+    <link rel="stylesheet" href="/static/css/components/notion.css">
+    <link rel="stylesheet" href="/static/css/components/search_window.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +50,7 @@
     </main>
 
     {% include 'components/terminal.html' %}
+    {% include 'components/search_window.html' %}
 
     <!-- Framework & UI Scripts -->
     <script src="/static/js/logger.js" defer></script>
@@ -75,11 +78,15 @@
     <script src="/static/js/widgets/stock.js" defer></script>
     <script src="/static/js/widgets/system_stats.js" defer></script>
     <script src="/static/js/widgets/weather_theme.js" defer></script>
+    <script src="/static/js/widgets/terminal_ui.js" defer></script>
+    <script src="/static/js/widgets/terminal_notion.js" defer></script>
     <script src="/static/js/widgets/terminal.js" defer></script>
     <script src="/static/js/widgets/visualizer.js" defer></script>
     <script src="/static/js/widgets/proactive_agent.js" defer></script>
     <script src="/static/js/widgets/youtube_music.js" defer></script>
     <script src="/static/js/widgets/wallpaper.js" defer></script>
+    <script src="/static/js/widgets/notion.js" defer></script>
+    <script src="/static/js/widgets/search_window.js" defer></script>
     
     <!-- Entry Point & Debug Tools -->
     {% if settings.get('test_mode') %}

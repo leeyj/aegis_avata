@@ -34,6 +34,7 @@ OLD/
 # 대용량 모델 데이터는 제외
 models/
 test_models/*/
+tmp/
 
 # === Documentation Rules ===
 # 모든 마크다운 포함하되, 개인 진행용 문서는 제외

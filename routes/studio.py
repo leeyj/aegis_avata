@@ -10,12 +10,7 @@ studio_bp = Blueprint("studio", __name__)
 @studio_bp.route("/studio")
 @login_required
 def studio_index():
-    if not is_sponsor():
-        from flask import abort
-
-        abort(403)
-
-    from utils import load_settings
+    from utils import load_settings, is_sponsor
 
     settings = load_settings()
     return render_template(
@@ -59,6 +54,18 @@ def studio_apply_model(name):
         return jsonify(
             {"status": "success", "message": f"Model '{name}' applied successfully!"}
         )
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@studio_bp.route("/studio/api/fix_model/<name>", methods=["POST"])
+@login_required
+def studio_fix_model(name):
+    if not is_sponsor():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 403
+    try:
+        stats = StudioService.fix_model(name)
+        return jsonify(stats)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

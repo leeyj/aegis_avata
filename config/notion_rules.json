@@ -1,0 +1,58 @@
+{
+    "active": true,
+    "safety_level": "ask_always",
+    "rules": [
+        {
+            "id": "move_to_discard",
+            "name": "폐기 항목 자동 분류",
+            "description": "제목에 [폐기]가 포함되었으나 'Type'이 지정되지 않은 항목을 '폐기' 보드로 이동합니다.",
+            "conditions": {
+                "title_contains": "[폐기]",
+                "property_is_empty": "Type"
+            },
+            "action": {
+                "target_property": "Type",
+                "target_value": "폐기"
+            }
+        },
+        {
+            "id": "move_to_schedule",
+            "name": "일정 항목 자동 분류",
+            "description": "제목에 [일정] 또는 핵심 키워드가 포함된 경우 '일정' 보드로 이동합니다.",
+            "conditions": {
+                "title_contains": "[일정]",
+                "property_is_empty": "Type"
+            },
+            "action": {
+                "target_property": "Type",
+                "target_value": "일정"
+            }
+        },
+        {
+            "id": "cleanup_completed",
+            "name": "완료된 항목 아카이브",
+            "description": "제목에 [완료]가 포함된 항목을 별도의 완료 상태(또는 일정 보드)로 정리합니다.",
+            "conditions": {
+                "title_contains": "[완료]",
+                "property_is_empty": "Type"
+            },
+            "action": {
+                "target_property": "Type",
+                "target_value": "일정"
+            }
+        },
+        {
+            "id": "keyword_task_classifier",
+            "name": "키워드 기반 자동 과업 분류",
+            "description": "회의, 미팅 등의 키워드가 제목에 포함된 경우 자동으로 '일정' 그룹으로 분류 제안합니다.",
+            "conditions": {
+                "title_contains": "회의",
+                "property_is_empty": "Type"
+            },
+            "action": {
+                "target_property": "Type",
+                "target_value": "일정"
+            }
+        }
+    ]
+}

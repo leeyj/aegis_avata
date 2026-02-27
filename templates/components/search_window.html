@@ -1,0 +1,19 @@
+<!-- AEGIS Global Search Floating Window -->
+<div id="notion-search-window" class="search-overlay">
+    <div class="search-header" id="search-window-header">
+        <h3><span class="search-icon">🔍</span> AEGIS GLOBAL SEARCH</h3>
+        <button class="search-close" onclick="window.NotionSearchWindow.close()">&times;</button>
+    </div>
+    
+    <div class="search-content">
+        <div id="search-status" style="padding: 10px; color: #888; font-size: 13px;">
+            검색어를 입력하고 엔터를 누르세요...
+        </div>
+        <ul id="search-results-list" class="search-results-list">
+            <!-- Results injected here -->
+        </ul>
+    </div>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="search-window-resize"></div>
+</div>
