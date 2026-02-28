@@ -1,7 +1,10 @@
 {
     "_comment": "Agent 음성 TTS(Text-To-Speech) 설정",
-    "lang": "ko-KR",
-    "rate": 1.3,
-    "pitch": 1.3,
-    "volume": 1.0
+    "voices": {
+        "ko": "ko-KR-SunHiNeural",
+        "en": "en-US-AvaNeural"
+    },
+    "rate": "+10%",
+    "pitch": "+20Hz",
+    "volume": "+0%"
 }

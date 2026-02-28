@@ -15,7 +15,8 @@ async function startWeather() {
             const statusEl = document.getElementById('weather-status'), tempEl = document.getElementById('weather-temp'), iconEl = document.getElementById('weather-icon');
 
             if (statusEl && data.status) {
-                statusEl.innerText = `${data.status} In ${data.city}`;
+                const template = _t('widgets.weather_template');
+                statusEl.innerText = template.replace('{city}', data.city).replace('{status}', data.status);
                 tempEl.innerText = data.temp;
                 statusEl.style.fontSize = config.font_size_status;
                 tempEl.style.fontSize = config.font_size_temp;

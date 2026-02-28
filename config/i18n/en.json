@@ -1,0 +1,95 @@
+{
+    "sidebar": {
+        "panel_control": "PANEL CONTROL",
+        "save_settings": "SAVE CLOUD SETTINGS",
+        "lock_widgets": "LOCK WIDGETS",
+        "unlock_widgets": "UNLOCK WIDGETS",
+        "studio": "LIVE2D STUDIO",
+        "logout": "SYSTEM LOGOUT",
+        "sync_success": "Layout synced to server."
+    },
+    "widgets": {
+        "loading": "Loading Data...",
+        "no_data": "No Data Available.",
+        "refresh": "Refresh",
+        "briefing": "AI Briefing",
+        "search_placeholder": "Type to search and press Enter...",
+        "yt_wait": "Wait for Load...",
+        "yt_select": "Select Playlist",
+        "weather_template": "{status} in {city}"
+    },
+    "panels": {
+        "p-title": "System Title",
+        "p-clock": "System Clock",
+        "p-weather": "Environmental Info",
+        "p-profit": "Trading Profit",
+        "p-finance": "Market Indices",
+        "p-news": "News Briefing",
+        "p-calendar": "Daily Schedule",
+        "p-todo": "Todo List",
+        "p-gmail": "Gmail Inbox",
+        "p-stock": "Ticker Monitor",
+        "p-youtube": "YouTube Music",
+        "p-unit": "Unit Selection",
+        "p-system": "System Stats",
+        "p-wallpaper": "Wallpaper Control",
+        "p-notion": "Notion Intelligence"
+    },
+    "system_alerts": {
+        "finance_change": "Financial Index Alert: {name} detected {change}% change",
+        "calendar_start": "Upcoming Event: {summary} (in {diff} min)"
+    },
+    "directions": {
+        "up": "rising",
+        "down": "falling",
+        "rise": "surging",
+        "fall": "dropping"
+    },
+    "studio": {
+        "title": "💎 Live2D Studio",
+        "back_dashboard": "🏠 DASHBOARD",
+        "select_model": "SELECT MODEL",
+        "loading_models": "Loading models...",
+        "apply_btn": "APPLY",
+        "fix_btn_title": "Auto-fix and optimize errors",
+        "unusable_reason": "Unusable Reason:",
+        "motions": "MOTIONS",
+        "expressions": "EXPRESSIONS",
+        "zoom": "Zoom",
+        "offset_x": "Offset X",
+        "offset_y": "Offset Y",
+        "reset_view": "Reset View",
+        "alias_manager": "📝 Alias Manager",
+        "sponsor_verified": "Sponsor Verified",
+        "sponsor_only": "Sponsor Only",
+        "selected": "Selected:",
+        "standard_motions": "Standard Motions Mapping",
+        "standard_emotions": "Standard Emotions Mapping",
+        "cancel": "Cancel",
+        "editor_title": "alias.json Editor",
+        "save_alias": "Save alias.json",
+        "reaction_simulator": "⚡ Reaction Simulator",
+        "simulator_placeholder": "Trigger an action to see details...",
+        "ai_briefing": "AI BRIEFING PREVIEW",
+        "messages": {
+            "no_motions": "No motion files detected.",
+            "no_expressions": "No expression files detected.",
+            "sponsor_only": "Sponsor only feature!",
+            "select_first": "Please select a model first.",
+            "apply_confirm": "Apply '{name}' model to production?\nExisting files with the same name will be overwritten.",
+            "fix_confirm": "Optimize model '{name}'?\n\n- This will create a backup in the OLD folder.\n- It will standardize old paths and settings.",
+            "fix_report_title": "✨ [{name}] Optimization Report",
+            "fix_folder_renamed": "📁 Folder structure corrected",
+            "fix_json_standardized": "📄 Config standardized",
+            "fix_paths_fixed": "🔗 Internal paths fixed",
+            "fix_alias_generated": "🏷️ Alias generated",
+            "fix_backup_loc": "📦 Backup location: Stored in OLD folder",
+            "success": "Success",
+            "fail": "Failed",
+            "done": "Done"
+        }
+    },
+    "terminal": {
+        "placeholder": "Type a command... (/help)"
+    }
+}

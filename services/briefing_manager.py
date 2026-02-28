@@ -3,19 +3,29 @@ import json
 import time
 import datetime
 from services import gemini_service, voice_service
-from routes.config import PROMPTS_CONFIG_PATH
+from routes.config import PROMPTS_CONFIG_PATH, SYSTEM_CONFIG_PATH, I18N_DIR
 from utils import load_json_config
 
 
 class BriefingManager:
     """
-    브리핑의 생성, 캐싱, 음성 변환을 총괄 관리하는 매니저
+    브리핑의 생성, 캐싱, 음성 변환을 총괄 관리하는 매니저 (다국어 지원)
     """
 
     def __init__(self, api_key, text_cache_path, audio_cache_path):
         self.api_key = api_key
         self.text_cache_path = text_cache_path
         self.audio_cache_path = audio_cache_path
+
+    def _get_lang_pack(self):
+        """현재 언어 설정을 읽어와서 언어팩을 반환합니다."""
+        sys_config = load_json_config(SYSTEM_CONFIG_PATH)
+        lang = sys_config.get("lang", "ko")
+        pack_path = os.path.join(I18N_DIR, f"{lang}.json")
+        if os.path.exists(pack_path):
+            return load_json_config(pack_path)
+        # Fallback to ko
+        return load_json_config(os.path.join(I18N_DIR, "ko.json"))
 
     def get_briefing(self, context_data, debug_mode=True):
         """
@@ -40,7 +50,7 @@ class BriefingManager:
             except Exception:
                 pass
 
-        # 2. 새로운 Gemini 브리핑 생성
+        # 2. 새로운 Gemini 브리핑 생성 (Gemini 서비스 내부에서 언어 인지)
         result = gemini_service.get_briefing(self.api_key, context_data)
         briefing_text = result.get("briefing", "")
 
@@ -49,7 +59,7 @@ class BriefingManager:
         with open(self.text_cache_path, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
 
-        # 4. 음성 파일 생성 (MP3)
+        # 4. 음성 파일 생성 (MP3) - Voice Service 내부에서 언어별 보이스 자동 할당
         voice_service.generate_edge_tts(
             briefing_text, output_path=self.audio_cache_path
         )
@@ -72,7 +82,7 @@ class BriefingManager:
         )
         briefing_text = result.get("briefing", "")
 
-        # 2. 음성 파일 생성 (위젯 브리핑 전용 오디오 파일)
+        # 2. 음성 파일 생성
         widget_audio_path = self.audio_cache_path.replace(
             "last_briefing.mp3", f"widget_{widget_type}.mp3"
         )
@@ -87,11 +97,12 @@ class BriefingManager:
 
     def check_proactive(self, context_data, proactive_config):
         """
-        데이터를 분석하여 선제적으로 알림(Alert)이 필요한지 확인
+        데이터를 분석하여 선제적으로 알림(Alert)이 필요한지 확인 (다국어 지원)
         """
         thresholds = proactive_config.get("thresholds", {})
-        last_alerts = proactive_config.get("last_alerts", {})
         triggers = []
+        lang_pack = self._get_lang_pack()
+        alerts = lang_pack.get("system_alerts", {})
 
         # 1. 금융 지수 급변동 체크
         finance = context_data.get("finance")
@@ -99,8 +110,14 @@ class BriefingManager:
             for name, data in finance.items():
                 change = data.get("change_percent", 0)
                 if abs(change) >= thresholds.get("finance_change_abs", 1.5):
-                    # 너무 빈번한 알림 방지 (동일 지수 1시간 내 중복 방지 등 로직 생략 가능)
-                    triggers.append(f"금융 지수 변동: {name} {change}% 감지")
+                    alert_tpl = alerts.get(
+                        "finance_change", "Financial Index Alert: {name} {change}%"
+                    )
+                    triggers.append(
+                        alert_tpl.replace("{name}", name).replace(
+                            "{change}", str(change)
+                        )
+                    )
 
         # 2. 일정 임박 체크 (15분 이내)
         calendar_events = context_data.get("calendar", [])
@@ -114,20 +131,39 @@ class BriefingManager:
                     start_dt = datetime.datetime.fromisoformat(start_str)
                     diff = (start_dt - now).total_seconds() / 60
                     if 0 < diff <= thresholds.get("calendar_lead_time_min", 15):
+                        alert_tpl = alerts.get(
+                            "calendar_start", "Event starting: {summary} ({diff} min)"
+                        )
                         triggers.append(
-                            f"곧 일정이 시작됩니다: {event['summary']} ({int(diff)}분 전)"
+                            alert_tpl.replace("{summary}", event["summary"]).replace(
+                                "{diff}", str(int(diff))
+                            )
                         )
                 except Exception:
                     continue
 
         # 3. 트리거가 감지되면 Gemini에게 상황 보고 요청
         if triggers:
+            # gemini_service가 언어 설정을 직접 참조하여 올바른 프롬프트를 선택합니다.
+            prompt_data = ", ".join(triggers)
+
+            # gemini_service.get_briefing 처럼 언어별 프롬프트를 가져와야 함
+            # 여기서는 gemini_service에 로직을 맡기거나 직접 프롬프트 생성
+            # gemini_service 고도화 버전을 사용
+            sys_config = load_json_config(SYSTEM_CONFIG_PATH)
+            lang = sys_config.get("lang", "ko")
             prompts = load_json_config(PROMPTS_CONFIG_PATH)
-            prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("proactive", "")
-            prompt = prompt_tpl.replace("{triggers}", ", ".join(triggers))
+            prompt_tpl = (
+                prompts.get(lang, {}).get("DASHBOARD_INTERNAL", {}).get("proactive", "")
+            )
+
+            if not prompt_tpl:
+                prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("proactive", "")
+
+            prompt = prompt_tpl.replace("{{triggers}}", prompt_data)
             result = gemini_service.get_custom_response(self.api_key, prompt)
 
-            # 음성 생성
+            # 음성 생성 (언어별 보이스 자동 선택)
             voice_service.generate_edge_tts(
                 result.get("text", ""), self.audio_cache_path
             )

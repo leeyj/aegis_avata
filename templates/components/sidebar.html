@@ -2,7 +2,7 @@
 <button class="sidebar-toggle" id="sidebar-toggle">•••</button>
 <div class="sidebar" id="sidebar">
     <div class="menu-section">
-        <h3>PANEL CONTROL</h3>
+        <h3 data-i18n="sidebar.panel_control">PANEL CONTROL</h3>
         {% set panels = [
             ('vis-title', 'p-title', 'System Title', True),
             ('vis-clock', 'p-clock', 'System Clock', True),
@@ -23,7 +23,7 @@
         
         {% for id, target, label, checked in panels %}
         <div class="menu-item">
-            <label for="{{ id }}">{{ label }}</label>
+            <label for="{{ id }}" data-i18n="panels.{{ target }}">{{ label }}</label>
             <label class="switch">
                 <input type="checkbox" id="{{ id }}" {% if checked %}checked{% endif %} onchange="togglePanel('{{ target }}', this.checked)">
                 <span class="slider"></span>
@@ -34,16 +34,27 @@
         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
         
         <div class="menu-item" style="flex-direction: column; gap: 10px;">
-            <button onclick="persistToServer().then(ok => ok && alert('Layout synced to server.'))" 
+            <button id="lock-toggle-btn" onclick="toggleWidgetLock()" 
+                    data-i18n="sidebar.lock_widgets"
+                    style="width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s; margin-bottom: 5px;">
+                LOCK WIDGETS
+            </button>
+            <button onclick="persistToServer().then(ok => ok && alert(_t('sidebar.sync_success')))" 
+                    data-i18n="sidebar.save_settings"
                     style="width: 100%; padding: 10px; background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.3s; margin-bottom: 5px;">
                 SAVE CLOUD SETTINGS
             </button>
             {% if is_sponsor() %}
-            <a href="/studio" class="studio-btn" style="width: 100%; text-align: center; padding: 10px; background: rgba(255, 0, 255, 0.1); border: 1px solid #ff00ff; color: #ff00ff; border-radius: 4px; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: bold; font-size: 0.9rem; transition: all 0.3s; margin-bottom: 5px;">
+            <a href="/studio" class="studio-btn" data-i18n="sidebar.studio" style="width: 100%; text-align: center; padding: 10px; background: rgba(255, 0, 255, 0.1); border: 1px solid #ff00ff; color: #ff00ff; border-radius: 4px; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: bold; font-size: 0.9rem; transition: all 0.3s; margin-bottom: 5px;">
                 LIVE2D STUDIO
             </a>
             {% endif %}
-            <a href="/logout" class="logout-btn" style="width: 100%; text-align: center;">SYSTEM LOGOUT</a>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;">
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button onclick="I18nManager.setLanguage('ko')" style="flex: 1; padding: 5px; font-size: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;">KOREAN</button>
+                <button onclick="I18nManager.setLanguage('en')" style="flex: 1; padding: 5px; font-size: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer;">ENGLISH</button>
+            </div>
+            <a href="/logout" class="logout-btn" data-i18n="sidebar.logout" style="width: 100%; text-align: center;">SYSTEM LOGOUT</a>
         </div>
     </div>
 </div>

@@ -15,6 +15,12 @@ window.logger = { info: (msg) => console.log(msg), error: (msg) => console.error
  * 스튜디오 시스템을 초기화합니다.
  */
 async function initStudio() {
+    // 다국어 매니저 초기화 및 적용
+    if (window.I18nManager) {
+        await I18nManager.init();
+        window._t = (key) => I18nManager._t(key);
+    }
+
     // 렌더링된 HTML 데이터셋에서 스폰서 여부를 가져옵니다.
     window.isSponsor = document.body.dataset.isSponsor === 'True';
     initPixiApp(); // renderer.js에 정의된 PIXI 앱 초기화

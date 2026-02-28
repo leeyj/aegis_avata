@@ -11,6 +11,7 @@ window.offsetX = 0;
 window.offsetY = 0;
 window.uiPositions = {};
 window.panelVisibility = {};
+window.uiLocked = false;
 
 let saveTimeout;
 
@@ -23,9 +24,10 @@ async function initEngine() {
 
     try {
         // 1. 병렬 초기화 시작 (네트워크 대기 시간 최소화)
-        const [settings, _] = await Promise.all([
+        const [settings, _, __] = await Promise.all([
             fetch('/get_settings').then(r => r.json()),
-            window.briefingScheduler ? window.briefingScheduler.init() : Promise.resolve()
+            window.briefingScheduler ? window.briefingScheduler.init() : Promise.resolve(),
+            typeof I18nManager !== 'undefined' ? I18nManager.init() : Promise.resolve()
         ]);
 
         // 2. 기본 상태 반영
@@ -35,6 +37,7 @@ async function initEngine() {
         window.activeModelName = settings.last_model || "hiyori_vts";
         window.uiPositions = settings.ui_positions || {};
         window.panelVisibility = settings.panel_visibility || {};
+        window.uiLocked = settings.ui_locked || false;
 
         // 3. 로컬 캐시 동기화
         const localDataRaw = localStorage.getItem('aegis_layout');
@@ -47,6 +50,7 @@ async function initEngine() {
                 if (localData.offset_x !== undefined) window.offsetX = localData.offset_x;
                 if (localData.offset_y !== undefined) window.offsetY = localData.offset_y;
                 if (localData.last_model) window.activeModelName = localData.last_model;
+                if (localData.ui_locked !== undefined) window.uiLocked = localData.ui_locked;
             } catch (e) { }
         }
 
@@ -82,7 +86,8 @@ window.saveSettings = () => {
             offset_y: window.offsetY,
             ui_positions: window.uiPositions,
             panel_visibility: window.panelVisibility,
-            last_model: window.activeModelName
+            last_model: window.activeModelName,
+            ui_locked: window.uiLocked
         };
         localStorage.setItem('aegis_layout', JSON.stringify(localState));
 

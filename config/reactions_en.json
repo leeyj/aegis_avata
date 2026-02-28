@@ -1,0 +1,174 @@
+{
+    "stock": {
+        "rise": {
+            "condition": "change_pct >= 3",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "HAPPY_DANCE",
+                    "duration": 8000
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "joy"
+                },
+                {
+                    "type": "TTS",
+                    "template": "Great news! {name} stock has surged by {change_pct_abs} percent! The current price is {price}."
+                }
+            ]
+        },
+        "fall": {
+            "condition": "change_pct <= -3",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "alias": "shock"
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "sad"
+                },
+                {
+                    "type": "TTS",
+                    "template": "Bad news. {name} stock has dropped by {change_pct_abs} percent. The current price is {price}."
+                }
+            ]
+        }
+    },
+    "stock_bulk": {
+        "summary": {
+            "condition": "count >= 2",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "alias": "briefing"
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "joy"
+                },
+                {
+                    "type": "TTS",
+                    "template": "Multiple changes detected in your watchlist. Currently summarizing {summary}."
+                }
+            ]
+        }
+    },
+    "weather": {
+        "bad": {
+            "condition": "['RAINY', 'STORM'].includes(status)",
+            "actions": [
+                {
+                    "type": "EMOTION",
+                    "alias": "sad"
+                },
+                {
+                    "type": "MOTION",
+                    "alias": "idle"
+                }
+            ]
+        },
+        "good": {
+            "condition": "status === 'SUNNY'",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "HAPPY_DANCE",
+                    "duration": 5000
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "joy"
+                }
+            ]
+        }
+    },
+    "gmail": {
+        "new_mail": {
+            "condition": "count > 0",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "alias": "shock"
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "shock"
+                },
+                {
+                    "type": "TTS",
+                    "template": "A new email from {sender} has arrived."
+                }
+            ]
+        }
+    },
+    "proactive": {
+        "alert": {
+            "condition": "triggered === true",
+            "actions": [
+                {
+                    "type": "SENTIMENT",
+                    "value": "{sentiment}"
+                },
+                {
+                    "type": "TTS",
+                    "template": "{text}",
+                    "audioUrl": "{audio_url}",
+                    "visualType": "{visual_type}"
+                }
+            ]
+        }
+    },
+    "terminal": {
+        "response": {
+            "condition": "true",
+            "actions": [
+                {
+                    "type": "SENTIMENT",
+                    "value": "{sentiment}"
+                },
+                {
+                    "type": "TTS",
+                    "template": "{response}",
+                    "visualType": "none"
+                }
+            ]
+        }
+    },
+    "finance": {
+        "manual_briefing": {
+            "condition": "true",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "alias": "briefing"
+                },
+                {
+                    "type": "TTS",
+                    "template": "The {name} index is currently at {price}, showing a {change_pct}% {direction_text} trend."
+                }
+            ]
+        }
+    },
+    "youtube": {
+        "playing": {
+            "condition": "state === 'PLAYING'",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "MUSIC_START"
+                }
+            ]
+        },
+        "stopped": {
+            "condition": "['PAUSED', 'ENDED'].includes(state)",
+            "actions": [
+                {
+                    "type": "EVENT",
+                    "value": "MUSIC_STOP"
+                }
+            ]
+        }
+    }
+}

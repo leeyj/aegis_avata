@@ -1,0 +1,95 @@
+{
+    "sidebar": {
+        "panel_control": "PANEL CONTROL",
+        "save_settings": "설정 저장(Cloud)",
+        "lock_widgets": "위젯 위치 고정",
+        "unlock_widgets": "위젯 고정 해제",
+        "studio": "Live2D 스튜디오",
+        "logout": "시스템 로그아웃",
+        "sync_success": "설정 설정이 서버와 동기화되었습니다."
+    },
+    "widgets": {
+        "loading": "데이터 로드 중...",
+        "no_data": "데이터가 없습니다.",
+        "refresh": "새로고침",
+        "briefing": "AI 브리핑",
+        "search_placeholder": "검색어를 입력하고 엔터를 누르세요...",
+        "yt_wait": "로딩 대기 중...",
+        "yt_select": "플레이리스트 선택",
+        "weather_template": "{city}의 {status}"
+    },
+    "panels": {
+        "p-title": "시스템 타이틀",
+        "p-clock": "시스템 시계",
+        "p-weather": "환경 정보",
+        "p-profit": "거래 수익",
+        "p-finance": "시장 지표",
+        "p-news": "뉴스 브리핑",
+        "p-calendar": "일일 일정",
+        "p-todo": "할 일 목록",
+        "p-gmail": "Gmail 수신함",
+        "p-stock": "티커 자유모니터",
+        "p-youtube": "YouTube 뮤직",
+        "p-unit": "유닛 선택",
+        "p-system": "시스템 정보",
+        "p-wallpaper": "배경화면 제어",
+        "p-notion": "노션 인텔리전스"
+    },
+    "system_alerts": {
+        "finance_change": "금융 지수 변동: {name} {change}% 감지",
+        "calendar_start": "곧 일정이 시작됩니다: {summary} ({diff}분 전)"
+    },
+    "directions": {
+        "up": "상승",
+        "down": "하락",
+        "rise": "급등",
+        "fall": "급락"
+    },
+    "studio": {
+        "title": "💎 Live2D 스튜디오",
+        "back_dashboard": "🏠 대시보드",
+        "select_model": "모델 선택",
+        "loading_models": "모델 목록 로드 중...",
+        "apply_btn": "적용",
+        "fix_btn_title": "오류 자동 수정 및 최적화",
+        "unusable_reason": "사용불가 사유:",
+        "motions": "모션 (MOTIONS)",
+        "expressions": "표정 (EXPRESSIONS)",
+        "zoom": "줌 배율",
+        "offset_x": "수평 위치 (X)",
+        "offset_y": "수직 위치 (Y)",
+        "reset_view": "화면 초기화",
+        "alias_manager": "📝 에일리어스 매니저",
+        "sponsor_verified": "스폰서 인증됨",
+        "sponsor_only": "스폰서 전용",
+        "selected": "선택됨:",
+        "standard_motions": "표준 동작 매핑",
+        "standard_emotions": "표준 감정 매핑",
+        "cancel": "취소",
+        "editor_title": "alias.json 에디터",
+        "save_alias": "alias.json 저장",
+        "reaction_simulator": "⚡ 리액션 시뮬레이터",
+        "simulator_placeholder": "동작을 트리거하여 상세 내용을 확인하세요...",
+        "ai_briefing": "AI 브리핑 미리보기",
+        "messages": {
+            "no_motions": "인식된 모션 파일이 없습니다.",
+            "no_expressions": "인식된 표정 파일이 없습니다.",
+            "sponsor_only": "스폰서 전용 기능입니다!",
+            "select_first": "먼저 모델을 선택해 주세요.",
+            "apply_confirm": "'{name}' 모델을 실운영 환경에 적용하시겠습니까?\n기존에 운용 중인 동일 이름의 모델 파일이 있다면 덮어씌워집니다.",
+            "fix_confirm": "'{name}' 모델을 최적화하시겠습니까?\n\n- 이 작업은 OLD 폴더에 백업을 생성합니다.\n- 구형 경로 및 설정을 최신 규격으로 변환합니다.",
+            "fix_report_title": "✨ [{name}] 최적화 완료 리포트",
+            "fix_folder_renamed": "📁 폴더 구조 보정",
+            "fix_json_standardized": "📄 설정 파일 규격화",
+            "fix_paths_fixed": "🔗 내부 경로 수정",
+            "fix_alias_generated": "🏷️ 에일리어스 생성",
+            "fix_backup_loc": "📦 백업 위치: OLD 폴더 내 보관됨",
+            "success": "성공",
+            "fail": "실패",
+            "done": "완료"
+        }
+    },
+    "terminal": {
+        "placeholder": "명령을 입력하세요... (/ 도움말)"
+    }
+}

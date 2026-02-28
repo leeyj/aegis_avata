@@ -8,6 +8,7 @@ window.isDraggingCanvas = false;
 // UI 상태 가드 (core.js 로드 전후 안전성 확보)
 if (typeof window.uiPositions === 'undefined') window.uiPositions = {};
 if (typeof window.panelVisibility === 'undefined') window.panelVisibility = {};
+if (typeof window.uiLocked === 'undefined') window.uiLocked = false;
 
 /**
  * UI 전체 초기화 시퀀스
@@ -72,6 +73,42 @@ function initSidebar() {
             saveState();
         }
     };
+
+    // 위젯 잠금 초기 상태 반영
+    updateLockUI();
+}
+
+/**
+ * 위젯 드래그/리사이즈 잠금 토글
+ */
+function toggleWidgetLock() {
+    window.uiLocked = !window.uiLocked;
+    updateLockUI();
+    saveState();
+
+    // 시각적 피드백
+    document.querySelectorAll('.glass-panel').forEach(p => {
+        p.style.cursor = window.uiLocked ? 'default' : 'move';
+    });
+}
+
+function updateLockUI() {
+    const btn = document.getElementById('lock-toggle-btn');
+    if (!btn) return;
+
+    if (window.uiLocked) {
+        btn.setAttribute('data-i18n', 'sidebar.unlock_widgets');
+        btn.innerText = _t('sidebar.unlock_widgets');
+        btn.style.background = 'rgba(255, 0, 0, 0.1)';
+        btn.style.border = '1px solid #ff4444';
+        btn.style.color = '#ff4444';
+    } else {
+        btn.setAttribute('data-i18n', 'sidebar.lock_widgets');
+        btn.innerText = _t('sidebar.lock_widgets');
+        btn.style.background = 'rgba(255, 255, 255, 0.05)';
+        btn.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+        btn.style.color = '#fff';
+    }
 }
 
 /**

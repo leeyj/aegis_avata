@@ -13,13 +13,13 @@
 
     <!-- 아바타 선택 패널 -->
     <div class="glass-panel size-1" id="p-unit">
-        <div class="panel-label">UNIT SELECTION</div>
+        <div class="panel-label" data-i18n="panels.p-unit">UNIT SELECTION</div>
         <select id="model-select"></select>
     </div>
     
     <!-- 날씨 패널 -->
     <div class="glass-panel size-1" id="p-weather">
-        <div class="panel-label">ENVIRONMENT</div>
+        <div class="panel-label" data-i18n="panels.p-weather">ENVIRONMENT</div>
         <div class="weather-content">
             <img id="weather-icon" src="" alt="Weather Icon" style="display: none;">
             <div>
@@ -33,7 +33,7 @@
 
     <!-- 시장 지수 패널 -->
     <div class="glass-panel size-1-5" id="p-finance">
-        <div class="panel-label">MARKET INDICES</div>
+        <div class="panel-label" data-i18n="panels.p-finance">MARKET INDICES</div>
         <div id="finance-list">
             <div class="loading-text">Fetching Market Data...</div>
         </div>
@@ -42,7 +42,7 @@
     <!-- 뉴스 브리핑 패널 -->
     <div class="glass-panel size-2" id="p-news" style="overflow: hidden;">
         <div class="panel-label">
-            NEWS BRIEFING
+            <span data-i18n="panels.p-news">NEWS BRIEFING</span>
             <button class="widget-brief-btn" onclick="triggerWidgetBriefing('news')" title="AI 뉴스 브리핑">🔊</button>
         </div>
         <div id="news-ticker">
@@ -52,7 +52,7 @@
 
     <!-- 캘린더 일정 패널 -->
     <div class="glass-panel size-1-5 scrollable" id="p-calendar">
-        <div class="panel-label">DAILY SCHEDULE</div>
+        <div class="panel-label" data-i18n="panels.p-calendar">DAILY SCHEDULE</div>
         <div id="calendar-list">
             <div class="loading-text">Syncing with Google...</div>
         </div>
@@ -60,7 +60,7 @@
 
     <!-- 할 일 목록 패널 -->
     <div class="glass-panel size-1-5 scrollable" id="p-todo">
-        <div class="panel-label">TODO LIST</div>
+        <div class="panel-label" data-i18n="panels.p-todo">TODO LIST</div>
         <div id="todo-list">
             <div class="loading-text">Fetching tasks...</div>
         </div>
@@ -68,7 +68,7 @@
 
     <!-- Gmail 패널 -->
     <div class="glass-panel size-2 scrollable" id="p-gmail">
-        <div class="panel-label">GMAIL INBOX</div>
+        <div class="panel-label" data-i18n="panels.p-gmail">GMAIL INBOX</div>
         <div id="gmail-list">
             <div class="loading-text">Accessing workspace...</div>
         </div>
@@ -76,7 +76,7 @@
 
     <!-- 시스템 상태 패널 -->
     <div class="glass-panel size-1-5 scrollable" id="p-system">
-        <div class="panel-label">SYSTEM RESOURCES</div>
+        <div class="panel-label" data-i18n="panels.p-system">SYSTEM RESOURCES</div>
         <div id="system-stats-content">
             <div class="loading-text">Analyzing hardware...</div>
         </div>
@@ -84,7 +84,7 @@
 
     <!-- 주식 모니터 패널 -->
     <div class="glass-panel size-1-5 scrollable" id="p-stock">
-        <div class="panel-label">TICKER MONITOR</div>
+        <div class="panel-label" data-i18n="panels.p-stock">TICKER MONITOR</div>
         <div id="stock-list">
             <div class="loading-text">Connecting to market...</div>
         </div>
@@ -92,14 +92,14 @@
 
     <!-- 유튜브 뮤직 전용 위젯 -->
     <div class="glass-panel size-1-5" id="p-youtube">
-        <div class="panel-label">YOUTUBE MUSIC</div>
+        <div class="panel-label" data-i18n="panels.p-youtube">YOUTUBE MUSIC</div>
         <div class="yt-content">
             <div id="yt-player-core"></div>
             <div class="yt-info">
                 <img id="yt-thumbnail" src="" class="yt-thumb">
                 <div class="yt-text">
-                    <div id="yt-track-title" class="truncate">Wait for Load...</div>
-                    <div id="yt-track-artist" class="truncate yt-artist">Select Playlist</div>
+                <div id="yt-track-title" class="truncate" data-i18n="widgets.yt_wait">Wait for Load...</div>
+                <div id="yt-track-artist" class="truncate yt-artist" data-i18n="widgets.yt_select">Select Playlist</div>
                 </div>
             </div>
             <div class="yt-controls">
@@ -116,7 +116,7 @@
 
     <!-- 바탕화면 관리 패널 -->
     <div class="glass-panel size-1-5" id="p-wallpaper">
-        <div class="panel-label">WALLPAPER CONTROL</div>
+        <div class="panel-label" data-i18n="panels.p-wallpaper">WALLPAPER CONTROL</div>
         <div id="p-wallpaper-content">
             <div class="loading-text">Loading UI...</div>
         </div>

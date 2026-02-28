@@ -52,8 +52,9 @@ function initInteractions() {
 
     // 4. 마우스 휠 (줌 인/아웃)
     window.addEventListener('wheel', (e) => {
-        // [FIX] 만약 이벤트 타겟이 위젯(.glass-panel)이나 스크롤 가능한 요소 내부라면 줌 작동 방지
-        if (e.target.closest('.glass-panel') || e.target.closest('.scrollable')) {
+        // [FIX] 만약 이벤트 타겟이 UI 요소(.glass-panel, .sidebar, .terminal-container)나 스크롤 가능한 요소 내부라면 줌 작동 방지
+        if (e.target.closest('.glass-panel') || e.target.closest('.sidebar') ||
+            e.target.closest('.terminal-container') || e.target.closest('.scrollable')) {
             return;
         }
 

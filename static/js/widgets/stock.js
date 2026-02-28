@@ -106,13 +106,15 @@ function triggerBulkStockAlert(stocks) {
     if (!window.reactionEngine) return;
 
     // 요약 문구 생성
-    // 예: "삼성전자 3퍼센트 상승, 그리고 캠트로스 4퍼센트 하락 중입니다."
     const parts = stocks.map(s => {
-        const verb = s.change_pct >= 0 ? "상승" : "하락";
-        return `${s.name} ${Math.abs(s.change_pct).toFixed(1)}퍼센트 ${verb}`;
+        const verb = s.change_pct >= 0 ?
+            (window.i18nData?.directions?.up || "상승") :
+            (window.i18nData?.directions?.down || "하락");
+        return `${s.name} ${Math.abs(s.change_pct).toFixed(1)}% ${verb}`;
     });
 
-    const summary = parts.slice(0, -1).join(", ") + (parts.length > 1 ? " 그리고 " : "") + parts.slice(-1);
+    const andWord = window.currentLang === 'en' ? " and " : " 그리고 ";
+    const summary = parts.slice(0, -1).join(", ") + (parts.length > 1 ? andWord : "") + parts.slice(-1);
 
     window.reactionEngine.checkAndTrigger('stock_bulk', {
         summary: summary,

@@ -14,7 +14,7 @@ function initUIDragging() {
 
             // 2. 드래그 무시 조건
             const isInteractive = e.target.closest('button, select, input, a, .finance-item, .no-drag');
-            if (isInteractive || e.ctrlKey) return;
+            if (isInteractive || e.ctrlKey || window.uiLocked) return;
 
             e.stopPropagation();
 

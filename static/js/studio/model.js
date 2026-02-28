@@ -65,8 +65,8 @@ async function loadModel(name) {
 
         // 적합성 검사 (사용불가 사유 체크)
         let reasons = [];
-        if (!data.motions || data.motions.length === 0) reasons.push("인식된 모션 파일이 없습니다.");
-        if (!data.expressions || data.expressions.length === 0) reasons.push("인식된 표정 파일이 없습니다.");
+        if (!data.motions || data.motions.length === 0) reasons.push(_t('studio.messages.no_motions'));
+        if (!data.expressions || data.expressions.length === 0) reasons.push(_t('studio.messages.no_expressions'));
 
         if (reasons.length > 0 && warningBox && warningText) {
             warningText.innerText = reasons.join(" ");
@@ -123,16 +123,17 @@ async function loadModel(name) {
  */
 async function applyModelToAegis() {
     if (!window.isSponsor) {
-        alert("Sponsor only feature!");
+        alert(_t('studio.messages.sponsor_only'));
         return;
     }
     const name = document.getElementById('model-select').value;
     if (!name) {
-        alert("Please select a model first.");
+        alert(_t('studio.messages.select_first'));
         return;
     }
 
-    if (!confirm(`'${name}' 모델을 실운영 환경에 적용하시겠습니까?\n기존에 운용 중인 동일 이름의 모델 파일이 있다면 덮어씌워집니다.`)) {
+    const confirmMsg = _t('studio.messages.apply_confirm').replace('{name}', name);
+    if (!confirm(confirmMsg)) {
         return;
     }
 
@@ -200,16 +201,17 @@ function setupAnimationLoop(avatar) {
 
 async function fixModel() {
     if (!window.isSponsor) {
-        alert("Sponsor only feature!");
+        alert(_t('studio.messages.sponsor_only'));
         return;
     }
     const name = document.getElementById('model-select').value;
     if (!name) {
-        alert("Please select a model first.");
+        alert(_t('studio.messages.select_first'));
         return;
     }
 
-    if (!confirm(`'${name}' 모델을 최적화하시겠습니까?\n\n- 이 작업은 OLD 폴더에 백업을 생성합니다.\n- 구형 경로 및 설정을 최신 규격으로 변환합니다.`)) {
+    const confirmMsg = _t('studio.messages.fix_confirm').replace('{name}', name);
+    if (!confirm(confirmMsg)) {
         return;
     }
 
@@ -226,14 +228,12 @@ async function fixModel() {
         btn.innerText = originalText;
 
         if (res.ok) {
-            // route에서 stats를 message 필드로 보내고 있으므로 수정 필요 or 여기서 가공
-
-            let report = `✨ [${name}] 최적화 완료 리포트\n\n`;
-            report += `📁 폴더 구조 보정: ${result.folder_renamed ? '✅ 수행됨' : '➖ 변경없음'}\n`;
-            report += `📄 설정 파일 규격화: ${result.json_standardized ? '✅ model3.json 생성' : '➖ 유지됨'}\n`;
-            report += `🔗 내부 경로 수정: ${result.paths_fixed}개 항목\n`;
-            report += `🏷️ 에일리어스 생성: ${result.alias_generated ? '✅ 지능형 매핑 성공' : '➖ 실패/건너뜀'}\n\n`;
-            report += `📦 백업 위치: OLD 폴더 내 보관됨`;
+            let report = `${_t('studio.messages.fix_report_title').replace('{name}', name)}\n\n`;
+            report += `${_t('studio.messages.fix_folder_renamed')}: ${result.folder_renamed ? '✅ ' + _t('studio.messages.done') : '➖'}\n`;
+            report += `${_t('studio.messages.fix_json_standardized')}: ${result.json_standardized ? '✅ ' + _t('studio.messages.done') : '➖'}\n`;
+            report += `${_t('studio.messages.fix_paths_fixed')}: ${result.paths_fixed}\n`;
+            report += `${_t('studio.messages.fix_alias_generated')}: ${result.alias_generated ? '✅ ' + _t('studio.messages.success') : '➖'}\n\n`;
+            report += `${_t('studio.messages.fix_backup_loc')}`;
 
             alert(report);
             loadModel(name);

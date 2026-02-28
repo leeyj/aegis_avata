@@ -14,6 +14,7 @@ from routes.config import (
     BGM_CONFIG_PATH,
     REACTIONS_CONFIG_PATH,
     SCHEDULER_CONFIG_PATH,
+    I18N_DIR,
 )
 from services import (
     google_calendar,
@@ -23,7 +24,13 @@ from services import (
     stock_service,
     system_service,
 )
-from utils import load_json_config, load_settings, save_settings, is_sponsor
+from utils import (
+    load_json_config,
+    load_settings,
+    save_settings,
+    save_json_config,
+    is_sponsor,
+)
 import os
 
 widgets_bp = Blueprint("widgets", __name__)
@@ -49,11 +56,22 @@ CONFIG_PATH_MAP = {
 @widgets_bp.route("/config/<name>")
 @login_required
 def get_config(name):
-    """통합 설정 로드 라우트"""
+    """통합 설정 로드 라우트 (다국어 우선순위 반영)"""
     path = CONFIG_PATH_MAP.get(name)
-    if path:
-        return jsonify(load_json_config(path))
-    return jsonify({"status": "error", "message": "Config not found"}), 404
+    if not path:
+        return jsonify({"status": "error", "message": "Config not found"}), 404
+
+    # 현재 언어 확인
+    system_config = load_json_config(SYSTEM_CONFIG_PATH)
+    lang = system_config.get("lang", "ko")
+
+    # 영문 모드인 경우 _en.json 파일이 존재하면 우선 사용
+    if lang == "en":
+        ext_path = path.replace(".json", "_en.json")
+        if os.path.exists(ext_path):
+            return jsonify(load_json_config(ext_path))
+
+    return jsonify(load_json_config(path))
 
 
 # 하위 호환성을 위한 기존 라우트 (추후 프론트엔드 수정 시 제거 가능)
@@ -111,6 +129,22 @@ def system_config_alias():
 @login_required
 def scheduler_config():
     return get_config("scheduler")
+
+
+@widgets_bp.route("/i18n_config")
+@login_required
+def i18n_config():
+    """현재 설정된 언어의 JSON 팩 반환"""
+    system_config = load_json_config(SYSTEM_CONFIG_PATH)
+    lang = system_config.get("lang", "ko")
+    pack_path = os.path.join(I18N_DIR, f"{lang}.json")
+
+    if os.path.exists(pack_path):
+        return jsonify(load_json_config(pack_path))
+
+    # Fallback to ko.json
+    fallback_path = os.path.join(I18N_DIR, "ko.json")
+    return jsonify(load_json_config(fallback_path))
 
 
 @widgets_bp.route("/calendar_events")
@@ -221,5 +255,21 @@ def get_settings():
 def save_settings_route():
     data = request.json
     if save_settings(data):
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 500
+
+
+@widgets_bp.route("/save_language", methods=["POST"])
+@login_required
+def save_language():
+    """시스템 언어 설정을 업데이트합니다."""
+    data = request.json
+    new_lang = data.get("lang")
+    if new_lang not in ["ko", "en"]:
+        return jsonify({"status": "error", "message": "Invalid language"}), 400
+
+    config = load_json_config(SYSTEM_CONFIG_PATH)
+    config["lang"] = new_lang
+    if save_json_config(SYSTEM_CONFIG_PATH, config, merge=False):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 500

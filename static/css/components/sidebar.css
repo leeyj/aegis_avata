@@ -10,7 +10,7 @@
     border-right: 1px solid var(--border);
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2000;
-    padding: 70px 15px 20px;
+    padding: 70px 15px 100px;
     overflow-y: auto;
     /* 내용이 많으면 내부 스크롤 발생 */
     scrollbar-width: thin;

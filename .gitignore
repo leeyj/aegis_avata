@@ -35,8 +35,6 @@ OLD/
 models/
 test_models/*/
 tmp/
-RAG/
-csap_gemma3_db/
 
 # === Documentation Rules ===
 # 모든 마크다운 포함하되, 개인 진행용 문서는 제외

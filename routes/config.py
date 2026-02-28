@@ -5,6 +5,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AEGIS_ROOT = BASE_DIR
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 TEST_MODELS_DIR = os.path.join(BASE_DIR, "test_models")
+I18N_DIR = os.path.join(BASE_DIR, "config", "i18n")
 
 # Config Paths
 CLOCK_CONFIG_PATH = os.path.join(BASE_DIR, "config", "clock.json")

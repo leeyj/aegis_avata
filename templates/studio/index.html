@@ -17,11 +17,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
 
-    <!-- Live2D Core Libraries -->
-    <script src="/static/js/pixi.min.js"></script>
-    <script src="/static/js/live2d.min.js"></script>
-    <script src="/static/js/live2dcubismcore.min.js"></script>
-    <script src="/static/js/index.min.js"></script>
+    <!-- Common Services -->
+    <script src="/static/js/i18n_manager.js"></script>
+    <script src="/static/js/animation_manager.js"></script>
+    <script src="/static/js/renderer.js"></script>
 </head>
 <body class="aegis-theme studio-mode" data-is-sponsor="{{ is_sponsor }}">
     
@@ -29,54 +28,54 @@
 
     <!-- Sidebar Link to Home -->
     <div class="studio-nav">
-        <a href="/" class="back-btn">🏠 DASHBOARD</a>
+        <a href="/" class="back-btn" data-i18n="studio.back_dashboard">🏠 DASHBOARD</a>
     </div>
 
     <!-- Main Controls -->
     <div class="controls draggable">
         <div class="panel-header">
-            <h2>💎 Live2D Studio</h2>
+            <h2 data-i18n="studio.title">💎 Live2D Studio</h2>
         </div>
         
         <div class="control-group">
-            <h3>SELECT MODEL</h3>
+            <h3 data-i18n="studio.select_model">SELECT MODEL</h3>
             <div class="model-select-container">
                 <select id="model-select">
-                    <option value="">Loading models...</option>
+                    <option value="" data-i18n="studio.loading_models">Loading models...</option>
                 </select>
-                <button id="apply-to-aegis-btn" class="apply-btn" onclick="applyModelToAegis()">APPLY</button>
-                <button id="fix-model-btn" class="fix-btn" onclick="fixModel()" title="오류 자동 수정 및 최적화">✨</button>
+                <button id="apply-to-aegis-btn" class="apply-btn" onclick="applyModelToAegis()" data-i18n="studio.apply_btn">APPLY</button>
+                <button id="fix-model-btn" class="fix-btn" onclick="fixModel()" data-i18n="[title]studio.fix_btn_title">✨</button>
             </div>
             <div id="model-warning" class="warning-box" style="display: none; margin-top: 10px; color: #ffeb3b; background: rgba(255, 235, 59, 0.1); padding: 10px; border-radius: 8px; font-size: 0.8rem; border: 1px solid rgba(255, 235, 59, 0.3);">
-                ⚠️ <strong>사용불가 사유:</strong> <span id="warning-text"></span>
+                ⚠️ <strong data-i18n="studio.unusable_reason">Unusable Reason:</strong> <span id="warning-text"></span>
             </div>
         </div>
 
         <div id="model-controls" style="display: none;">
             <div class="control-group">
-                <h3>MOTIONS</h3>
+                <h3 data-i18n="studio.motions">MOTIONS</h3>
                 <div id="motion-list" class="asset-list"></div>
             </div>
 
             <div class="control-group">
-                <h3>EXPRESSIONS</h3>
+                <h3 data-i18n="studio.expressions">EXPRESSIONS</h3>
                 <div id="expression-list" class="asset-list"></div>
             </div>
 
             <div class="control-group sliders">
                 <div class="slider-item">
-                    <label>Zoom</label>
+                    <label data-i18n="studio.zoom">Zoom</label>
                     <input type="range" id="zoom-slider" min="0.1" max="3" step="0.1" value="1.0">
                 </div>
                 <div class="slider-item">
-                    <label>Offset X</label>
+                    <label data-i18n="studio.offset_x">Offset X</label>
                     <input type="range" id="offsetX-slider" min="-1000" max="1000" step="10" value="0">
                 </div>
                 <div class="slider-item">
-                    <label>Offset Y</label>
+                    <label data-i18n="studio.offset_y">Offset Y</label>
                     <input type="range" id="offsetY-slider" min="-1000" max="1000" step="10" value="0">
                 </div>
-                <button class="reset-btn" onclick="resetView()">Reset View</button>
+                <button class="reset-btn" onclick="resetView()" data-i18n="studio.reset_view">Reset View</button>
             </div>
         </div>
     </div>
@@ -84,15 +83,21 @@
     <!-- Alias Manager Sidebar -->
     <div id="alias-sidebar" class="alias-panel draggable" style="display: none;">
         <div class="panel-header">
-            <h3>📝 Alias Manager</h3>
-            <span id="auth-badge" class="badge">{% if is_sponsor %}Sponsor Verified{% else %}Sponsor Only{% endif %}</span>
+            <h3 data-i18n="studio.alias_manager">📝 Alias Manager</h3>
+            <span id="auth-badge" class="badge">
+                {% if is_sponsor %}
+                <span data-i18n="studio.sponsor_verified">Sponsor Verified</span>
+                {% else %}
+                <span data-i18n="studio.sponsor_only">Sponsor Only</span>
+                {% endif %}
+            </span>
         </div>
         
         <div id="mapping-area" class="mapping-box" style="display: none;">
-            <div class="mapping-target">Selected: <span id="target-filename"></span></div>
+            <div class="mapping-target"><span data-i18n="studio.selected">Selected:</span> <span id="target-filename"></span></div>
             <div class="mapping-options">
                 <div id="motion-keys" style="display: none;">
-                    <h4>Standard Motions</h4>
+                    <h4 data-i18n="studio.standard_motions">Standard Motions</h4>
                     <div class="key-grid">
                         <button onclick="mapAsset('idle')">idle</button>
                         <button onclick="mapAsset('joy')">joy</button>
@@ -104,7 +109,7 @@
                     </div>
                 </div>
                 <div id="expression-keys" style="display: none;">
-                    <h4>Standard Emotions</h4>
+                    <h4 data-i18n="studio.standard_emotions">Standard Emotions</h4>
                     <div class="key-grid">
                         <button onclick="mapAsset('joy')">joy</button>
                         <button onclick="mapAsset('sad')">sad</button>
@@ -113,14 +118,14 @@
                     </div>
                 </div>
             </div>
-            <button class="cancel-btn" onclick="cancelMapping()">Cancel</button>
+            <button class="cancel-btn" onclick="cancelMapping()" data-i18n="studio.cancel">Cancel</button>
         </div>
 
         <div class="editor-box">
-            <h4>alias.json Editor</h4>
+            <h4 data-i18n="studio.editor_title">alias.json Editor</h4>
             <textarea id="alias-editor" spellcheck="false"></textarea>
             <div class="editor-actions">
-                <button id="save-alias-btn" class="save-btn" onclick="saveAlias()">Save alias.json</button>
+                <button id="save-alias-btn" class="save-btn" onclick="saveAlias()" data-i18n="studio.save_alias">Save alias.json</button>
             </div>
         </div>
     </div>
@@ -128,12 +133,12 @@
     <!-- Reaction Simulator Panel -->
     <div id="simulator-panel" class="simulator-panel draggable" style="display: none;">
         <div class="panel-header">
-            <h3>⚡ Reaction Simulator</h3>
+            <h3 data-i18n="studio.reaction_simulator">⚡ Reaction Simulator</h3>
         </div>
         <div id="simulator-buttons" class="simulator-grid">
             <!-- Dynamic Buttons -->
         </div>
-        <div id="simulator-log" style="font-size: 0.75rem; color: #8e9297; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; min-height: 40px; line-height: 1.6;">
+        <div id="simulator-log" data-i18n="studio.simulator_placeholder" style="font-size: 0.75rem; color: #8e9297; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; min-height: 40px; line-height: 1.6;">
             Trigger an action to see details...
         </div>
     </div>
@@ -141,7 +146,7 @@
     <!-- TTS Preview Area -->
     <div id="tts-preview" class="tts-preview" style="display: none;">
         <div class="tts-content">
-            <span class="tts-label">AI BRIEFING</span>
+            <span class="tts-label" data-i18n="studio.ai_briefing">AI BRIEFING</span>
             <p id="tts-content"></p>
         </div>
     </div>

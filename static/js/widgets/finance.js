@@ -55,7 +55,7 @@ async function startFinance() {
                                     name: name,
                                     price: info.price,
                                     change_pct: info.change_pct,
-                                    direction_text: info.direction === 'up' ? '상승' : '하락'
+                                    direction_text: (window.i18nData?.directions?.[info.direction]) || _t(`directions.${info.direction}`)
                                 }, 0);
                             }
                             // 데이터 즉시 갱신 (선택 사항)
