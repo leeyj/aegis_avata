@@ -36,6 +36,25 @@
             ]
         }
     },
+    "stock_bulk": {
+        "summary": {
+            "condition": "count >= 2",
+            "actions": [
+                {
+                    "type": "MOTION",
+                    "alias": "briefing"
+                },
+                {
+                    "type": "EMOTION",
+                    "alias": "joy"
+                },
+                {
+                    "type": "TTS",
+                    "template": "관심 종목들에서 다수의 변동이 감지되었습니다. 현재 {summary} 중입니다."
+                }
+            ]
+        }
+    },
     "weather": {
         "bad": {
             "condition": "['RAINY', 'STORM'].includes(status)",

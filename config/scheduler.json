@@ -1,0 +1,55 @@
+﻿{
+  "_metadata": {
+    "guide": "AEGIS Briefing Scheduler 설정 가이드",
+    "days_mapping": { "0": "일요일", "1": "월요일", "2": "화요일", "3": "수요일", "4": "목요일", "5": "금요일", "6": "토요일" },
+    "time_format": "HHMM (24시간 형식, 예: 0900)",
+    "priority": "Deny Wins (차단 우선)",
+    "supported_actions": {
+      "tactical_briefing": "전체 요약 브리핑 실행",
+      "widget_briefing": "특정 위젯 브리핑 (target 필드 필수, 예: 'news', 'stock')",
+      "speak": "지정된 텍스트 음성 출력 (text 필드 필수)",
+      "reload": "페이지 새로고침"
+    }
+  },
+  "gatekeeper": {
+    "stock": { "allow": { "days": [1,2,3,4,5], "start": "0900", "end": "1530" }, "enabled": true },
+    "gmail": { "allow": { "days": [1,2,3,4,5], "start": "0900", "end": "2200" }, "enabled": true },
+    "proactive": { "allow": { "days": [0,1,2,3,4,5,6], "start": "0800", "end": "2300" }, "enabled": true }
+  },
+  "routines": [
+    {
+      "id": "morning_briefing",
+      "name": "평일 오전 정기 전체 브리핑",
+      "time": "09:00",
+      "days": [1,2,3,4,5],
+      "action": "tactical_briefing",
+      "enabled": true
+    },
+    {
+      "id": "news_summary",
+      "name": "평일 오후 뉴스 요약",
+      "time": "14:00",
+      "days": [1,2,3,4,5],
+      "action": "widget_briefing",
+      "target": "news",
+      "enabled": false
+    },
+    {
+      "id": "evening_greeting",
+      "name": "매일 저녁 인사",
+      "time": "21:00",
+      "days": [0,1,2,3,4,5,6],
+      "action": "speak",
+      "text": "오늘 하루도 수고 많으셨습니다. 편안한 밤 되세요.",
+      "enabled": false
+    },
+    {
+      "id": "daily_reload",
+      "name": "새벽 시스템 초기화 (새로고침)",
+      "time": "04:00",
+      "days": [0,1,2,3,4,5,6],
+      "action": "reload",
+      "enabled": false
+    }
+  ]
+}

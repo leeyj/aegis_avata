@@ -5,21 +5,6 @@
 
 let stockInterval = null;
 let stockCooldown = 600000; // 기본 10분
-let allowStartTime = "0900";
-let allowEndTime = "1500";
-
-function isWithinStockAlertTime() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const currentTime = `${h}${m}`;
-
-    if (allowStartTime <= allowEndTime) {
-        return currentTime >= allowStartTime && currentTime <= allowEndTime;
-    } else {
-        return currentTime >= allowStartTime || currentTime <= allowEndTime;
-    }
-}
 
 async function initStockWidget() {
     // console.log("[Stock] Initializing Ticker Monitor...");
@@ -30,8 +15,6 @@ async function initStockWidget() {
         const interval = (config.interval_min || 2) * 60 * 1000;
         const threshold = config.alert_threshold || 3.0;
         stockCooldown = (config.briefing_cooldown_min || 10) * 60 * 1000;
-        allowStartTime = config.bref_allow_start_time || "0900";
-        allowEndTime = config.bref_allow_end_time || "1500";
 
         // 초기 업데이트
         updateStockData(threshold);
@@ -64,6 +47,7 @@ async function updateStockData(threshold) {
         }
 
         let html = '';
+        let readyToNotify = [];
         for (const [name, info] of Object.entries(data)) {
             const color = info.direction === 'up' ? '#ff4b4b' : '#32ff7e';
             const sign = info.direction === 'up' ? '▲' : '▼';
@@ -83,14 +67,20 @@ async function updateStockData(threshold) {
 
             // 알림 기준(threshold) 체크
             if (Math.abs(info.change_pct) >= threshold) {
-                if (isWithinStockAlertTime()) {
-                    triggerStockAlert(name, info);
-                } else if (window.logger) {
-                    window.logger.info(`[Stock] 알림 설정 시간외(${allowStartTime}~${allowEndTime}): ${name} 알림 무시`);
+                // ReactionEngine을 통해 개별 쿨다운 상태 확인 (중복 알림 방지)
+                if (window.reactionEngine && !window.reactionEngine.isCooldownActive('stock', stockCooldown, name)) {
+                    readyToNotify.push({ name, ...info });
                 }
             }
         }
         listContainer.innerHTML = html;
+
+        // 알림 트리거 (단 건 또는 다수)
+        if (readyToNotify.length === 1) {
+            triggerStockAlert(readyToNotify[0].name, readyToNotify[0]);
+        } else if (readyToNotify.length > 1) {
+            triggerBulkStockAlert(readyToNotify);
+        }
 
     } catch (e) {
         console.error("[Stock] Update Failed:", e);
@@ -107,4 +97,30 @@ function triggerStockAlert(name, info) {
             change_pct: info.change_pct
         }, stockCooldown, name);
     }
+}
+
+/**
+ * 여러 종목의 변동을 한 번에 알림
+ */
+function triggerBulkStockAlert(stocks) {
+    if (!window.reactionEngine) return;
+
+    // 요약 문구 생성
+    // 예: "삼성전자 3퍼센트 상승, 그리고 캠트로스 4퍼센트 하락 중입니다."
+    const parts = stocks.map(s => {
+        const verb = s.change_pct >= 0 ? "상승" : "하락";
+        return `${s.name} ${Math.abs(s.change_pct).toFixed(1)}퍼센트 ${verb}`;
+    });
+
+    const summary = parts.slice(0, -1).join(", ") + (parts.length > 1 ? " 그리고 " : "") + parts.slice(-1);
+
+    window.reactionEngine.checkAndTrigger('stock_bulk', {
+        summary: summary,
+        count: stocks.length
+    }, stockCooldown, 'all_stocks');
+
+    // 개별 종목 쿨다운도 업데이트하여 다음 루프에서 중복 알림 방지
+    stocks.forEach(s => {
+        window.reactionEngine.setCooldown('stock', s.name);
+    });
 }

@@ -33,7 +33,7 @@ class ReactionEvaluator {
         }
         // 특수 변수 가공 (절대값 등)
         if (data.change_pct !== undefined) {
-            result = result.replace(/\{change_pct_abs\}/g, Math.abs(data.change_pct));
+            result = result.replace(/\{change_pct_abs\}/g, Math.abs(data.change_pct).toFixed(1));
         }
         return result;
     }
@@ -114,6 +114,12 @@ class ReactionEngine {
     checkAndTrigger(widgetName, data, cooldownMs = 30000, subKey = null) {
         if (!this.isLoaded || !this.reactions || !this.reactions[widgetName]) return;
 
+        // 0. 스케줄러 권한 체크 (Deny Wins)
+        if (window.briefingScheduler && !window.briefingScheduler.isAllowed(widgetName)) {
+            if (window.logger) window.logger.info(`[Scheduler] ${widgetName} 알림이 스케줄에 의해 차단됨.`);
+            return;
+        }
+
         const now = Date.now();
         const cooldownKey = subKey ? `${widgetName}:${subKey}` : widgetName;
         const lastExecuted = this.cooldowns[cooldownKey] || 0;
@@ -129,6 +135,24 @@ class ReactionEngine {
                 break; // 우선순위가 높은 첫 번째 조건만 실행
             }
         }
+    }
+
+    /**
+     * 특정 리액션의 쿨다운 활성화 여부 확인
+     */
+    isCooldownActive(widgetName, cooldownMs, subKey = null) {
+        const now = Date.now();
+        const cooldownKey = subKey ? `${widgetName}:${subKey}` : widgetName;
+        const lastExecuted = this.cooldowns[cooldownKey] || 0;
+        return (now - lastExecuted < cooldownMs);
+    }
+
+    /**
+     * 특정 리액션의 쿨다운을 현재 시간으로 강제 설정
+     */
+    setCooldown(widgetName, subKey = null) {
+        const cooldownKey = subKey ? `${widgetName}:${subKey}` : widgetName;
+        this.cooldowns[cooldownKey] = Date.now();
     }
 }
 

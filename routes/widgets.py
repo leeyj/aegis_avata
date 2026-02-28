@@ -13,6 +13,7 @@ from routes.config import (
     PROACTIVE_CONFIG_PATH,
     BGM_CONFIG_PATH,
     REACTIONS_CONFIG_PATH,
+    SCHEDULER_CONFIG_PATH,
 )
 from services import (
     google_calendar,
@@ -41,6 +42,7 @@ CONFIG_PATH_MAP = {
     "proactive": PROACTIVE_CONFIG_PATH,
     "bgm": BGM_CONFIG_PATH,
     "reactions": REACTIONS_CONFIG_PATH,
+    "scheduler": SCHEDULER_CONFIG_PATH,
 }
 
 
@@ -103,6 +105,12 @@ def ticker_config():
 def system_config_alias():
     """시스템 설정 상태 반환 (기존 호환성)"""
     return get_config("system")
+
+
+@widgets_bp.route("/scheduler_config")
+@login_required
+def scheduler_config():
+    return get_config("scheduler")
 
 
 @widgets_bp.route("/calendar_events")

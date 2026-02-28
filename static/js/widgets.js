@@ -40,21 +40,26 @@ window.WidgetManager = {
     },
 
     /**
-     * 위젯 구동에 필요한 공통 서버 설정 로드
+     * 위젯 구동에 필요한 공통 서버 설정 로드 (병렬 최적화)
      */
     loadConfigs: async function () {
         try {
-            // TTS 설정
-            const ttsRes = await fetch('/tts_config');
-            const ttsData = await ttsRes.json();
-            if (typeof window.globalTtsConfig !== 'undefined') {
-                Object.assign(window.globalTtsConfig, ttsData);
-            }
-
-            // Briefing 설정
-            if (typeof window.applyBriefingConfig === 'function') {
-                await window.applyBriefingConfig();
-            }
+            await Promise.all([
+                // 1. TTS 설정 로드
+                (async () => {
+                    const ttsRes = await fetch('/tts_config');
+                    const ttsData = await ttsRes.json();
+                    if (typeof window.globalTtsConfig !== 'undefined') {
+                        Object.assign(window.globalTtsConfig, ttsData);
+                    }
+                })(),
+                // 2. Briefing 설정 로드
+                (async () => {
+                    if (typeof window.applyBriefingConfig === 'function') {
+                        await window.applyBriefingConfig();
+                    }
+                })()
+            ]);
         } catch (e) {
             console.error("[WidgetManager] Config loading failed:", e);
         }

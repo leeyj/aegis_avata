@@ -5,7 +5,7 @@
 ---
 
 ## ✅ 리팩토링 완료 현황 (Status: 100% Complete)
-전체 시스템을 **Core**, **UI**, **Service**, **Widget**의 4개 레이어로 명확하게 분리하여 v4.8 Modular Engine으로의 전환을 완료했습니다.
+전체 시스템을 **Core**, **UI**, **Service**, **Widget**의 4개 레이어로 명확하게 분리하여 v4.8 Modular Engine으로의 전환
 
 ---
 
