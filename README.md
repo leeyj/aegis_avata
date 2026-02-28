@@ -152,22 +152,17 @@ AEGIS는 Google Calendar, Tasks, Gmail API를 읽기 전용(Read-only)으로 호
       * `"type": "MOTION"` 또는 `"EMOTION"` ➔ 캐릭터의 애니메이션을 변경합니다. 이때 `"file"`에는 본인이 사용하는 Live2D 모델의 실제 모션/표정 파일명(예: `Shock.motion3.json`). (★사용하는 아바타 모델마다 파일 이름이 다르므로 반드시 확인 후 매핑해야 합니다.)
       * `"type": "TTS"` ➔ 대시보드의 스피커를 통해 알림을 읽어줍니다. `"template"` 내에 `{name}`, `{price}`, `{change_pct_abs}` 등 변수를 섞어 넣으면 실시간 데이터가 합성되어 음성으로 재생됩니다.
 
-* **브리핑 스케줄러 (`config/scheduler.json`)** [v1.3 신규]
-  * **목적**: 사용자의 생활 패턴(업무 시간, 수면 시간 등)에 맞춰 알림을 스마트하게 제어하고 정기 작업을 자동화합니다.
+* **루틴 매니저 (Routine Manager) & 브리핑 스케줄러** [v1.5 고도화]
+  * **목적**: 사용자의 생활 패턴(업무 시간, 수면 시간 등)에 맞춰 알림을 스마트하게 제어하고 정기 작업을 자동화하는 중앙 통제 센터입니다.
   * **핵심 기능**:
-    * **🛡️ Gatekeeper (알림 수문장)**: 위젯별(Stock, Gmail 등)로 알림이 가능한 시간대를 정의합니다.
-      * **Deny Wins 원칙**: 허용(Allow) 시간이라도 차단(Deny) 조건에 하나라도 해당하면 알림이 발생하지 않습니다. (예: 평일 알림 허용 중 점심시간만 쏙 빼서 차단 가능)
-    * **⏰ Routines (자동 루틴)**: 정해진 시간에 아바타가 스스로 행동하게 합니다.
-      * 지원 액션: `tactical_briefing`(전체 요약), `widget_briefing`(특정 위젯 요약), `speak`(지정 대사 출력), `reload`(페이지 갱신).
-  * **설정 예시**:
-    ```json
-    "stock": { 
-      "allow": { "days": [1,2,3,4,5], "start": "0900", "end": "1530" }, 
-      "deny": { "days": [0,6] }, 
-      "enabled": true 
-    }
-    ```
-  * 상세 가이드는 [**브리핑 스케줄러 상세 가이드(briefing_scheduler.md)**](docs/briefing_scheduler.md)를 참고하세요.
+    * **🛡️ Gatekeeper (알림 수문장)**: 위젯별(Stock, Gmail 등)로 알림이 가능한 시간대를 정의합니다. GUI 에디터를 통해 시작/종료 시각과 적용 요일을 즉시 수정할 수 있습니다.
+    * **⏰ Routines (자동 루틴)**: 정해진 시간에 아바타가 스스로 행동하게 합니다. (전체 요약 브리핑, 특정 위젯 브리핑, YouTube 재생/정지, 배경화면 변경 등)
+    * **지능형 가이드**: 액션 선택 시 각 기능에 대한 상세 설명을 실시간으로 제공하여 설정을 돕습니다.
+  * **🖼️ 루틴 매니저 인터페이스**:
+    ![루틴 매니저 초기화면](img/routin_manager_초기화면.png)
+    ![루틴 편집](img/routin_manager_루틴매니저_편집_추가화면.png)
+    ![게이트키퍼 설정](img/routin_manager_게이트키퍼_설정화면.png)
+  * 상세 가이드는 [**루틴 매니저 상세 가이드(routine_manager.md)**](docs/manual/routine_manager.md)를 참고하세요.
 
 * **부팅 성능 최적화** [v1.3 신규]
   * **병렬 부트스트래핑**: 핵심 엔진 초기화를 병렬로 처리하여 사이트 접속 후 위젯이 뜨는 속도를 비약적으로 향상시켰습니다.
@@ -433,9 +428,17 @@ AEGIS provides a comprehensive **Notion integration solution** that helps you sy
 
 ### 🛠️ Key Features
 1.  **Quick Capture**: Record notes directly to your Notion database using terminal commands (`/n`, `/todo`).
-2.  **Multi-Workspace 💎**: Manage multiple Notion workspaces (e.g., `@work`, `@personal`) and switch between them seamlessly.
-3.  **Intelligent Cleanup Rules 💎**: Analyze keywords in titles (e.g., `[Discard]`, `Meeting`) to automatically update properties and classify data.
-4.  **AI Knowledge Briefing**: AI analyzes the latest data recorded in Notion and provides a voice briefing on your current progress.
+2.  **Routine Manager & Briefing Scheduler** [v1.5 Enhanced]
+  * **Purpose**: A central control hub that intelligently manages notifications and automates regular tasks according to the user's life patterns.
+  * **Key Features**:
+    * **🛡️ Gatekeeper (Active Hours)**: Define time intervals (HHMM) and days when specific widgets (Stock, Gmail, etc.) are allowed to trigger notifications. Full control via GUI editor.
+    * **⏰ Automation Routines**: Automate actions like tactical briefings, media control, or wallpaper changes at scheduled times.
+    * **Intelligent Guide**: Real-time descriptions for each action to help users configure routines easily.
+  * For detailed guidance, refer to the [**Routine Manager Guide (routine_manager.md)**](docs/manual/routine_manager.md).
+3.  **Boot Performance Optimization** [v1.3 New]
+4.  **Multi-Workspace 💎**: Manage multiple Notion workspaces (e.g., `@work`, `@personal`) and switch between them seamlessly.
+5.  **Intelligent Cleanup Rules 💎**: Analyze keywords in titles (e.g., `[Discard]`, `Meeting`) to automatically update properties and classify data.
+6.  **AI Knowledge Briefing**: AI analyzes the latest data recorded in Notion and provides a voice briefing on your current progress.
 
 ### 💎 Notion Feature Tiers
 | Category | Feature | Free User | Sponsor |

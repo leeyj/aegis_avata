@@ -19,10 +19,21 @@ async function initStockWidget() {
         // 초기 업데이트
         updateStockData(threshold);
 
-        // 인터벌 설정
-        if (stockInterval) clearInterval(stockInterval);
-        stockInterval = setInterval(() => updateStockData(threshold), interval);
+        if (window.briefingScheduler) {
+            let tickCounter = 0;
+            const intervalMin = config.interval_min || 2;
 
+            window.briefingScheduler.registerWidget('stock', 'min', () => {
+                tickCounter++;
+                if (tickCounter >= intervalMin) {
+                    updateStockData(threshold);
+                    tickCounter = 0;
+                }
+            });
+        } else {
+            const interval = (config.interval_min || 2) * 60 * 1000;
+            setInterval(() => updateStockData(threshold), interval);
+        }
     } catch (e) {
         console.error("[Stock] Init Failed:", e);
     }

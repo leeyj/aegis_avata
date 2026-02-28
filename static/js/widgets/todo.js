@@ -140,5 +140,12 @@ async function startTodo() {
     };
 
     updateTodo();
-    setInterval(updateTodo, 60000); // 백그라운드 동기화 주기는 1분으로 설정
+
+    if (window.briefingScheduler) {
+        window.briefingScheduler.registerWidget('todo', 'min', () => {
+            updateTodo();
+        });
+    } else {
+        setInterval(updateTodo, 60000);
+    }
 }

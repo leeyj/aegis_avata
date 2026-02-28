@@ -131,6 +131,79 @@ def scheduler_config():
     return get_config("scheduler")
 
 
+@widgets_bp.route("/save_scheduler_config", methods=["POST"])
+@login_required
+def save_scheduler_config():
+    """
+    AEGIS 루틴 매니저: 스케줄러 설정을 검증하고 저장합니다. (v1.5)
+    """
+    data = request.json
+    if not data:
+        return jsonify({"status": "error", "message": "No data provided"}), 400
+
+    # 1. 상세 데이터 검증 (v1.5 Reinforcement)
+    gatekeeper = data.get("gatekeeper", {})
+    routines = data.get("routines", [])
+
+    if not isinstance(gatekeeper, dict) or not isinstance(routines, list):
+        return jsonify({"status": "error", "message": "Invalid data format"}), 400
+
+    sponsor_status = is_sponsor()
+
+    # 루틴별 필드 검증 및 권한 체크
+    for r in routines:
+        # 필수 필드 확인
+        if not all(k in r for k in ("id", "name", "time", "action", "days")):
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": f"Missing required fields in routine {r.get('id', 'unknown')}",
+                }
+            ), 400
+
+        # 시간 형식 검증 (HH:MM or 'hourly')
+        time_str = r.get("time")
+        if time_str != "hourly" and (len(time_str) != 5 or ":" not in time_str):
+            return jsonify(
+                {"status": "error", "message": f"Invalid time format: {time_str}"}
+            ), 400
+
+        # 스폰서 전용 액션 검증
+        premium_actions = ["yt_play", "yt_stop", "yt_volume", "wallpaper_set"]
+        if r.get("action") in premium_actions and not sponsor_status:
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": f"Premium Action '{r.get('action')}' requires Sponsor account",
+                }
+            ), 403
+
+    try:
+        # 2. 기존 파일 백업 (Safety First)
+        if os.path.exists(SCHEDULER_CONFIG_PATH):
+            import shutil
+
+            backup_path = SCHEDULER_CONFIG_PATH + ".bak"
+            shutil.copy2(SCHEDULER_CONFIG_PATH, backup_path)
+
+        # 3. 설정 저장 (Atomic Save)
+        if save_json_config(SCHEDULER_CONFIG_PATH, data, merge=False):
+            print(
+                f"[Backend] Scheduler config updated by User. (Routines: {len(routines)})"
+            )
+            return jsonify(
+                {"status": "success", "message": "Scheduler config saved and verified"}
+            )
+        else:
+            return jsonify(
+                {"status": "error", "message": "Failed to write config file"}
+            ), 500
+
+    except Exception as e:
+        print(f"[Backend] Scheduler Save Error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 @widgets_bp.route("/i18n_config")
 @login_required
 def i18n_config():

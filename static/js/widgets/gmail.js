@@ -59,6 +59,20 @@ async function startGmail() {
     };
 
     updateGmail();
-    const refreshMs = (config.refresh_interval_min || 5) * 60 * 1000;
-    setInterval(updateGmail, refreshMs);
+
+    if (window.briefingScheduler) {
+        let tickCounter = 0;
+        const intervalMin = config.refresh_interval_min || 5;
+
+        window.briefingScheduler.registerWidget('gmail', 'min', () => {
+            tickCounter++;
+            if (tickCounter >= intervalMin) {
+                updateGmail();
+                tickCounter = 0;
+            }
+        });
+    } else {
+        const refreshMs = (config.refresh_interval_min || 5) * 60 * 1000;
+        setInterval(updateGmail, refreshMs);
+    }
 }

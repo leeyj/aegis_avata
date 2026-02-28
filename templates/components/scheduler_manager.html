@@ -1,0 +1,138 @@
+<div id="scheduler-manager-modal" class="aegis-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeSchedulerManager()"></div>
+    <div class="modal-content glassmorphism">
+        <div class="modal-header">
+            <h2 data-i18n="scheduler.manager_title">🕒 AEGIS ROUTINE MANAGER</h2>
+            <button class="close-btn" onclick="closeSchedulerManager()">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <!-- Gatekeeper Section -->
+            <section class="manager-section">
+                <h3 data-i18n="scheduler.gatekeeper">🛡️ GATEKEEPER (ACTIVE HOURS)</h3>
+                <div id="gatekeeper-list" class="gatekeeper-grid">
+                    <!-- Dynamic Gatekeeper Items -->
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <!-- Routines Section -->
+            <section class="manager-section">
+                <div class="section-header">
+                    <h3 data-i18n="scheduler.routines">📅 AUTOMATION ROUTINES</h3>
+                    <button class="add-btn" onclick="openRoutineEditor()" data-i18n="scheduler.add_routine">+ ADD</button>
+                </div>
+                <div id="routine-list" class="routine-grid">
+                    <!-- Dynamic Routine Cards -->
+                </div>
+            </section>
+        </div>
+
+        <div class="modal-footer">
+            <button class="save-btn" onclick="saveSchedulerConfig()" data-i18n="scheduler.save_all">SAVE ALL CONFIGURATIONS</button>
+        </div>
+    </div>
+</div>
+
+<!-- Routine Editor Modal (Sub-modal) -->
+<div id="routine-editor-modal" class="aegis-modal" style="display: none; z-index: 10001;">
+    <div class="modal-overlay" onclick="closeRoutineEditor()"></div>
+    <div class="modal-content sub-modal glassmorphism">
+        <div class="modal-header">
+            <h3 id="editor-title">ADD/EDIT ROUTINE</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-routine-id">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="routine-name" placeholder="e.g. Morning Coffee Music">
+            </div>
+            <div class="form-group">
+                <label>Time (HH:MM or 'hourly')</label>
+                <input type="text" id="routine-time" placeholder="09:00">
+            </div>
+            <div class="form-group">
+                <label>Action</label>
+                <select id="routine-action" onchange="toggleActionFields()">
+                    <option value="tactical_briefing">Tactical Briefing</option>
+                    <option value="widget_briefing">Widget Briefing</option>
+                    <option value="yt_play">YouTube: Play Playlist</option>
+                    <option value="yt_stop">YouTube: Stop</option>
+                    <option value="yt_volume">YouTube: Set Volume</option>
+                    <option value="wallpaper_set">Wallpaper: Set</option>
+                    <option value="speak">Speak TTS</option>
+                    <option value="reload">System Reload</option>
+                </select>
+                <div id="action-desc" class="info-text" style="font-size: 0.75rem; color: #00e5ff; margin-top: 5px; opacity: 0.9;">
+                    <!-- JS에서 동적으로 채워짐 -->
+                </div>
+            </div>
+            <div id="field-target" class="form-group" style="display:none;">
+                <label id="label-target">Target (Playlist ID / Widget ID / URL)</label>
+                <input type="text" id="routine-target">
+            </div>
+            <div id="field-volume" class="form-group" style="display:none;">
+                <label>Volume (0-100)</label>
+                <input type="number" id="routine-volume" min="0" max="100" value="50">
+            </div>
+            <div id="field-text" class="form-group" style="display:none;">
+                <label>TTS Text</label>
+                <textarea id="routine-text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Days (0=Sun, 6=Sat)</label>
+                <div class="days-selector" id="routine-days-container">
+                    <!-- JS에서 동적으로 생성 (I18n 대응) -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel-btn" onclick="closeRoutineEditor()">CANCEL</button>
+            <button class="apply-btn" onclick="applyRoutineChanges()">APPLY</button>
+        </div>
+    </div>
+</div>
+
+<!-- Gatekeeper Editor Modal (Sub-modal) -->
+<div id="gk-editor-modal" class="aegis-modal" style="display: none; z-index: 10001;">
+    <div class="modal-overlay" onclick="closeGKEditor()"></div>
+    <div class="modal-content sub-modal glassmorphism">
+        <div class="modal-header">
+            <h3 id="gk-editor-title">EDIT GATEKEEPER</h3>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-gk-category">
+            <div class="form-group">
+                <label>Logic Type</label>
+                <select id="gk-logic-type">
+                    <option value="allow">Allow (허용 시간 설정)</option>
+                    <option value="deny">Deny (차단 시간 설정)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group half">
+                    <label>Start Time (HHMM)</label>
+                    <input type="text" id="gk-start-time" placeholder="0900">
+                </div>
+                <div class="form-group half">
+                    <label>End Time (HHMM)</label>
+                    <input type="text" id="gk-end-time" placeholder="1800">
+                </div>
+            </div>
+            <div class="info-text" style="font-size: 0.75rem; color: #00e5ff; opacity: 0.8; margin-top: -10px; margin-bottom: 20px;">
+                * HHMM 형식으로 입력하세요 (예: 09시 30분 -> 0930)
+            </div>
+            <div class="form-group">
+                <label>Active Days</label>
+                <div class="days-selector" id="gk-days-container">
+                    <!-- JS에서 동적으로 생성 -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel-btn" onclick="closeGKEditor()">CANCEL</button>
+            <button class="apply-btn" onclick="applyGKChanges()">APPLY</button>
+        </div>
+    </div>
+</div>

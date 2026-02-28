@@ -5,8 +5,19 @@
 
 function initWeatherTheme() {
     updateWeatherTheme();
-    // 30분마다 날씨 테마 갱신
-    setInterval(updateWeatherTheme, 1800000);
+
+    if (window.briefingScheduler) {
+        let updateCounter = 0;
+        window.briefingScheduler.registerWidget('weather_theme_update', 'min', () => {
+            updateCounter++;
+            if (updateCounter >= 30) { // 30분 주기
+                updateWeatherTheme();
+                updateCounter = 0;
+            }
+        });
+    } else {
+        setInterval(updateWeatherTheme, 1800000);
+    }
 }
 
 async function updateWeatherTheme() {
@@ -72,14 +83,25 @@ function createParticles(container, count, type) {
 }
 
 function startLightning(element) {
-    setInterval(() => {
-        if (Math.random() > 0.95) {
-            element.style.filter = 'brightness(3)';
-            setTimeout(() => {
-                element.style.filter = 'brightness(1)';
-            }, 100);
-        }
-    }, 2000);
+    if (window.briefingScheduler) {
+        window.briefingScheduler.registerWidget('weather_lightning', 'sec', () => {
+            if (Math.random() > 0.95) {
+                element.style.filter = 'brightness(3)';
+                setTimeout(() => {
+                    element.style.filter = 'brightness(1)';
+                }, 100);
+            }
+        });
+    } else {
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                element.style.filter = 'brightness(3)';
+                setTimeout(() => {
+                    element.style.filter = 'brightness(1)';
+                }, 100);
+            }
+        }, 2000);
+    }
 }
 
 // 글로벌 초기화

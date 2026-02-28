@@ -5,7 +5,19 @@
 
 function initSystemStats() {
     updateSystemStats();
-    setInterval(updateSystemStats, 5000); // 5초마다 갱신
+
+    if (window.briefingScheduler) {
+        let tickCounter = 0;
+        window.briefingScheduler.registerWidget('system_stats', 'sec', () => {
+            tickCounter++;
+            if (tickCounter >= 5) { // 5초 주기
+                updateSystemStats();
+                tickCounter = 0;
+            }
+        });
+    } else {
+        setInterval(updateSystemStats, 5000);
+    }
 }
 
 async function updateSystemStats() {

@@ -40,7 +40,30 @@ async function startNews() {
     };
 
     updateNewsData();
-    const refreshMs = (config.update_interval_min || 30) * 60 * 1000;
-    setInterval(updateNewsData, refreshMs);
-    setInterval(showNextNews, 8000);
+
+    if (window.briefingScheduler) {
+        let updateCounter = 0;
+        let showCounter = 0;
+        const updateIntervalMin = config.update_interval_min || 30;
+
+        window.briefingScheduler.registerWidget('news_update', 'min', () => {
+            updateCounter++;
+            if (updateCounter >= updateIntervalMin) {
+                updateNewsData();
+                updateCounter = 0;
+            }
+        });
+
+        window.briefingScheduler.registerWidget('news_rotate', 'sec', () => {
+            showCounter++;
+            if (showCounter >= 8) { // 8초마다 뉴스 회전
+                showNextNews();
+                showCounter = 0;
+            }
+        });
+    } else {
+        const refreshMs = (config.update_interval_min || 30) * 60 * 1000;
+        setInterval(updateNewsData, refreshMs);
+        setInterval(showNextNews, 8000);
+    }
 }

@@ -10,9 +10,20 @@ async function startProactiveAgent() {
     const config = await (await fetch('/config/proactive')).json();
     const interval = (config.check_interval_min || 5) * 60 * 1000;
 
-    // console.log(`[Proactive] Agent started with interval: ${interval}ms`);
+    if (window.briefingScheduler) {
+        let tickCounter = 0;
+        const intervalMin = config.check_interval_min || 5;
 
-    proactiveInterval = setInterval(checkProactiveTriggers, interval);
+        window.briefingScheduler.registerWidget('proactive_agent', 'min', () => {
+            tickCounter++;
+            if (tickCounter >= intervalMin) {
+                checkProactiveTriggers();
+                tickCounter = 0;
+            }
+        });
+    } else {
+        proactiveInterval = setInterval(checkProactiveTriggers, interval);
+    }
 }
 
 async function checkProactiveTriggers() {

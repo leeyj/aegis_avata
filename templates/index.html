@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/static/css/components/wallpaper.css">
     <link rel="stylesheet" href="/static/css/components/notion.css">
     <link rel="stylesheet" href="/static/css/components/search_window.css">
+    <link rel="stylesheet" href="/static/css/components/scheduler_manager.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,6 +52,7 @@
 
     {% include 'components/terminal.html' %}
     {% include 'components/search_window.html' %}
+    {% include 'components/scheduler_manager.html' %}
 
     <!-- Framework & UI Scripts -->
     <script src="/static/js/logger.js" defer></script>
@@ -65,6 +67,14 @@
     <script src="/static/js/ui_briefing_manager.js" defer></script>
     <script src="/static/js/ui_interaction_manager.js" defer></script>
     <script src="/static/js/external_api_manager.js" defer></script>
+    
+    <!-- Scheduler Manager Modules -->
+    <script src="/static/js/scheduler/api.js" defer></script>
+    <script src="/static/js/scheduler/render.js" defer></script>
+    <script src="/static/js/scheduler/editor.js" defer></script>
+    <script src="/static/js/scheduler/gk_editor.js" defer></script>
+    <script src="/static/js/scheduler/index.js" defer></script>
+    
     <script src="/static/js/ui.js" defer></script>
     
     <!-- Widget Modules (Deferred) -->
@@ -86,7 +96,12 @@
     <script src="/static/js/widgets/visualizer.js" defer></script>
     <script src="/static/js/widgets/proactive_agent.js" defer></script>
     <script src="/static/js/widgets/youtube_music.js" defer></script>
-    <script src="/static/js/widgets/wallpaper.js" defer></script>
+    
+    <!-- Wallpaper Manager Modules -->
+    <script src="/static/js/wallpaper/api.js" defer></script>
+    <script src="/static/js/wallpaper/render.js" defer></script>
+    <script src="/static/js/wallpaper/index.js" defer></script>
+    
     <script src="/static/js/widgets/notion.js" defer></script>
     <script src="/static/js/widgets/search_window.js" defer></script>
     

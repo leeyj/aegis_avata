@@ -6,7 +6,8 @@
         "unlock_widgets": "UNLOCK WIDGETS",
         "studio": "LIVE2D STUDIO",
         "logout": "SYSTEM LOGOUT",
-        "sync_success": "Layout synced to server."
+        "sync_success": "Layout synced to server.",
+        "routine_manager": "🕒 ROUTINE MANAGER"
     },
     "widgets": {
         "loading": "Loading Data...",
@@ -87,6 +88,34 @@
             "success": "Success",
             "fail": "Failed",
             "done": "Done"
+        }
+    },
+    "scheduler": {
+        "manager_title": "🕒 AEGIS ROUTINE MANAGER",
+        "gatekeeper": "🛡️ GATEKEEPER (ACTIVE HOURS)",
+        "routines": "📅 AUTOMATION ROUTINES",
+        "add_routine": "+ ADD",
+        "save_all": "SAVE ALL CONFIGURATIONS",
+        "sync_success": "Scheduler config saved.",
+        "hourly": "Hourly",
+        "days": {
+            "0": "Sun",
+            "1": "Mon",
+            "2": "Tue",
+            "3": "Wed",
+            "4": "Thu",
+            "5": "Fri",
+            "6": "Sat"
+        },
+        "action_descriptions": {
+            "tactical_briefing": "Tactical Briefing: Provides an integrated summary report of news, stocks, and weather.",
+            "widget_briefing": "Widget Briefing: Provides detailed info for a specific widget (e.g., 'news', 'stock').",
+            "yt_play": "YouTube Play: Starts playing music by entering a specific Playlist ID.",
+            "yt_stop": "YouTube Stop: Immediately stops current music playback.",
+            "yt_volume": "YouTube Volume: Sets the music playback volume to a specified level (0-100).",
+            "wallpaper_set": "Set Wallpaper: Changes the background using an image/video URL or local path.",
+            "speak": "Speak TTS: Directly outputs the entered text as an AI voice.",
+            "reload": "System Reload: Refreshes the browser page to initialize data."
         }
     },
     "terminal": {

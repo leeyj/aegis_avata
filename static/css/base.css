@@ -1,12 +1,37 @@
 :root {
+    /* --- Core Palette --- */
     --neon: #00f2ff;
+    --neon-rgb: 0, 242, 255;
+    --accent: #00a8ff;
+    --danger: #ff4b4b;
+    --warning: #ffeb3b;
+    --success: #32ff7e;
     --bg: #05060a;
-    --glass: rgba(15, 20, 30, 0.8);
-    --border: rgba(0, 242, 255, 0.3);
+    --bg-soft: rgba(20, 20, 25, 0.85);
 
-    /* Grid System Config */
+    /* --- Glassmorphism --- */
+    --glass: rgba(15, 20, 30, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --neon-border: rgba(0, 242, 255, 0.3);
+    --blur: blur(10px);
+    --shadow-neon: 0 0 20px rgba(0, 242, 255, 0.2);
+
+    /* --- Spacing & Layout --- */
     --grid-unit: 220px;
     --grid-gap: 20px;
+    --pad-sm: 8px;
+    --pad-md: 15px;
+    --pad-lg: 30px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* --- Z-layers --- */
+    --z-base: 1;
+    --z-widget: 100;
+    --z-sidebar: 2000;
+    --z-modal: 10000;
+    --z-overlay: 9999;
 }
 
 * {
@@ -60,6 +85,44 @@ body {
         opacity: 1;
         transform: scale(1.2);
     }
+}
+
+/* --- Common Layout & UI Components --- */
+.glass-panel {
+    background: var(--glass);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--neon-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-neon);
+}
+
+.neon-btn {
+    background: rgba(var(--neon-rgb), 0.1);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 8px 15px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.neon-btn:hover {
+    background: rgba(var(--neon-rgb), 0.2);
+    box-shadow: 0 0 15px rgba(var(--neon-rgb), 0.3);
+}
+
+.btn-danger {
+    background: rgba(255, 75, 75, 0.1) !important;
+    border: 1px solid var(--danger) !important;
+    color: var(--danger) !important;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 75, 75, 0.2) !important;
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.2) !important;
 }
 
 /* --- Utility Classes --- */

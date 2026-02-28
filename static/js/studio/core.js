@@ -24,7 +24,6 @@ async function initStudio() {
     // 렌더링된 HTML 데이터셋에서 스폰서 여부를 가져옵니다.
     window.isSponsor = document.body.dataset.isSponsor === 'True';
     initPixiApp(); // renderer.js에 정의된 PIXI 앱 초기화
-    window.animationManager = new AnimationManager(); // 공통 애니메이션 매니저 생성
     await refreshModelList(); // 모델 목록 불러오기
 }
 

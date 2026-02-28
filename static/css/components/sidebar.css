@@ -132,3 +132,62 @@ input:checked+.slider {
 input:checked+.slider:before {
     transform: translateX(16px);
 }
+
+/* --- Sidebar Buttons --- */
+.sidebar-action-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.sidebar-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: bold;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.sidebar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-btn.primary {
+    background: rgba(var(--neon-rgb), 0.15);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    padding: 12px;
+}
+
+.sidebar-btn.primary:hover {
+    background: rgba(var(--neon-rgb), 0.25);
+    box-shadow: 0 0 15px rgba(var(--neon-rgb), 0.3);
+}
+
+.sidebar-btn.accent {
+    border-color: var(--neon);
+    color: var(--neon);
+}
+
+.sidebar-btn.studio {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: #ff00ff;
+    color: #ff00ff;
+}
+
+.sidebar-btn.studio:hover {
+    background: rgba(255, 0, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}

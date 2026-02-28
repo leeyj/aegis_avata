@@ -80,6 +80,20 @@ async function startFinance() {
     };
 
     updateFinance();
-    const refreshMs = (config.update_interval_min || 1) * 60 * 1000;
-    setInterval(updateFinance, refreshMs);
+
+    if (window.briefingScheduler) {
+        let tickCounter = 0;
+        const intervalMin = config.update_interval_min || 1;
+
+        window.briefingScheduler.registerWidget('finance', 'min', () => {
+            tickCounter++;
+            if (tickCounter >= intervalMin) {
+                updateFinance();
+                tickCounter = 0;
+            }
+        });
+    } else {
+        const refreshMs = (config.update_interval_min || 1) * 60 * 1000;
+        setInterval(updateFinance, refreshMs);
+    }
 }

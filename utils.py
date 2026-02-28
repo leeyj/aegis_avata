@@ -15,7 +15,7 @@ def load_json_config(path):
     """지정된 경로의 JSON 파일을 안전하게 읽기"""
     if os.path.exists(path):
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "r", encoding="utf-8-sig") as f:
                 content = f.read().strip()
                 return json.loads(content) if content else {}
         except Exception as e:

@@ -35,6 +35,20 @@ async function startWeather() {
     };
 
     updateWeather();
-    const refreshMs = (config.update_interval_min || 10) * 60 * 1000;
-    setInterval(updateWeather, refreshMs);
+
+    if (window.briefingScheduler) {
+        let tickCounter = 0;
+        const intervalMin = config.update_interval_min || 10;
+
+        window.briefingScheduler.registerWidget('weather', 'min', () => {
+            tickCounter++;
+            if (tickCounter >= intervalMin) {
+                updateWeather();
+                tickCounter = 0;
+            }
+        });
+    } else {
+        const refreshMs = (config.update_interval_min || 10) * 60 * 1000;
+        setInterval(updateWeather, refreshMs);
+    }
 }

@@ -99,15 +99,11 @@ function updateLockUI() {
     if (window.uiLocked) {
         btn.setAttribute('data-i18n', 'sidebar.unlock_widgets');
         btn.innerText = _t('sidebar.unlock_widgets');
-        btn.style.background = 'rgba(255, 0, 0, 0.1)';
-        btn.style.border = '1px solid #ff4444';
-        btn.style.color = '#ff4444';
+        btn.classList.add('btn-danger');
     } else {
         btn.setAttribute('data-i18n', 'sidebar.lock_widgets');
         btn.innerText = _t('sidebar.lock_widgets');
-        btn.style.background = 'rgba(255, 255, 255, 0.05)';
-        btn.style.border = '1px solid rgba(255, 255, 255, 0.2)';
-        btn.style.color = '#fff';
+        btn.classList.remove('btn-danger');
     }
 }
 

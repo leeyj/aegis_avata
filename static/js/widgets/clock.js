@@ -14,8 +14,7 @@ async function startClock() {
     clockEl.style.fontSize = config.font_size;
     if (config.color) clockEl.style.color = config.color;
 
-    const updateTime = () => {
-        const now = new Date();
+    const updateTime = (now) => {
         const year = now.getFullYear(), month = String(now.getMonth() + 1).padStart(2, '0'), day = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0'), minutes = String(now.getMinutes()).padStart(2, '0'), seconds = String(now.getSeconds()).padStart(2, '0');
 
@@ -23,8 +22,11 @@ async function startClock() {
         str = str.replace(/YYYY/g, year).replace(/MM/g, month).replace(/DD/g, day).replace(/HH/g, hours).replace(/mm/g, minutes).replace(/ss/g, seconds).replace(/SS/g, seconds);
         clockEl.innerHTML = str.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
     };
-    updateTime();
-    setInterval(updateTime, 1000);
 
-
+    if (window.briefingScheduler) {
+        window.briefingScheduler.registerWidget('clock', 'sec', updateTime);
+    } else {
+        updateTime(new Date());
+        setInterval(() => updateTime(new Date()), 1000);
+    }
 }

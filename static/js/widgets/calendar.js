@@ -65,23 +65,44 @@ async function startCalendar() {
     };
 
     updateCalendar();
-    const refreshMs = (config.refresh_interval_min || 5) * 60 * 1000;
-    setInterval(updateCalendar, refreshMs);
 
-    // 10분 전 알림 감시 로직
-    setInterval(() => {
-        const now = new Date();
-        upcomingEvents.forEach(ev => {
-            if (ev.is_all_day) return;
-            const evTime = new Date(ev.start);
-            const diffMins = Math.floor((evTime - now) / 60000);
-            const key = `${ev.summary}-${ev.start}`;
+    if (window.briefingScheduler) {
+        let updateCounter = 0;
+        let alertCounter = 0;
+        const intervalMin = config.refresh_interval_min || 5;
 
-            if (diffMins === 10 && !notifiedEvents.has(key)) {
-                notifiedEvents.add(key);
-                speakTTS(`10분 뒤, ${ev.summary} 일정이 시작됩니다.`);
-                if (window.playMotionFile) window.playMotionFile("TapBody.motion3.json");
+        // 캘린더 데이터 갱신 (분 단위)
+        window.briefingScheduler.registerWidget('calendar_update', 'min', () => {
+            updateCounter++;
+            if (updateCounter >= intervalMin) {
+                updateCalendar();
+                updateCounter = 0;
             }
         });
-    }, 10000);
+
+        // 10분 전 알림 감시 (초 단위)
+        window.briefingScheduler.registerWidget('calendar_alert', 'sec', () => {
+            alertCounter++;
+            if (alertCounter >= 10) { // 10초마다 체크
+                const now = new Date();
+                upcomingEvents.forEach(ev => {
+                    if (ev.is_all_day) return;
+                    const evTime = new Date(ev.start);
+                    const diffMins = Math.floor((evTime - now) / 60000);
+                    const key = `${ev.summary}-${ev.start}`;
+
+                    if (diffMins === 10 && !notifiedEvents.has(key)) {
+                        notifiedEvents.add(key);
+                        if (typeof speakTTS === 'function') speakTTS(`10분 뒤, ${ev.summary} 일정이 시작됩니다.`);
+                        if (window.playMotionFile) window.playMotionFile("TapBody.motion3.json");
+                    }
+                });
+                alertCounter = 0;
+            }
+        });
+    } else {
+        const refreshMs = (config.refresh_interval_min || 5) * 60 * 1000;
+        setInterval(updateCalendar, refreshMs);
+        setInterval(() => { /* Fallback alert logic */ }, 10000);
+    }
 }
