@@ -46,6 +46,12 @@
     z-index: 1000;
 }
 
+/* Locked state (Plugin-X Global) */
+.glass-panel.locked {
+    cursor: default !important;
+    resize: none !important;
+}
+
 /* Scrollbar Styling */
 .glass-panel::-webkit-scrollbar {
     width: 6px;

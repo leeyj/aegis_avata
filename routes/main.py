@@ -1,33 +1,31 @@
-from flask import Blueprint, render_template, jsonify, request
 import os
-import json
+from flask import Blueprint, render_template, jsonify, send_from_directory, request
 from routes.decorators import login_required
-from routes.config import TERMINAL_CONFIG_PATH
-from utils import load_json_config
+from utils import load_settings
 
 main_bp = Blueprint("main", __name__)
+
+
+@main_bp.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(main_bp.root_path, "..", "static"),
+        "favicon.png",
+        mimetype="image/png",
+    )
 
 
 @main_bp.route("/")
 @login_required
 def index():
-    from utils import load_settings
-
     settings = load_settings()
     return render_template("index.html", settings=settings)
-
-
-@main_bp.route("/api/terminal/config", methods=["GET"])
-@login_required
-def get_terminal_config():
-    config = load_json_config(TERMINAL_CONFIG_PATH)
-    return jsonify({"status": "success", "config": config})
 
 
 @main_bp.route("/save_log", methods=["POST"])
 @login_required
 def save_log():
-    from flask import request, jsonify
+    from flask import jsonify
     from datetime import datetime
 
     data = request.json
@@ -45,10 +43,6 @@ def save_log():
                 level = log.get("level", "INFO")
                 dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 f.write(f"[{dt}] [{level}] {msg}\n")
-        return jsonify({"status": "ok"})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
         return jsonify({"status": "ok"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

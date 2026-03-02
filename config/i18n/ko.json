@@ -1,4 +1,7 @@
 {
+    "meta": {
+        "name": "🇰🇷 KOREAN"
+    },
     "sidebar": {
         "panel_control": "PANEL CONTROL",
         "save_settings": "설정 저장(Cloud)",
@@ -14,111 +17,15 @@
         "no_data": "데이터가 없습니다.",
         "refresh": "새로고침",
         "briefing": "AI 브리핑",
-        "search_placeholder": "검색어를 입력하고 엔터를 누르세요...",
-        "yt_wait": "로딩 대기 중...",
-        "yt_select": "플레이리스트 선택",
-        "weather_template": "{city}의 {status}"
+        "search_placeholder": "검색어를 입력하고 엔터를 누르세요..."
     },
     "panels": {
-        "p-title": "시스템 타이틀",
-        "p-clock": "시스템 시계",
-        "p-weather": "환경 정보",
-        "p-profit": "거래 수익",
-        "p-finance": "시장 지표",
-        "p-news": "뉴스 브리핑",
-        "p-calendar": "일일 일정",
-        "p-todo": "할 일 목록",
-        "p-gmail": "Gmail 수신함",
-        "p-stock": "티커 자유모니터",
-        "p-youtube": "YouTube 뮤직",
-        "p-unit": "유닛 선택",
-        "p-system": "시스템 정보",
-        "p-wallpaper": "배경화면 제어",
-        "p-notion": "노션 인텔리전스"
-    },
-    "system_alerts": {
-        "finance_change": "금융 지수 변동: {name} {change}% 감지",
-        "calendar_start": "곧 일정이 시작됩니다: {summary} ({diff}분 전)"
+        "p-profit": "거래 수익"
     },
     "directions": {
         "up": "상승",
         "down": "하락",
         "rise": "급등",
         "fall": "급락"
-    },
-    "studio": {
-        "title": "💎 Live2D 스튜디오",
-        "back_dashboard": "🏠 대시보드",
-        "select_model": "모델 선택",
-        "loading_models": "모델 목록 로드 중...",
-        "apply_btn": "적용",
-        "fix_btn_title": "오류 자동 수정 및 최적화",
-        "unusable_reason": "사용불가 사유:",
-        "motions": "모션 (MOTIONS)",
-        "expressions": "표정 (EXPRESSIONS)",
-        "zoom": "줌 배율",
-        "offset_x": "수평 위치 (X)",
-        "offset_y": "수직 위치 (Y)",
-        "reset_view": "화면 초기화",
-        "alias_manager": "📝 에일리어스 매니저",
-        "sponsor_verified": "스폰서 인증됨",
-        "sponsor_only": "스폰서 전용",
-        "selected": "선택됨:",
-        "standard_motions": "표준 동작 매핑",
-        "standard_emotions": "표준 감정 매핑",
-        "cancel": "취소",
-        "editor_title": "alias.json 에디터",
-        "save_alias": "alias.json 저장",
-        "reaction_simulator": "⚡ 리액션 시뮬레이터",
-        "simulator_placeholder": "동작을 트리거하여 상세 내용을 확인하세요...",
-        "ai_briefing": "AI 브리핑 미리보기",
-        "messages": {
-            "no_motions": "인식된 모션 파일이 없습니다.",
-            "no_expressions": "인식된 표정 파일이 없습니다.",
-            "sponsor_only": "스폰서 전용 기능입니다!",
-            "select_first": "먼저 모델을 선택해 주세요.",
-            "apply_confirm": "'{name}' 모델을 실운영 환경에 적용하시겠습니까?\n기존에 운용 중인 동일 이름의 모델 파일이 있다면 덮어씌워집니다.",
-            "fix_confirm": "'{name}' 모델을 최적화하시겠습니까?\n\n- 이 작업은 OLD 폴더에 백업을 생성합니다.\n- 구형 경로 및 설정을 최신 규격으로 변환합니다.",
-            "fix_report_title": "✨ [{name}] 최적화 완료 리포트",
-            "fix_folder_renamed": "📁 폴더 구조 보정",
-            "fix_json_standardized": "📄 설정 파일 규격화",
-            "fix_paths_fixed": "🔗 내부 경로 수정",
-            "fix_alias_generated": "🏷️ 에일리어스 생성",
-            "fix_backup_loc": "📦 백업 위치: OLD 폴더 내 보관됨",
-            "success": "성공",
-            "fail": "실패",
-            "done": "완료"
-        }
-    },
-    "scheduler": {
-        "manager_title": "🕒 AEGIS 루틴 매니저",
-        "gatekeeper": "🛡️ 게이트키퍼 (활성 시간)",
-        "routines": "📅 자동화 루틴",
-        "add_routine": "+ 추가",
-        "save_all": "모든 설정 저장",
-        "sync_success": "스케줄러 설정이 저장되었습니다.",
-        "hourly": "매 시 정각",
-        "days": {
-            "0": "일",
-            "1": "월",
-            "2": "화",
-            "3": "수",
-            "4": "목",
-            "5": "금",
-            "6": "토"
-        },
-        "action_descriptions": {
-            "tactical_briefing": "전체 요약 브리핑: 뉴스, 주식, 날씨 등 모든 정보를 하나로 요약하여 보고합니다.",
-            "widget_briefing": "특정 위젯 브리핑: 지정한 단일 위젯(예: 'news', 'stock')의 상세 정보를 보고합니다.",
-            "yt_play": "YouTube 재생: 특정 플레이리스트 ID를 입력하여 음악 재생을 시작합니다.",
-            "yt_stop": "YouTube 정지: 현재 재생 중인 음악을 즉시 중단합니다.",
-            "yt_volume": "YouTube 볼륨: 음악 재생 볼륨을 지정된 수치(0-100)로 설정합니다.",
-            "wallpaper_set": "배경화면 변경: 이미지/영상 URL 또는 로컬 경로를 사용하여 배경을 교체합니다.",
-            "speak": "TTS 음성 출력: 입력한 텍스트를 AI 음성으로 직접 출력합니다.",
-            "reload": "시스템 새로고침: 브라우저 페이지를 새로고침하여 데이터를 초기화합니다."
-        }
-    },
-    "terminal": {
-        "placeholder": "명령을 입력하세요... (/ 도움말)"
     }
 }

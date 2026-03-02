@@ -1,0 +1,10 @@
+# AEGIS AI Agent Instructions
+
+## 🏁 Mandatory Startup Procedure
+새로운 AI 인스턴스(인스턴스 세션)가 시작되면, 작업을 시작하기 전에 반드시 다음의 네비게이터 문서를 최우선으로 참조하여 전체 시스템 로직과 아키텍처를 숙지해야 한다.
+
+1.  **기술 네비게이터 ([docs/navigator_ai.md](file:///c:/Python312/gods/docs/navigator_ai.md))**: 시스템 부팅 시퀀스, 보안 프록시 레이어, 백엔드 블루프린트 구조 등 기술적 상세 명세서.
+2.  **사용자 네비게이터 ([docs/navigator_user.md](file:///c:/Python312/gods/docs/navigator_user.md))**: 프로젝트의 전체적인 기능 개요 및 운영 방식 가이드.
+
+---
+**Note**: 본 시스템은 고도로 모듈화된 **Plugin-X** 아키텍처를 따르며, 모든 위젯 로직은 `/plugins`에, 비즈니스 로직은 `/services` 및 전문화된 `/routes`에 분리되어 있다. 하드코딩을 지양하고 기존의 모듈화 패턴을 엄격히 준수할 것.

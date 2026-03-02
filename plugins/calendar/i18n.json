@@ -1,0 +1,18 @@
+{
+    "ko": {
+        "panels": {
+            "p-calendar": "일일 일정"
+        },
+        "system_alerts": {
+            "calendar_start": "곧 일정이 시작됩니다: {summary} ({diff}분 전)"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-calendar": "Daily Schedule"
+        },
+        "system_alerts": {
+            "calendar_start": "Upcoming Event: {summary} (in {diff} min)"
+        }
+    }
+}

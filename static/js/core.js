@@ -62,6 +62,9 @@ async function initEngine() {
         // 위젯은 즉무(즉시 무조건) 실행하여 데이터 먼저 확보
         if (typeof initWidgets === 'function') initWidgets();
 
+        // [Plugin-X] 플러그인 동적 로딩 시작
+        if (window.PluginLoader) window.PluginLoader.init();
+
         // 5. 아바타 로딩 (무거운 작업이므로 백그라운드 병렬 처리)
         (async () => {
             if (typeof refreshModelList === 'function') await refreshModelList(window.activeModelName);
@@ -87,11 +90,21 @@ window.saveSettings = () => {
             ui_positions: window.uiPositions,
             panel_visibility: window.panelVisibility,
             last_model: window.activeModelName,
-            ui_locked: window.uiLocked
+            ui_locked: window.uiLocked,
+            lang: window.currentLang // [추가] 현재 선택된 언어 저장
         };
         localStorage.setItem('aegis_layout', JSON.stringify(localState));
 
-        const serverSync = { last_model: window.activeModelName };
+        const serverSync = {
+            last_model: window.activeModelName,
+            lang: window.currentLang,
+            ui_positions: window.uiPositions,
+            panel_visibility: window.panelVisibility,
+            ui_locked: window.uiLocked,
+            zoom: window.userZoom,
+            offset_x: window.offsetX,
+            offset_y: window.offsetY
+        };
         fetch('/save_settings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

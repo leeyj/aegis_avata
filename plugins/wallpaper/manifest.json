@@ -1,0 +1,13 @@
+{
+    "id": "wallpaper",
+    "name": "배경 관리",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": []
+}

@@ -123,6 +123,15 @@
                         <button onclick="mapAsset('shock')">shock</button>
                     </div>
                 </div>
+                
+                <!-- Custom Alias Input -->
+                <div class="custom-alias-group" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                    <h4 data-i18n="studio.custom_alias" style="margin-bottom: 5px;">Custom Alias</h4>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="custom-alias-input" placeholder="e.g. superhappy" style="flex: 1; padding: 5px; background: rgba(0,0,0,0.3); border: 1px solid #444; color: white; border-radius: 4px;">
+                        <button class="apply-btn" onclick="mapCustomAsset()" style="padding: 5px 10px;">Add</button>
+                    </div>
+                </div>
             </div>
             <button class="cancel-btn" onclick="cancelMapping()" data-i18n="studio.cancel">Cancel</button>
         </div>

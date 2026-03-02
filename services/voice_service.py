@@ -7,7 +7,8 @@ import json
 # Config Paths (Relative to project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TTS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "tts.json")
-SYSTEM_CONFIG_PATH = os.path.join(BASE_DIR, "config", "system.json")
+
+from utils import load_settings
 
 
 def load_json(path):
@@ -21,11 +22,11 @@ def load_json(path):
 
 
 def get_tts_settings():
-    """tts.json 및 system.json에서 현재 언어에 맞는 설정을 로드합니다."""
+    """tts.json 및 settings.json에서 현재 언어에 맞는 설정을 로드합니다."""
     tts_config = load_json(TTS_CONFIG_PATH)
-    sys_config = load_json(SYSTEM_CONFIG_PATH)
+    settings = load_settings()
 
-    lang = sys_config.get("lang", "ko")
+    lang = settings.get("lang", "ko")
     voices = tts_config.get(
         "voices", {"ko": "ko-KR-SunHiNeural", "en": "en-US-AvaNeural"}
     )

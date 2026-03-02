@@ -114,7 +114,7 @@ const NotionSearchWindow = {
         listEl.innerHTML = '';
 
         try {
-            const response = await fetch(`/api/notion/search?query=${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/plugins/notion/search?query=${encodeURIComponent(query)}`);
             const data = await response.json();
 
             if (data.success && data.items.length > 0) {

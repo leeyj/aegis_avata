@@ -7,7 +7,6 @@ import tempfile
 CONFIG_DIR = "config"
 SECRETS_FILE = os.path.join(CONFIG_DIR, "secrets.json")
 SETTINGS_FILE = "settings.json"
-WALLPAPER_FILE = "wallpaper.json"
 _S = "AEGIS_CORE_V48_SECRET_SALT_2026"
 
 
@@ -21,6 +20,28 @@ def load_json_config(path):
         except Exception as e:
             print(f"[Utils] Load Error ({path}): {e}")
     return {}
+
+
+def load_all_reactions(lang="ko"):
+    """모든 플러그인 폴더의 reactions.json을 통합하여 특정 언어셋만 반환합니다."""
+    from routes.config import PLUGINS_DIR
+
+    combined = {}
+    if not os.path.exists(PLUGINS_DIR):
+        return combined
+
+    for plugin_id in os.listdir(PLUGINS_DIR):
+        p_path = os.path.join(PLUGINS_DIR, plugin_id, "reactions.json")
+        if os.path.exists(p_path):
+            try:
+                p_data = load_json_config(p_path)
+                # 언어별 키 탐색 (ko/en) -> 없으면 전체 데이터 사용(하위호환)
+                lang_reactions = p_data.get(lang, p_data)
+                if isinstance(lang_reactions, dict):
+                    combined.update(lang_reactions)
+            except Exception as e:
+                print(f"[Utils] Error merging reactions from {plugin_id}: {e}")
+    return combined
 
 
 def save_json_config(path, data, merge=True):
@@ -76,14 +97,6 @@ def load_settings():
 
 def save_settings(data):
     return save_json_config(SETTINGS_FILE, data)
-
-
-def load_wallpaper_config():
-    return load_json_config(WALLPAPER_FILE)
-
-
-def save_wallpaper_config(data):
-    return save_json_config(WALLPAPER_FILE, data)
 
 
 def get_model_list(models_dir):

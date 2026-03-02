@@ -6,33 +6,21 @@ AEGIS_ROOT = BASE_DIR
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 TEST_MODELS_DIR = os.path.join(BASE_DIR, "test_models")
 I18N_DIR = os.path.join(BASE_DIR, "config", "i18n")
+PLUGINS_DIR = os.path.join(BASE_DIR, "plugins")
 
-# Config Paths
-CLOCK_CONFIG_PATH = os.path.join(BASE_DIR, "config", "clock.json")
-WEATHER_CONFIG_PATH = os.path.join(BASE_DIR, "config", "weather.json")
-SYSTEM_CONFIG_PATH = os.path.join(BASE_DIR, "config", "system.json")
-FINANCE_CONFIG_PATH = os.path.join(BASE_DIR, "config", "finance.json")
-NEWS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "news.json")
-GOOGLE_CONFIG_PATH = os.path.join(BASE_DIR, "config", "google.json")
+# Core Shared Config Paths (BASE_DIR/config)
 TTS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "tts.json")
 BREF_CONFIG_PATH = os.path.join(BASE_DIR, "config", "bref.json")
-TICKER_CONFIG_PATH = os.path.join(BASE_DIR, "config", "ticker.json")
-PROACTIVE_CONFIG_PATH = os.path.join(BASE_DIR, "config", "proactive.json")
 BGM_CONFIG_PATH = os.path.join(BASE_DIR, "config", "bgm.json")
-REACTIONS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "reactions.json")
-SCHEDULER_CONFIG_PATH = os.path.join(BASE_DIR, "config", "scheduler.json")
-PROMPTS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "prompts.json")
 API_CONFIG_PATH = os.path.join(BASE_DIR, "config", "api.json")
-TERMINAL_CONFIG_PATH = os.path.join(BASE_DIR, "config", "terminal.json")
 SECRETS_CONFIG_PATH = os.path.join(BASE_DIR, "config", "secrets.json")
 
 # Google API Paths
-TOKEN_PERSONAL_PATH = os.path.join(BASE_DIR, "config", "token_personal.json")
-TOKEN_WORK_PATH = os.path.join(BASE_DIR, "config", "token_work.json")
 CREDENTIALS_PATH = os.path.join(BASE_DIR, "config", "credentials.json")
 
 # YTMusic Paths
 DEFAULT_AUTH_PATH = os.path.join(BASE_DIR, "headers_auth.txt")
+
 
 # Briefing Cache Paths
 BRIEFING_TEXT_PATH = os.path.join(BASE_DIR, "static", "audio", "last_briefing.txt")

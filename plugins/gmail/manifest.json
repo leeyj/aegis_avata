@@ -1,0 +1,19 @@
+{
+    "id": "gmail",
+    "name": "전술 이메일 브리핑",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.google_suite",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    }
+}

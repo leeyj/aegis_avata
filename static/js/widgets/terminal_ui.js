@@ -66,3 +66,6 @@ window.TerminalUI = {
         }
     }
 };
+
+// [Global Shortcut]
+window.appendLog = (source, message, isDebug = false) => window.TerminalUI.appendLog(source, message, isDebug);

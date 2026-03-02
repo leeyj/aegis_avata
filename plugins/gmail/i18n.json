@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "panels": {
+            "p-gmail": "Gmail 수신함"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-gmail": "Gmail Inbox"
+        }
+    }
+}

@@ -6,7 +6,7 @@
  */
 async function initSimulator() {
     try {
-        const res = await fetch('/studio/api/reactions');
+        const res = await fetch('/api/plugins/studio/reactions');
         window.reactionsData = await res.json();
         const container = document.getElementById('simulator-buttons');
         container.innerHTML = '';

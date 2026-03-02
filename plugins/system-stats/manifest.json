@@ -1,0 +1,38 @@
+{
+    "id": "system-stats",
+    "name": "하드웨어 모니터",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "exports": {
+        "sensors": [
+            {
+                "id": "cpu_percent",
+                "name": "CPU 사용률",
+                "unit": "%",
+                "type": "number",
+                "endpoint": "/api/plugins/system-stats/data",
+                "field": "cpu.percent"
+            },
+            {
+                "id": "memory_percent",
+                "name": "메모리 사용률",
+                "unit": "%",
+                "type": "number",
+                "endpoint": "/api/plugins/system-stats/data",
+                "field": "memory.percent"
+            }
+        ]
+    }
+}

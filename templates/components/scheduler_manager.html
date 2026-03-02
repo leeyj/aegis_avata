@@ -49,14 +49,54 @@
                 <input type="text" id="routine-name" placeholder="e.g. Morning Coffee Music">
             </div>
             <div class="form-group">
+                <label>Trigger Type</label>
+                <select id="routine-trigger-type" onchange="toggleTriggerType()">
+                    <option value="time">⏰ 시간 (Time-based)</option>
+                    <option value="condition">👁️ 조건 감시 (Condition Watch)</option>
+                </select>
+            </div>
+            <div id="field-time" class="form-group">
                 <label>Time (HH:MM or 'hourly')</label>
                 <input type="text" id="routine-time" placeholder="09:00">
+            </div>
+            <!-- 조건 감시 필드 (condition trigger) -->
+            <div id="field-condition" style="display:none;">
+                <div class="form-group">
+                    <label>감시 대상 (Sensor)</label>
+                    <select id="routine-sensor">
+                        <option value="">센서를 선택하세요...</option>
+                        <!-- JS에서 동적 로드 -->
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>조건 (Operator)</label>
+                        <select id="routine-operator">
+                            <option value=">=">≥ 이상</option>
+                            <option value="<=">≤ 이하</option>
+                            <option value=">">＞ 초과</option>
+                            <option value="<">＜ 미만</option>
+                            <option value="==">＝ 같음</option>
+                            <option value="!=">≠ 다름</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label id="label-cond-value">값 (Value)</label>
+                        <input type="text" id="routine-cond-value" placeholder="28">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>쿨다운 (분) — 조건 충족 후 재알림 방지</label>
+                    <input type="number" id="routine-cooldown" min="1" max="1440" value="30">
+                </div>
             </div>
             <div class="form-group">
                 <label>Action</label>
                 <select id="routine-action" onchange="toggleActionFields()">
                     <option value="tactical_briefing">Tactical Briefing</option>
                     <option value="widget_briefing">Widget Briefing</option>
+                    <option value="terminal_command">⭐ Terminal Command (범용)</option>
+                    <option value="api_call">⭐ API Call (범용)</option>
                     <option value="yt_play">YouTube: Play Playlist</option>
                     <option value="yt_stop">YouTube: Stop</option>
                     <option value="yt_volume">YouTube: Set Volume</option>
@@ -78,7 +118,20 @@
             </div>
             <div id="field-text" class="form-group" style="display:none;">
                 <label>TTS Text</label>
-                <textarea id="routine-text"></textarea>
+                <textarea id="routine-text" placeholder="{% raw %}예: 현재 온도는 {{value}}도입니다.{% endraw %}"></textarea>
+                <div class="info-text" style="font-size: 0.7rem; color: #00e5ff; opacity: 0.7; margin-top: 4px;">
+                    💡 <b>{% raw %}{{value}}{% endraw %}</b> = 감시 대상의 현재 값, <b>{% raw %}{{threshold}}{% endraw %}</b> = 설정한 기준값
+                </div>
+            </div>
+            <div id="field-command" class="form-group" style="display:none;">
+                <label>Terminal Command</label>
+                <input type="text" id="routine-command" placeholder="예: /ns clean, /memo 오늘 할 일">
+                <div class="info-text" style="font-size: 0.7rem; color: #00e5ff; opacity: 0.7; margin-top: 4px;">터미널에 입력하는 명령어를 그대로 입력하세요</div>
+            </div>
+            <div id="field-url" class="form-group" style="display:none;">
+                <label>API URL</label>
+                <input type="text" id="routine-url" placeholder="예: /api/plugins/notion/rules/evaluate">
+                <div class="info-text" style="font-size: 0.7rem; color: #00e5ff; opacity: 0.7; margin-top: 4px;">호출할 백엔드 API 경로를 입력하세요</div>
             </div>
             <div class="form-group">
                 <label>Days (0=Sun, 6=Sat)</label>

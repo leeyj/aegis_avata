@@ -1,0 +1,38 @@
+{
+    "ko": {
+        "terminal": {
+            "response": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "SENTIMENT",
+                        "value": "{sentiment}"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "{response}",
+                        "visualType": "none"
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "terminal": {
+            "response": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "SENTIMENT",
+                        "value": "{sentiment}"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "{response}",
+                        "visualType": "none"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -103,10 +103,23 @@ function toggleActionFields() {
     RoutineEditor.toggleActionFields();
 }
 
+function toggleTriggerType() {
+    RoutineEditor.toggleTriggerType();
+}
+
 function applyRoutineChanges() {
     const data = RoutineEditor.getRoutineData();
-    if (!data.name || !data.time) {
-        alert("Please fill in Name and Time.");
+    const triggerType = document.getElementById('routine-trigger-type')?.value || 'time';
+    if (!data.name) {
+        alert("Please fill in Name.");
+        return;
+    }
+    if (triggerType === 'time' && !data.time) {
+        alert("Please fill in Time.");
+        return;
+    }
+    if (triggerType === 'condition' && !data.condition) {
+        alert("감시 대상 센서를 선택해주세요.");
         return;
     }
     if (data.days.length === 0) {

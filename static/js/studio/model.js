@@ -5,7 +5,7 @@
  */
 async function refreshModelList() {
     try {
-        const res = await fetch('/studio/api/models');
+        const res = await fetch('/api/plugins/studio/models');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const models = await res.json();
         const select = document.getElementById('model-select');
@@ -58,7 +58,7 @@ async function loadModel(name) {
         const warningText = document.getElementById('warning-text');
         if (warningBox) warningBox.style.display = 'none';
 
-        const res = await fetch(`/studio/api/model_info/${name}`);
+        const res = await fetch(`/api/plugins/studio/model_info/${name}`);
         const data = await res.json();
         window.modelAssets = data;
         window.currentAliasData = data.aliases || { motions: {}, expressions: {} };
@@ -83,7 +83,7 @@ async function loadModel(name) {
             if (!window.isSponsor) saveBtn.innerText = "Sponsor Only (Locked)";
         }
 
-        const url = `/studio/models/${name}/${data.model_settings_file}`;
+        const url = `/api/plugins/studio/models/${name}/${data.model_settings_file}`;
         const modelRes = await fetch(url);
         const modelJson = await modelRes.json();
         modelJson.url = url;
@@ -143,7 +143,7 @@ async function applyModelToAegis() {
         btn.disabled = true;
         btn.innerText = "Applying...";
 
-        const res = await fetch(`/studio/api/apply_model/${name}`, { method: 'POST' });
+        const res = await fetch(`/api/plugins/studio/apply_model/${name}`, { method: 'POST' });
         const result = await res.json();
 
         btn.disabled = false;
@@ -221,7 +221,7 @@ async function fixModel() {
         btn.disabled = true;
         btn.innerText = "⏳";
 
-        const res = await fetch(`/studio/api/fix_model/${name}`, { method: 'POST' });
+        const res = await fetch(`/api/plugins/studio/fix_model/${name}`, { method: 'POST' });
         const result = await res.json();
 
         btn.disabled = false;

@@ -3,13 +3,13 @@
  */
 window.WallpaperAPI = {
     async getStatus() {
-        const res = await fetch('/api/wallpaper/status');
+        const res = await fetch('/api/plugins/wallpaper/status');
         if (!res.ok) throw new Error("Status API fail");
         return await res.json();
     },
 
     async getList() {
-        const res = await fetch('/api/wallpaper/list');
+        const res = await fetch('/api/plugins/wallpaper/list');
         if (!res.ok) throw new Error("List API fail");
         return await res.json();
     },
@@ -17,7 +17,7 @@ window.WallpaperAPI = {
     async upload(file) {
         const formData = new FormData();
         formData.append('file', file);
-        const res = await fetch('/api/wallpaper/upload', {
+        const res = await fetch('/api/plugins/wallpaper/upload', {
             method: 'POST',
             body: formData
         });
@@ -26,7 +26,7 @@ window.WallpaperAPI = {
     },
 
     async setConfig(config) {
-        const res = await fetch('/api/wallpaper/set', {
+        const res = await fetch('/api/plugins/wallpaper/set', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(config)

@@ -1,0 +1,50 @@
+.panel-label {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+#finance-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.finance-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.finance-item:hover {
+    background: rgba(var(--neon-rgb), 0.05);
+}
+
+.finance-name {
+    font-weight: 700;
+}
+
+.finance-values {
+    text-align: right;
+}
+
+.price {
+    font-size: 16px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.change {
+    font-size: 11px;
+}
+
+.up {
+    color: var(--danger);
+}
+
+.down {
+    color: var(--accent);
+}

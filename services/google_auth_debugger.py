@@ -1,25 +1,15 @@
-import os.path
+import os
 import threading
 import json
-import time
 from datetime import datetime
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-import os
-import sys
-
-# 프로젝트 루트 경로를 sys.path에 추가하여 독립 실행 시에도 모듈을 찾을 수 있게 함
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
 from routes.config import (
     CREDENTIALS_PATH,
-    GOOGLE_CONFIG_PATH,
+    PLUGINS_DIR,
     BASE_DIR,
 )
 
@@ -39,12 +29,25 @@ def log_terminal(message, level="INFO"):
     print(f"[{timestamp}] [GOOGLE_AUTH_DEBUG] [{level}] {message}")
 
 
-def get_google_limits():
-    """설정 파일에서 API 호출 제한 값 로드"""
+def get_google_limits(plugin_id=None):
+    """플러그인별 설정 파일에서 API 호출 제한 값 로드"""
     default_limits = {"max_events": 10, "max_tasks": 10, "max_emails": 5}
+    if not plugin_id:
+        return default_limits
+
+    # 플러그인 ID 보정
+    plugin_map = {
+        "tasks": "todo",
+        "todo": "todo",
+        "calendar": "calendar",
+        "gmail": "gmail",
+    }
+    target_id = plugin_map.get(plugin_id, plugin_id)
+    config_path = os.path.join(PLUGINS_DIR, target_id, "config.json")
+
     try:
-        if os.path.exists(GOOGLE_CONFIG_PATH):
-            with open(GOOGLE_CONFIG_PATH, "r", encoding="utf-8") as f:
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
                 limits = json.load(f)
                 default_limits.update(limits)
     except Exception as e:
@@ -52,16 +55,18 @@ def get_google_limits():
     return default_limits
 
 
-def get_auth_token_path(service_name):
-    """서비스 이름에 따른 토큰 파일 경로 반환"""
+def get_auth_token_path(plugin_id):
+    """플러그인별 설정된 토큰 파일 경로 반환"""
     default_mapping = {
         "calendar": "token_personal.json",
+        "todo": "token_personal.json",
         "tasks": "token_personal.json",
         "gmail": "token_work.json",
     }
-    config = get_google_limits()
-    auth_config = config.get("auth", {})
-    filename = auth_config.get(service_name, default_mapping.get(service_name))
+    config = get_google_limits(plugin_id)
+    filename = config.get(
+        "token_file", default_mapping.get(plugin_id, "token_personal.json")
+    )
     return os.path.join(BASE_DIR, "config", filename)
 
 
@@ -77,7 +82,7 @@ def get_authenticated_service_debug(api_name, version, scopes, token_path):
         # 1. 기존 토큰 확인
         if os.path.exists(token_path):
             try:
-                log_terminal(f"기존 토큰 발견. 로드 시도 중...")
+                log_terminal("기존 토큰 발견. 로드 시도 중...")
                 creds = Credentials.from_authorized_user_file(token_path, scopes)
                 log_terminal("기존 토큰 로드 성공.")
             except Exception as e:

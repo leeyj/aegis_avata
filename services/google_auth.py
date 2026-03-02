@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 
 from routes.config import (
     CREDENTIALS_PATH,
-    GOOGLE_CONFIG_PATH,
+    PLUGINS_DIR,
     BASE_DIR,
 )
 
@@ -23,12 +23,30 @@ SCOPES = [
 auth_lock = threading.Lock()
 
 
-def get_google_limits():
-    """설정 파일에서 API 호출 제한 값 로드"""
-    default_limits = {"max_events": 10, "max_tasks": 10, "max_emails": 5}
+def get_google_limits(plugin_id=None):
+    """플러그인별 설정 파일에서 API 호출 제한 값 로드"""
+    default_limits = {
+        "max_events": 10,
+        "max_tasks": 10,
+        "max_emails": 5,
+        "refresh_interval_min": 5,
+    }
+    if not plugin_id:
+        return default_limits
+
+    # 플러그인 ID 보정 (코드 내부의 service_name과 폴더명 일치)
+    plugin_map = {
+        "tasks": "todo",
+        "todo": "todo",
+        "calendar": "calendar",
+        "gmail": "gmail",
+    }
+    target_id = plugin_map.get(plugin_id, plugin_id)
+    config_path = os.path.join(PLUGINS_DIR, target_id, "config.json")
+
     try:
-        if os.path.exists(GOOGLE_CONFIG_PATH):
-            with open(GOOGLE_CONFIG_PATH, "r", encoding="utf-8") as f:
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
                 limits = json.load(f)
                 default_limits.update(limits)
     except Exception:
@@ -36,16 +54,18 @@ def get_google_limits():
     return default_limits
 
 
-def get_auth_token_path(service_name):
-    """서비스 이름에 따른 토큰 파일 경로 반환"""
+def get_auth_token_path(plugin_id):
+    """플러그인별 설정된 토큰 파일 경로 반환"""
     default_mapping = {
         "calendar": "token_personal.json",
+        "todo": "token_personal.json",
         "tasks": "token_personal.json",
         "gmail": "token_work.json",
     }
-    config = get_google_limits()
-    auth_config = config.get("auth", {})
-    filename = auth_config.get(service_name, default_mapping.get(service_name))
+    config = get_google_limits(plugin_id)
+    filename = config.get(
+        "token_file", default_mapping.get(plugin_id, "token_personal.json")
+    )
     return os.path.join(BASE_DIR, "config", filename)
 
 

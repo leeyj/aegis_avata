@@ -1,21 +1,21 @@
 /**
- * AEGIS Wallpaper Manager - Main Module (v1.5)
- * Centralizes orchestration for backgrounds.
+ * AEGIS Wallpaper Manager - Main Module (v1.6.8 Modularized)
+ * Fixed for Plugin-X / Shadow DOM compatibility.
  */
 window.WallpaperManager = {
     isSponsor: false,
-    config: { mode: 'static', current: '', interval: 300, is_video: false },
-    rotationList: [],
+    shadowRoot: null,
 
-    async init() {
+    async init(shadowRoot = null) {
+        this.shadowRoot = shadowRoot || document;
         console.log("[Wallpaper] Initializing Modularized V1.5...");
         try {
             const data = await WallpaperAPI.getStatus();
             this.isSponsor = data.is_sponsor;
             this.config = data.config;
 
-            WallpaperUI.applyWallpaper(this.config);
-            WallpaperUI.renderWidget(this);
+            window.WallpaperUI.applyWallpaper(this.config);
+            window.WallpaperUI.renderWidget(this, this.shadowRoot);
 
             if (this.isSponsor && this.config.mode === 'rotation') {
                 await this.loadRotation();
@@ -26,7 +26,19 @@ window.WallpaperManager = {
     },
 
     async updateConfig(newVal) {
+        // [Logic Fix] 모드 변경 시 이전 모드의 특수 플래그 초기화
+        if (newVal.mode && newVal.mode !== this.config.mode) {
+            this.config.is_video = false;
+        }
+
         this.config = { ...this.config, ...newVal };
+
+        // [Logic Fix] current 값에 따른 비디오 여부 자동 재검토 (URL 또는 특정 파일일 경우)
+        if (typeof this.config.current === 'string') {
+            const low = this.config.current.toLowerCase();
+            this.config.is_video = low.endsWith('.mp4') || low.endsWith('.webm');
+        }
+
         try {
             await WallpaperAPI.setConfig(this.config);
 
@@ -34,9 +46,9 @@ window.WallpaperManager = {
                 await this.loadRotation();
             } else {
                 this.stopRotation();
-                WallpaperUI.applyWallpaper(this.config);
+                window.WallpaperUI.applyWallpaper(this.config);
             }
-            WallpaperUI.renderWidget(this);
+            window.WallpaperUI.renderWidget(this, this.shadowRoot);
         } catch (e) {
             console.error("[Wallpaper] UpdateConfig failed:", e);
         }
@@ -44,10 +56,16 @@ window.WallpaperManager = {
 
     async handleUpload(input) {
         if (!input.files || input.files.length === 0) return;
-        const btn = document.querySelector('.wp-browse-btn');
-        const originalText = btn.innerText;
-        btn.innerText = "⌛ UPLOADING...";
-        btn.disabled = true;
+
+        // Shadow DOM 호환 셀렉터
+        const root = this.shadowRoot || document;
+        const btn = root.querySelector('.wp-browse-btn');
+
+        const originalText = btn ? btn.innerText : "BROWSE";
+        if (btn) {
+            btn.innerText = "⌛ UPLOADING...";
+            btn.disabled = true;
+        }
 
         try {
             let lastData = null;
@@ -56,24 +74,30 @@ window.WallpaperManager = {
             }
             if (input.files.length === 1 && lastData && lastData.status === 'success') {
                 await this.updateConfig({ mode: 'static', current: lastData.url, is_video: lastData.is_video });
-                btn.innerText = "✅ APPLIED!";
+                if (btn) btn.innerText = "✅ APPLIED!";
             } else {
                 const updated = await WallpaperAPI.getStatus();
                 this.isSponsor = updated.is_sponsor;
                 this.config = updated.config;
-                WallpaperUI.renderWidget(this);
-                btn.innerText = "✅ UPLOADED!";
+                window.WallpaperUI.renderWidget(this, this.shadowRoot);
+                if (btn) btn.innerText = "✅ UPLOADED!";
             }
         } catch (e) {
-            btn.innerText = "❌ FAILED";
+            if (btn) btn.innerText = "❌ FAILED";
         } finally {
-            setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
+            if (btn) setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 2000);
         }
     },
 
     handleModeChange(val) {
         const next = { mode: val };
-        if (val === 'solid') next.current = '#000000';
+        // 모드 전환 시 기본값 설정 및 비디오 플래그 강제 리셋
+        if (val === 'solid') {
+            next.current = '#000000';
+            next.is_video = false;
+        } else if (val === 'static' || val === 'url') {
+            next.is_video = false; // 이후 current 검증에서 다시 설정됨
+        }
         this.updateConfig(next);
     },
 
@@ -109,30 +133,28 @@ window.WallpaperManager = {
                     const file = this.rotationList[idx];
                     this.config.current = `/static/wallpaper/${file}`;
                     this.config.is_video = file.toLowerCase().endsWith('.mp4');
-                    WallpaperUI.applyWallpaper(this.config);
+                    window.WallpaperUI.applyWallpaper(this.config);
                     tickCounter = 0;
-                    WallpaperUI.renderWidget(this);
+                    window.WallpaperUI.renderWidget(this, this.shadowRoot);
                 }
             });
         }
     },
 
     stopRotation() {
-        if (window.briefingScheduler) {
-            // Overwrite with empty callback or handle within the callback via mode check
-        }
+        // [MOD] 브리핑 스케줄러에서 제거 로직 (필요시 구현)
     },
 
     async openGallery() {
         try {
             const data = await WallpaperAPI.getList();
-            WallpaperUI.openGallery(data.files || []);
+            window.WallpaperUI.openGallery(data.files || []);
         } catch (e) {
             console.error("[Wallpaper] Gallery open failed:", e);
         }
     },
 
-    closeGallery() { WallpaperUI.closeGallery(); },
+    closeGallery() { window.WallpaperUI.closeGallery(); },
 
     selectFromGallery(url, isVideo) {
         this.updateConfig({ mode: 'static', current: url, is_video: isVideo });
@@ -140,21 +162,25 @@ window.WallpaperManager = {
     },
 
     async saveRequested() {
-        const btn = document.querySelector('.wp-save-btn');
-        const originalText = btn.innerText;
-        btn.innerText = "⌛ SAVING...";
-        btn.disabled = true;
+        const root = this.shadowRoot || document;
+        const btn = root.querySelector('.wp-save-btn');
+
+        const originalText = btn ? btn.innerText : "SAVE";
+        if (btn) {
+            btn.innerText = "⌛ SAVING...";
+            btn.disabled = true;
+        }
 
         try {
             await WallpaperAPI.setConfig(this.config);
-            btn.innerText = "✅ SAVED!";
-            setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 1800);
+            if (btn) btn.innerText = "✅ SAVED!";
+            setTimeout(() => { if (btn) { btn.innerText = originalText; btn.disabled = false; } }, 1800);
         } catch (e) {
-            btn.innerText = "❌ ERROR";
-            setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 1800);
+            if (btn) btn.innerText = "❌ ERROR";
+            setTimeout(() => { if (btn) { btn.innerText = originalText; btn.disabled = false; } }, 1800);
         }
     }
 };
 
-// Auto-run on load
-document.addEventListener('DOMContentLoaded', () => WallpaperManager.init());
+// [Plugin-X] 자동 실행 제거 (widget.js에서 수동 제어)
+// document.addEventListener('DOMContentLoaded', () => WallpaperManager.init());

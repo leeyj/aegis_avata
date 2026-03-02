@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "panels": {
+            "p-clock": "시스템 시계"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-clock": "System Clock"
+        }
+    }
+}

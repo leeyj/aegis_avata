@@ -1,103 +1,65 @@
-# AEGIS Intelligence Dashboard - 기능 명세서 (Specification)
+# AEGIS Intelligence - 통합 시스템 명세서 (SPECIFICATION)
 
-본 문서는 **AEGIS Intelligence Dashboard v4.8**에 현재 구현되어 실구동 중인 주요 기능들을 상세히 정의합니다.
-
----
-
-## 1. 시스템 핵심 아키텍처 (Core Architecture)
-
-### 1.1 지능형 비서 엔진
-- **AI 통합**: Google Gemini 2.0 Flash 모델을 사용한 상황 인지형 브리핑 생성.
-- **음성 합성(TTS)**: Edge-TTS를 활용한 자연스러운 다국어 음성 출력 및 실시간 오디오 캐싱.
-- **반응형 아바타**: PixiJS 기반 Live2D 아바타 연동 및 데이터 연동형 리액션 시스템.
-
-### 1.2 보안 및 설정 관리
-- **인증 시스템**: 세션 기반의 로그인 보안 기능 제공.
-- **환경 공유**: `secrets.json`, `settings.json` 등을 통한 민감 정보 분리 및 사용자 설정 영구 보존.
+**최종 업데이트: 2026-03-02 (v1.8 Standard)**
+이 문서는 AEGIS 대시보드의 백엔드/프론트엔드 핵심 설계 원칙 및 시스템 사양을 정의합니다.
 
 ---
 
-## 2. 주요 연동 위젯 (Integrated Widgets)
+## 🏗️ 1. 핵심 아키텍처 설계 원칙 (Design Principles)
 
-### 🌤️ 환경 정보 (Weather)
-- **API**: OpenWeatherMap 실시간 데이터 연동.
-- **기능**: 현재 기온, 습도, 풍속 및 날씨 상태 시각화. 날씨 상태에 따른 아바타 감정 표현 연동.
+### 1.1 Strict Isolation (엄격한 격리)
+- 위젯의 오류가 메인 시스템을 마비시키지 않도록 **Shadow DOM** 및 **JS Capability Proxy**를 사용합니다.
+- 특정 위젯의 CSS 오버플로우나 스크립트 전역 변수 오염을 물리적으로 차단합니다.
 
-### 📈 금융/증권 (Finance & Stocks)
-- **데이터 소스**: Yahoo Finance 실시간 시세 추적.
-- **기능**: 주요 지수 및 개별 관심 종목 모니터링. ±3% 변동 시 아바타의 즉각적인 리액션(기쁨/놀람) 유도.
+### 1.2 Resource Proxy (리소스 대리)
+- 플러그인은 파일 시스템이나 AI API Key에 직접 접근할 수 없습니다. 
+- 모든 자원 사용은 시스템이 제공하는 안전한 **AegisContext(Capability Proxy)**를 통해서만 이루어집니다.
 
-### 🗓️ 구글 인텔리전스 (Google Intelligence)
-- **달력 및 할 일**: Google Calendar & Tasks API 연동을 통한 일정 브리핑.
-- **지메일(Gmail)**: 미확인 중요 메일 감지 및 알림 기능.
+### 1.3 Universal Lifecycle
+- 모든 모듈은 `init(shadowRoot, context)`, `destroy()` 표준 생명주기 규격을 준수하여 시스템이 리소스를 효율적으로 제어할 수 있게 합니다.
 
-### 📰 뉴스 티커 (News Ticker)
-- **기능**: 슬라이딩 방식의 실시간 뉴스 헤드라인 노출 및 위젯 클릭 시 상세 뉴스 이동.
-
-### 🧠 노션 지식 허브 (Notion Intelligence Hub) - **NEW**
-- **기능**: 노션 데이터베이스와 실시간 연동되어 최근 일정 및 메모를 시각화.
-- **AI 브리핑**: 선택된 AI 모델(Gemini, Grok 등)이 노션의 파편화된 정보를 분석하여 구어체로 브리핑 수행.
-- **퀵 캡처**: 터미널 명령어(`/n`, `/todo`)를 통해 노션에 즉시 지식을 기록하고 아바타의 반응 유도.
-
-### 🎵 멀티미디어 (BGM Player)
-- **YouTube Music**: 사용자의 플레이리스트 연동 및 백그라운드 재생 기능. 
-- **애니메이션 연동**: 음악 리듬 및 TTS 출력에 동기화되는 아바타 립싱크 및 댄스 모드.
+### 1.4 No JSON Editing (v1.8 원칙)
+- 사용자에게 JSON 설정 파일의 직접 편집을 강요하지 않습니다.
+- 모든 설정은 GUI를 통해 제공되며, 개발자는 `manifest.json`의 `exports`를 통해 자신의 데이터/명령어를 공개합니다.
 
 ---
 
-## 3. 라이브2D 별명 시스템 (Semantic Alias System)
+## 🧩 2. Plugin-X 플랫폼 규격 (Expansion Platform)
 
-### 3.1 기술적 특징
-- **모델 중립성**: 각기 다른 파일명 규칙을 가진 Live2D 모델들을 `idle`, `joy`, `shock`, `sad` 등의 공통 키워드로 제어.
-- **추론 엔진**: 파일명을 분석하여 자동으로 별명을 매핑하는 지능형 검증 도구 내장.
+### 2.1 동적 로딩 및 주입
+- `static/js/plugin_loader.js`가 부팅 시 `/plugins` 폴더를 스캔하여 자산(HTML, CSS, JS)을 동적으로 주입합니다.
+- **Auto-Stagger**: 위젯 배치 정보가 없을 경우, 시스템이 자동으로 겹치지 않게 계단식으로 배치합니다.
 
-### 3.2 제어 방식
-- **공통 리액션**: `reactions.json`에 정의된 별명 기반 액션이 로드된 모든 모델에서 동일하게 작동.
+### 2.2 보안 및 권한 (Security & Permissions)
+- **Dynamic CSP Engine**: `manifest.json`에 선언된 `csp_domains`를 분석하여 서버 부팅 시 `Content-Security-Policy` 화이트리스트에 즉시 반영합니다.
+- **API Guard**: `require_permission` 데코레이션을 통해 선언되지 않은 API 호출을 차단합니다.
 
----
-
-## 4. 라이브2D 스튜디오 (Live2D Studio) 💎
-
-**Live2D Studio**는 개발자 및 숙련된 사용자가 새로운 캐릭터 모델을 AEGIS에 최적화하여 통합할 수 있도록 지원하는 전문 관리 도구입니다.
-
-### 4.1 핵심 기능
-- **실시간 모델 관리**: 로컬의 테스트 폴더(`test_models/`)에 위치한 모델을 실시간으로 로드하고 외형(줌, 위치)을 조정.
-- **에일리어스 매니저(Alias Manager)**: 아바타의 복잡한 파일명(예: `motions/happy_01.motion3.json`)을 시스템 표준 키워드(`joy`, `shock` 등)로 시각적으로 매핑.
-- **리액션 시뮬레이터(Simulator)**: `reactions.json`의 설정을 기반으로 주식 급등, 메일 수신 등의 이벤트를 가상으로 발생시켜 아바타의 반응을 즉각 검증.
-- **원클릭 적용**: 최적화된 모델 설정과 매핑 정보를 실제 AEGIS 대시보드 운영 환경으로 즉시 배포.
-
-### 4.2 주요 설정 및 파일 구조
-- **에일리어스 파일 (`alias.json`)**: 모델 폴더 내에 생성되며, 시스템 표준 키워드와 실제 파일 경로 간의 매핑 정보를 저장합니다.
-- **리액션 설정 (`config/reactions.json`)**: 이벤트 상황별 아바타의 행동(MOTION, EMOTION, TTS)을 정의합니다.
-  - **이벤트-리액션 설정 예시**:
-    ```json
-    "gmail": {
-      "new_mail": {
-        "condition": "count > 0",
-        "actions": [
-          { "type": "MOTION", "alias": "shock" },
-          { "type": "TTS", "template": "새로운 메일이 도착했습니다." }
-        ]
-      }
-    }
-    ```
-- **환경 변수**: `routes/config.py`에서 지정된 `TEST_MODELS_DIR` 및 `MODELS_DIR` 경로를 통해 에셋을 관리합니다.
-
-### 4.3 권한 정책 (Authorization) 🔒
-- **스폰서 전용 (Sponsor Exclusive)**: 
-  - **모델 적용(Apply)** 및 **에일리어스 저장(Save alias.json)** 기능은 AEGIS 후원자(Sponsor) 계정으로 인증된 사용자만 사용 가능합니다.
-  - 일반 계정은 모델의 시각적 로드 및 시뮬레이션 버튼 동작 테스트까지만 허용됩니다.
+### 2.3 Exports — 데이터/명령어 공개 (v1.8)
+- 플러그인은 `manifest.json`의 `exports` 필드를 통해 센서 데이터(`sensors[]`)와 명령어(`commands[]`)를 시스템에 공개합니다.
+- **`/api/plugins/scheduler/exports`** API가 전체 플러그인의 exports를 수집하여 GUI에 제공합니다.
+- `sensors[].type` 필드(`number`, `string`, `boolean`)에 따라 스케줄러가 자동 타입 변환을 수행합니다.
 
 ---
 
-## 5. 상태 저장 및 사용자 경험 (UX)
+## 🛠️ 3. 지능형 서비스 및 자동화 (Intelligence & Automation)
 
-- **레이아웃 보존**: 위젯의 위치, 크기, 아바타의 오프셋 및 스튜디오에서의 뷰 설정 등이 영구적으로 유지됨.
-- **다국어 지원 (i18n)**: 한국어와 영어를 공식 지원하며, 모든 UI와 안내 메시지가 언어팩을 통해 동적으로 전환됨.
-- **위젯 잠금 (Widget Lock)**: 대시보드 레이아웃 확정 후 실수로 위치가 변경되지 않도록 드래그/리사이즈를 차단하는 기능 제공.
-- **디버그 모드**: API 할당량을 아끼기 위한 테스트 모드 및 가상 데이터 서비스 지원.
+### 3.1 브리핑 스케줄러 (Briefing Scheduler)
+- **Gatekeeper (수문장)**: 요일/시간별로 위젯의 알림 권한(`Allow/Deny`)을 중앙 통제합니다.
+- **Routines (루틴)**: 지정된 시간에 `tactical_briefing`, `widget_briefing`, `speak` 등의 액션을 자동 실행합니다.
+- **범용 액션 (v1.7.1)**: `terminal_command`(CommandRouter 명령), `api_call`(직접 API 호출)로 어떤 플러그인이든 스케줄 등록 가능.
+- **조건 감시 (v1.8)**: 시간이 아닌 **데이터 조건**(센서 값 임계치)으로 트리거되는 루틴 지원. `condition.type` 기반 타입 안전 비교, `{{value}}`/`{{threshold}}` 템플릿 변수로 TTS 동적 텍스트 생성.
 
-*상세 기능 가이드: [다국어 지원 및 위젯 잠금 가이드](./spec/i18n_and_widget_lock.md)*
+### 3.2 AI 분석 허브 (AI Hub)
+- **Multi-Model Support**: Grok(xAI), Gemini(Google), Ollama(Local) 등 상황에 최적화된 모델을 선택하여 분석 및 브리핑을 수행합니다.
+- **Tactical Briefing Center**: 타이틀 위젯을 통한 통합 상황 보고 및 전술 피드백 시스템을 제공합니다.
 
 ---
-*최종 업데이트: 2026-02-18*
+
+## 🌐 4. 외부 인터페이스 및 데이터 규격 (Data & API)
+
+- **External AI API**: 외부 시스템이 아바타의 발화(`speak`)나 동작(`action`)을 원격 제어할 수 있는 표준 REST 규격을 제공합니다.
+- **Persistence Master**: `config/settings.json`을 통해 모든 사용자 설정(언어, 위치, 줌 등)을 원자적으로 관리하고 동기화합니다.
+- **Safe I18n**: 다국어 번역 엔진은 XSS 방지를 위해 기본적으로 `textContent`를 사용하며, 신뢰된 UI 요소에만 마크업을 허용합니다.
+
+---
+*상세 개발 방법론은 `docs/Plugin-X_Guide.md`를, 설정 방법은 `docs/manual/CONFIGURATION.md`를 참조하십시오.*

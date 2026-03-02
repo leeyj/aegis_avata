@@ -1,0 +1,19 @@
+{
+    "id": "news",
+    "name": "전술 뉴스 브리핑",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler",
+        "api.ai_gateway"
+    ],
+    "layout": {
+        "default_size": "size-2"
+    }
+}

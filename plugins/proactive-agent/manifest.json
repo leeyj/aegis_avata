@@ -1,0 +1,19 @@
+{
+    "id": "proactive-agent",
+    "name": "능동 분석 에이전트",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.ai_agent",
+        "api.voice_service",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-invisible"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "ko": {
+        "panels": {
+            "p-youtube": "YouTube 뮤직",
+            "p-youtube-music": "YouTube 뮤직"
+        },
+        "widgets": {
+            "yt_wait": "로딩 대기 중...",
+            "yt_select": "플레이리스트 선택"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-youtube": "YouTube Music",
+            "p-youtube-music": "YouTube Music"
+        },
+        "widgets": {
+            "yt_wait": "Wait for Load...",
+            "yt_select": "Select Playlist"
+        }
+    }
+}

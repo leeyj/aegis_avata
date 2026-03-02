@@ -1,0 +1,14 @@
+{
+    "ko": {
+        "panels": {
+            "p-system": "시스템 정보",
+            "p-system-stats": "시스템 정보"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-system": "System Stats",
+            "p-system-stats": "System Stats"
+        }
+    }
+}

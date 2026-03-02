@@ -2,8 +2,6 @@ from flask import Blueprint, request, jsonify
 from services.notion_service import NotionService
 from services.ai_service import query_ai
 from services.gemini_service import query_gemini
-from utils import load_json_config
-from routes.config import PROMPTS_CONFIG_PATH
 
 notion_bp = Blueprint("notion", __name__)
 notion_service = NotionService()
@@ -68,13 +66,17 @@ def brief_notion_items():
     if not items:
         return jsonify({"success": False, "message": "No items found for briefing"})
 
-    # 2. 프롬프트 구성
+    # 2. 프롬프트 구성 (Plugin-X)
+    from services.gemini_service import _load_plugin_prompt
+
     data_list = [f"- {item['title']} (생성: {item['created_time']})" for item in items]
     data_str = "\n".join(data_list)
-    prompts = load_json_config(PROMPTS_CONFIG_PATH)
-    notion_prompt_template = prompts.get("NOTION_ASSISTANT", {}).get("briefing", "")
+    prompt_tpl = _load_plugin_prompt("notion", "assistant_briefing")
 
-    final_prompt = notion_prompt_template.replace("{{count}}", str(len(items))).replace(
+    if not prompt_tpl:
+        prompt_tpl = "Notion summary for {{count}} items: {{data}}"
+
+    final_prompt = prompt_tpl.replace("{{count}}", str(len(items))).replace(
         "{{data}}", data_str
     )
 

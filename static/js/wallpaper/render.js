@@ -1,52 +1,68 @@
 /**
- * AEGIS Wallpaper - Rendering Module
+ * AEGIS Wallpaper - Rendering Module (v1.6.8 Modularized)
+ * Optimized for Plugin-X / Shadow DOM.
  */
 window.WallpaperUI = {
-    renderWidget(manager) {
-        const container = document.getElementById('p-wallpaper-content');
-        if (!container) return;
+    renderWidget(manager, root = document) {
+        // [Plugin-X] Shadow DOM 호환성: 인자로 전달받은 root 사용
+        const container = root.getElementById('p-wallpaper-content');
+        if (!container) {
+            console.warn("[Wallpaper] Target container 'p-wallpaper-content' not found.");
+            return;
+        }
 
         const { isSponsor, config } = manager;
         const premiumAttr = isSponsor ? '' : 'disabled style="opacity: 0.5"';
 
         container.innerHTML = `
             <div class="wallpaper-content">
-                <div class="wp-preview-container" onclick="document.getElementById('wp-file-input').click()" title="Click to upload">
-                    <div class="wp-preview" style="background-image: url('${config.current}')">
-                        <div class="wp-preview-overlay">CHANGE IMAGE</div>
-                    </div>
+                <style>
+                    /* Shadow DOM 내부에 필요한 최소한의 구조적 스타일 주입 */
+                    .wp-preview { height: 110px; border-radius: 8px; background-size: cover; background-position: center; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+                    .wp-preview-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; font-size: 10px; font-weight: bold; }
+                    .wp-preview:hover .wp-preview-overlay { opacity: 1; }
+                    .wp-row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; font-size: 11px; }
+                    .wp-input { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #0ff; font-family: 'Orbitron'; width: 100px; padding: 4px; border-radius: 4px; font-size: 10px; }
+                    .wp-browse-btn, .wp-save-btn { border: 1px solid rgba(0,255,255,0.3); background: rgba(0,242,255,0.05); color: #0ff; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+                </style>
+
+                <div class="wp-preview" style="background-image: url('${config.current}')" 
+                     onclick="window.WallpaperManager.shadowRoot.getElementById('wp-file-input').click()" 
+                     title="Click to change background">
+                    <div class="wp-preview-overlay">CHANGE IMAGE</div>
                 </div>
                 
                 <div class="wp-options">
                     <div class="wp-row">
-                        <span>Upload Background</span>
-                        <input type="file" id="wp-file-input" style="display:none" multiple onchange="WallpaperManager.handleUpload(this)">
-                        <button class="wp-browse-btn" onclick="document.getElementById('wp-file-input').click()">📁 BROWSE</button>
+                        <span>UPLOAD MEDIA</span>
+                        <input type="file" id="wp-file-input" style="display:none" multiple 
+                               onchange="window.WallpaperManager.handleUpload(this)">
+                        <button class="wp-browse-btn" onclick="window.WallpaperManager.shadowRoot.getElementById('wp-file-input').click()">📁 BROWSE</button>
                     </div>
 
                     <div class="wp-row">
-                        <span>Background List</span>
-                        <button class="wp-browse-btn" style="background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white; padding: 4px 12px; transform: none;" 
-                                onclick="WallpaperManager.openGallery()">🖼️ GALLERY</button>
+                        <span>COLLECTION</span>
+                        <button class="wp-browse-btn" style="border-color: #f1c40f; color: #f1c40f;" 
+                                onclick="window.WallpaperManager.openGallery()">🖼️ GALLERY</button>
                     </div>
                     
                     <div class="wp-row" style="display: ${config.mode === 'solid' ? 'flex' : 'none'}">
-                        <span>Color Pick</span>
-                        <input type="color" class="wp-input" style="padding: 0; width: 60px; height: 30px; cursor: pointer;"
+                        <span>COLOR PICK</span>
+                        <input type="color" class="wp-input" style="height: 24px; cursor: pointer; width: 60px;"
                                value="${(config.mode === 'solid' && config.current) ? config.current : '#000000'}" 
-                               onchange="WallpaperManager.updateConfig({ current: this.value })">
+                               onchange="window.WallpaperManager.updateConfig({ current: this.value })">
                     </div>
 
                     <div class="wp-row" style="display: ${config.mode === 'url' ? 'flex' : 'none'}; ${isSponsor ? '' : 'opacity: 0.5'}">
-                        <span>Remote URL ${isSponsor ? '' : '💎'}</span>
+                        <span>REMOTE URL ${isSponsor ? '' : '💎'}</span>
                         <input type="text" class="wp-input" ${isSponsor ? '' : 'disabled'}
                                value="${config.mode === 'url' ? config.current : ''}" 
-                               placeholder="http://..." onchange="WallpaperManager.handleURLChange(this.value)">
+                               placeholder="http://..." onchange="window.WallpaperManager.handleURLChange(this.value)">
                     </div>
                     
                     <div class="wp-row">
-                        <span>Mode</span>
-                        <select class="wp-input" onchange="WallpaperManager.handleModeChange(this.value)">
+                        <span>CORE MODE</span>
+                        <select class="wp-input" onchange="window.WallpaperManager.handleModeChange(this.value)">
                             <option value="static" ${config.mode === 'static' ? 'selected' : ''}>STATIC</option>
                             <option value="solid" ${config.mode === 'solid' ? 'selected' : ''}>SOLID COLOR</option>
                             <option value="url" ${config.mode === 'url' ? 'selected' : ''} ${isSponsor ? '' : 'disabled'}>URL ${isSponsor ? '' : '💎'}</option>
@@ -55,17 +71,14 @@ window.WallpaperUI = {
                     </div>
 
                     <div class="wp-row" style="display: ${config.mode === 'rotation' ? 'flex' : 'none'}; ${isSponsor ? '' : 'opacity: 0.5'}">
-                        <span>Interval (Sec)</span>
+                        <span>INTERVAL(s)</span>
                         <input type="number" class="wp-input" ${isSponsor ? '' : 'disabled'}
                                value="${config.interval || 300}" min="10" step="10"
-                               onchange="WallpaperManager.updateConfig({ interval: parseInt(this.value, 10) || 300 })">
+                               onchange="window.WallpaperManager.updateConfig({ interval: parseInt(this.value, 10) || 300 })">
                     </div>
 
-                    <button class="wp-save-btn" onclick="WallpaperManager.saveRequested()">💾 SAVE SETTINGS</button>
-                </div>
-                
-                <div class="wp-footer">
-                    ${isSponsor ? 'Sponsor Account Active' : 'Sponsor to unlock MP4/URL/Rotation'}
+                    <button class="wp-save-btn" style="width: 100%; margin-top: 10px; border-color: #0ff;" 
+                            onclick="window.WallpaperManager.saveRequested()">💾 SAVE SYNC</button>
                 </div>
             </div>
         `;
@@ -75,15 +88,16 @@ window.WallpaperUI = {
         if (!document.getElementById('wallpaper-image')) {
             const img = document.createElement('div');
             img.id = 'wallpaper-image';
-            img.className = 'weather-bg'; // Ensure it has base positioning or similar
+            img.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1000; pointer-events:none; background-size:cover; background-position:center;";
             document.body.prepend(img);
         }
         if (!document.getElementById('wallpaper-video')) {
             const vid = document.createElement('video');
             vid.id = 'wallpaper-video';
+            vid.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1000; pointer-events:none; object-fit:cover; display:none;";
             vid.muted = true;
             vid.loop = true;
-            vid.playsinline = true; // Use playsinline for iOS support
+            vid.playsinline = true;
             document.body.prepend(vid);
         }
     },
@@ -96,6 +110,8 @@ window.WallpaperUI = {
             return this.applyWallpaper(config);
         }
 
+        console.log("[Wallpaper] Applying:", config.mode, config.current);
+
         if (config.mode === 'solid') {
             bgVid.style.display = 'none';
             bgImg.style.display = 'block';
@@ -104,12 +120,16 @@ window.WallpaperUI = {
         } else if (config.is_video) {
             bgImg.style.display = 'none';
             bgVid.style.display = 'block';
-            bgVid.src = config.current;
+            if (bgVid.src !== config.current) {
+                bgVid.src = config.current;
+                bgVid.load();
+            }
             bgVid.play().catch(e => console.warn("Video autoplay blocked:", e));
         } else {
             bgVid.style.display = 'none';
             bgImg.style.display = 'block';
-            bgImg.style.backgroundImage = `url('${config.current}')`;
+            const url = config.current || '';
+            bgImg.style.backgroundImage = url ? `url('${url}')` : 'none';
             bgImg.style.backgroundColor = 'transparent';
         }
     },
@@ -127,15 +147,29 @@ window.WallpaperUI = {
             const url = `/static/wallpaper/${f}`;
             const isVid = f.toLowerCase().endsWith('.mp4') || f.toLowerCase().endsWith('.webm');
             let content = isVid ? `<video src="${url}" class="wp-gallery-thumb" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><div class="wp-thumb-badge">🎬 VID</div>` : `<div class="wp-gallery-thumb" style="background-image: url('${url}')"></div>`;
-            return `<div class="wp-gallery-item" onclick="WallpaperManager.selectFromGallery('${url}', ${isVid})">${content}</div>`;
+            return `<div class="wp-gallery-item" onclick="window.WallpaperManager.selectFromGallery('${url}', ${isVid})">${content}</div>`;
         }).join('');
 
         if (files.length === 0) gridHtml = '<div style="color: #aaa; padding: 20px; text-align: center; width:100%;">No backgrounds yet. Upload one!</div>';
 
         modal.innerHTML = `
-            <div class="wp-gallery-overlay" onclick="WallpaperManager.closeGallery()"></div>
+            <style>
+                .wp-gallery-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+                .wp-gallery-modal.active { display: flex; opacity: 1; }
+                .wp-gallery-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+                .wp-gallery-content { position: relative; background: #0a0a0c; border: 1px solid #0ff; border-radius: 8px; width: 90%; max-width: 900px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+                .wp-gallery-header { padding: 15px; border-bottom: 1px solid rgba(0,255,255,0.2); display: flex; justify-content: space-between; }
+                .wp-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; overflow-y: auto; }
+                .wp-gallery-item { aspect-ratio: 16/9; background: #000; border-radius: 4px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s; position: relative; }
+                .wp-gallery-item:hover { border-color: #0ff; transform: scale(1.02); }
+                .wp-gallery-thumb { width:100%; height:100%; object-fit: cover; background-size: cover; background-position: center; }
+            </style>
+            <div class="wp-gallery-overlay" onclick="window.WallpaperManager.closeGallery()"></div>
             <div class="wp-gallery-content">
-                <div class="wp-gallery-header"><h3>🖼️ Background Gallery</h3><button class="wp-gallery-close" onclick="WallpaperManager.closeGallery()">❌</button></div>
+                <div class="wp-gallery-header">
+                    <h3 style="margin:0; color: #0ff; font-family:'Orbitron';">BCE-01: BACKGROUND REPOSITORY</h3>
+                    <button style="background:none; border:none; color:#0ff; cursor:pointer;" onclick="window.WallpaperManager.closeGallery()">[ CLOSE ]</button>
+                </div>
                 <div class="wp-gallery-grid">${gridHtml}</div>
             </div>
         `;

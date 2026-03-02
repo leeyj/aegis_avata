@@ -22,9 +22,10 @@ function initUI() {
     if (typeof initInteractions === 'function') initInteractions();
     if (typeof initBriefingTrigger === 'function') initBriefingTrigger();
 
-    // 3. 초기 상태(위치, 표시 여부) 반영
+    // 3. 초기 상태(위치, 표시 여부, 잠금) 반영
     if (typeof applyUIPositions === 'function') applyUIPositions();
     applyVisibility();
+    updateLockUI();
 
     // 4. 이벤트 리스너 등록
     window.addEventListener('resize', () => {
@@ -70,12 +71,14 @@ function initSidebar() {
         if (el) {
             el.style.display = isVisible ? 'block' : 'none';
             window.panelVisibility[id] = isVisible;
+
+            // [Sync] 사이드바 체크박스 상태 동기화
+            const checkbox = document.getElementById(`toggle-${id}`) || document.querySelector(`input[onchange*="'${id}'"]`);
+            if (checkbox) checkbox.checked = isVisible;
+
             saveState();
         }
     };
-
-    // 위젯 잠금 초기 상태 반영
-    updateLockUI();
 }
 
 /**
@@ -86,9 +89,9 @@ function toggleWidgetLock() {
     updateLockUI();
     saveState();
 
-    // 시각적 피드백
+    // 시각적 및 기능적 피드백 (리사이즈 금지 포함)
     document.querySelectorAll('.glass-panel').forEach(p => {
-        p.style.cursor = window.uiLocked ? 'default' : 'move';
+        p.classList.toggle('locked', window.uiLocked);
     });
 }
 
@@ -105,6 +108,11 @@ function updateLockUI() {
         btn.innerText = _t('sidebar.lock_widgets');
         btn.classList.remove('btn-danger');
     }
+
+    // 전역 상태에 맞춰 실제 패널 클래스 동기화
+    document.querySelectorAll('.glass-panel').forEach(p => {
+        p.classList.toggle('locked', window.uiLocked);
+    });
 }
 
 /**
@@ -115,7 +123,9 @@ function applyVisibility() {
         const el = document.getElementById(id);
         if (el) {
             el.style.display = isVisible ? 'block' : 'none';
-            const checkbox = document.querySelector(`input[onchange*="'${id}'"]`);
+
+            // [Sync] 사이드바 체크박스 상태 동기화 (기존 방식 + 신규 토글 ID 방식)
+            const checkbox = document.getElementById(`toggle-${id}`) || document.querySelector(`input[onchange*="'${id}'"]`);
             if (checkbox) checkbox.checked = isVisible;
         }
     }

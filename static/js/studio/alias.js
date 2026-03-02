@@ -30,6 +30,18 @@ function mapAsset(key) {
     updateEditor();
 }
 
+function mapCustomAsset() {
+    const input = document.getElementById('custom-alias-input');
+    const customKey = input ? input.value.trim() : '';
+    if (!customKey) {
+        alert("Please enter a custom alias name.");
+        return;
+    }
+    // Prevent overriding reserved words or numbers if needed, but we allow anything for power users.
+    mapAsset(customKey);
+    if (input) input.value = ''; // clear upon success
+}
+
 async function saveAlias() {
     if (!window.isSponsor) return;
     const name = document.getElementById('model-select').value;
@@ -39,7 +51,7 @@ async function saveAlias() {
         const editorValue = document.getElementById('alias-editor').value;
         const data = JSON.parse(editorValue);
 
-        const res = await fetch(`/studio/api/save_alias/${name}`, {
+        const res = await fetch(`/api/plugins/studio/save_alias/${name}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

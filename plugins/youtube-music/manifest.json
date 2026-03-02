@@ -1,0 +1,31 @@
+{
+    "id": "youtube-music",
+    "name": "유튜브 뮤직",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "csp_domains": {
+        "script-src": [
+            "https://www.youtube.com",
+            "https://s.ytimg.com"
+        ],
+        "frame-src": [
+            "https://www.youtube.com"
+        ],
+        "img-src": [
+            "https://i.ytimg.com",
+            "https://*.googleusercontent.com"
+        ]
+    }
+}

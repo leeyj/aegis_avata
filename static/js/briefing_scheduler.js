@@ -13,7 +13,7 @@ class BriefingScheduler {
 
     async init() {
         try {
-            const res = await fetch('/scheduler_config');
+            const res = await fetch('/api/plugins/scheduler/config');
             if (res.ok) {
                 this.config = await res.json();
                 this.isLoaded = true;
@@ -125,7 +125,15 @@ class BriefingScheduler {
 
         for (const routine of this.config.routines) {
             if (!routine.enabled) continue;
+            if (!routine.days.includes(currentDay)) continue;
 
+            // --- 조건 감시 루틴 (v1.8) ---
+            if (routine.condition && (routine.time === 'every_1m' || routine.time === 'condition')) {
+                await this._checkConditionRoutine(routine, now);
+                continue;
+            }
+
+            // --- 시간 기반 루틴 (기존) ---
             let shouldTrigger = false;
 
             // 1. 특정 시간 체크 (예: "09:00")
@@ -137,9 +145,7 @@ class BriefingScheduler {
                 shouldTrigger = true;
             }
 
-            if (shouldTrigger && routine.days.includes(currentDay)) {
-                // 오늘/이번 시간에 이미 실행했는지 확인 (중복 실행 방지)
-                // hourly의 경우 시간까지 포함하여 체크
+            if (shouldTrigger) {
                 const executionKey = routine.time === 'hourly' ? `${todayDateStr}_${now.getHours()}` : todayDateStr;
 
                 if (this.lastRoutineExecution[routine.id] !== executionKey) {
@@ -152,6 +158,86 @@ class BriefingScheduler {
     }
 
     /**
+     * 조건 감시 루틴 체크 (v1.8)
+     * API를 폴링하고, 조건 충족 시 액션 실행. 쿨다운 적용.
+     */
+    async _checkConditionRoutine(routine, now) {
+        const cond = routine.condition;
+        if (!cond || !cond.source || !cond.field) {
+            console.warn(`[Watch] "${routine.name}" — condition 누락:`, cond);
+            return;
+        }
+
+        // 쿨다운 체크
+        const cooldownMs = (routine.cooldown_min || 30) * 60 * 1000;
+        const lastExec = this.lastRoutineExecution[routine.id];
+        if (lastExec && (now.getTime() - lastExec) < cooldownMs) {
+            const remaining = Math.ceil((cooldownMs - (now.getTime() - lastExec)) / 60000);
+            console.log(`[Watch] "${routine.name}" — 쿨다운 중 (${remaining}분 남음)`);
+            return;
+        }
+
+        try {
+            console.log(`[Watch] "${routine.name}" — 폴링: ${cond.source}`);
+            const res = await fetch(cond.source);
+            if (!res.ok) {
+                console.warn(`[Watch] "${routine.name}" — API 응답 실패: ${res.status}`);
+                return;
+            }
+            const data = await res.json();
+            console.log(`[Watch] "${routine.name}" — API 응답:`, data);
+
+            // 중첩 필드 지원 (예: "data.temp")
+            let actualValue = data;
+            for (const key of cond.field.split('.')) {
+                actualValue = actualValue?.[key];
+            }
+
+            if (actualValue === undefined || actualValue === null) {
+                console.warn(`[Watch] "${routine.name}" — 필드 "${cond.field}" 값 없음 (undefined/null)`);
+                return;
+            }
+
+            // 센서 type 기반 값 변환 (manifest의 exports.sensors.type 참조)
+            const sensorType = cond.type || 'number';
+            if (sensorType === 'number' && typeof actualValue !== 'number') {
+                const parsed = parseFloat(actualValue);
+                if (!isNaN(parsed)) {
+                    console.log(`[Watch] "${routine.name}" — 타입 변환(${sensorType}): "${actualValue}" → ${parsed}`);
+                    actualValue = parsed;
+                }
+            } else if (sensorType === 'boolean') {
+                actualValue = Boolean(actualValue);
+            }
+            // string 타입은 변환 불필요
+
+            // 조건 평가
+            const targetValue = cond.value;
+            let matched = false;
+
+            switch (cond.operator) {
+                case '>=': matched = actualValue >= targetValue; break;
+                case '<=': matched = actualValue <= targetValue; break;
+                case '>': matched = actualValue > targetValue; break;
+                case '<': matched = actualValue < targetValue; break;
+                case '==': matched = actualValue == targetValue; break;
+                case '!=': matched = actualValue != targetValue; break;
+            }
+
+            console.log(`[Watch] "${routine.name}" — ${cond.field}=${actualValue} ${cond.operator} ${targetValue} → ${matched ? '✅ 충족' : '❌ 미충족'}`);
+
+            if (matched) {
+                routine._sensorValue = actualValue;
+                routine._sensorThreshold = targetValue;
+                this.executeAction(routine);
+                this.lastRoutineExecution[routine.id] = now.getTime();
+            }
+        } catch (e) {
+            console.error(`[Watch] "${routine.name}" — 폴링 에러:`, e);
+        }
+    }
+
+    /**
      * 루틴 액션 실행
      */
     async executeAction(routine) {
@@ -159,7 +245,7 @@ class BriefingScheduler {
 
         switch (routine.action) {
             case 'tactical_briefing':
-                const titlePanel = document.getElementById('p-title');
+                const titlePanel = document.getElementById('title');
                 if (titlePanel) titlePanel.click();
                 break;
 
@@ -171,7 +257,13 @@ class BriefingScheduler {
 
             case 'speak':
                 if (routine.text && typeof speakTTS === 'function') {
-                    speakTTS(routine.text);
+                    // 템플릿 변수 치환: {{value}}, {{threshold}}
+                    let ttsText = routine.text;
+                    if (routine._sensorValue !== undefined) {
+                        ttsText = ttsText.replace(/\{\{value\}\}/g, routine._sensorValue);
+                        ttsText = ttsText.replace(/\{\{threshold\}\}/g, routine._sensorThreshold ?? '');
+                    }
+                    speakTTS(ttsText);
                 }
                 break;
 
@@ -208,6 +300,44 @@ class BriefingScheduler {
                         is_video: isVideo,
                         mode: 'static'
                     });
+                }
+                break;
+
+            // --- v1.7 범용 액션 ---
+            case 'terminal_command':
+                // Plugin-X 범용: 터미널 명령어를 CommandRouter로 디스패치
+                // config 예시: { "action": "terminal_command", "command": "/ns clean" }
+                if (routine.command && window.CommandRouter) {
+                    console.log(`[Scheduler] Dispatching terminal command: ${routine.command}`);
+                    try {
+                        await window.CommandRouter.route(routine.command);
+                    } catch (e) {
+                        console.error(`[Scheduler] Command failed: ${routine.command}`, e);
+                    }
+                }
+                break;
+
+            case 'api_call':
+                // Plugin-X 범용: 백엔드 API를 직접 호출
+                // config 예시: { "action": "api_call", "url": "/api/plugins/notion/rules/evaluate", "method": "GET" }
+                if (routine.url) {
+                    try {
+                        const options = { method: routine.method || 'GET' };
+                        if (routine.body && options.method !== 'GET') {
+                            options.headers = { 'Content-Type': 'application/json' };
+                            options.body = JSON.stringify(routine.body);
+                        }
+                        const res = await fetch(routine.url, options);
+                        const data = await res.json();
+                        console.log(`[Scheduler] API call result:`, data);
+
+                        // 결과를 TTS로 안내 (선택)
+                        if (routine.speak_result && data.message && typeof window.speakTTS === 'function') {
+                            window.speakTTS(data.message);
+                        }
+                    } catch (e) {
+                        console.error(`[Scheduler] API call failed: ${routine.url}`, e);
+                    }
                 }
                 break;
 

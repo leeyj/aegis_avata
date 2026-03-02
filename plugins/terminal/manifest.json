@@ -1,0 +1,11 @@
+{
+    "id": "terminal",
+    "name": "터미널",
+    "version": "1.6.9",
+    "author": "AEGIS Core",
+    "entry": {
+        "backend": "router.py"
+    },
+    "permissions": [],
+    "hidden": true
+}

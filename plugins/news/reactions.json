@@ -1,0 +1,36 @@
+{
+    "ko": {
+        "news": {
+            "briefing": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "SENTIMENT",
+                        "value": "{sentiment}"
+                    },
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "news": {
+            "briefing": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "SENTIMENT",
+                        "value": "{sentiment}"
+                    },
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    }
+                ]
+            }
+        }
+    }
+}

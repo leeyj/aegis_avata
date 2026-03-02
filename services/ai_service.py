@@ -1,7 +1,8 @@
 import requests
 import re
 from utils import load_json_config
-from routes.config import API_CONFIG_PATH, SECRETS_CONFIG_PATH, PROMPTS_CONFIG_PATH
+from routes.config import API_CONFIG_PATH, SECRETS_CONFIG_PATH
+from services.gemini_service import _load_plugin_prompt
 
 
 def query_ai(prompt, source_key="ollama"):
@@ -12,7 +13,8 @@ def query_ai(prompt, source_key="ollama"):
     """
     config = load_json_config(API_CONFIG_PATH)
     secrets = load_json_config(SECRETS_CONFIG_PATH)
-    prompts = load_json_config(PROMPTS_CONFIG_PATH)
+    config = load_json_config(API_CONFIG_PATH)
+    secrets = load_json_config(SECRETS_CONFIG_PATH)
 
     source_config = config.get("sources", {}).get(source_key)
 
@@ -38,8 +40,9 @@ def query_ai(prompt, source_key="ollama"):
             "model": model,
         }
 
-    # 2. prompts.json에서 시스템 지침 로드 (계층 구조 및 AI별 세분화 반영)
-    hub_prompts = prompts.get("EXTERNAL_AI_HUB", {})
+    # 2. [Plugin-X] proactive-agent 폴더에서 AI 허브 지침 로드
+    hub_prompts = _load_plugin_prompt("proactive-agent", "EXTERNAL_AI_HUB") or {}
+
     # 소스별 전용 프롬프트 시도 -> 없으면 default 시도
     system_instruction = hub_prompts.get(source_key) or hub_prompts.get(
         "default",

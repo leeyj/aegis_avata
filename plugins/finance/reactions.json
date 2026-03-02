@@ -1,0 +1,36 @@
+{
+    "ko": {
+        "finance": {
+            "manual_briefing": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "{name} 지수는 현재 {price} 이며, 전일 대비 {change_pct} {direction_text} 중입니다."
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "finance": {
+            "manual_briefing": {
+                "condition": "true",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "The {name} index is currently at {price}, showing a {change_pct}% {direction_text} trend."
+                    }
+                ]
+            }
+        }
+    }
+}

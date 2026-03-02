@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "panels": {
+            "p-news": "뉴스 브리핑"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-news": "News Briefing"
+        }
+    }
+}

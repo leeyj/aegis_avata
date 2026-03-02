@@ -3,8 +3,8 @@ import json
 import time
 import datetime
 from services import gemini_service, voice_service
-from routes.config import PROMPTS_CONFIG_PATH, SYSTEM_CONFIG_PATH, I18N_DIR
-from utils import load_json_config
+from routes.config import I18N_DIR
+from utils import load_json_config, load_settings
 
 
 class BriefingManager:
@@ -19,8 +19,8 @@ class BriefingManager:
 
     def _get_lang_pack(self):
         """현재 언어 설정을 읽어와서 언어팩을 반환합니다."""
-        sys_config = load_json_config(SYSTEM_CONFIG_PATH)
-        lang = sys_config.get("lang", "ko")
+        settings = load_settings()
+        lang = settings.get("lang", "ko")
         pack_path = os.path.join(I18N_DIR, f"{lang}.json")
         if os.path.exists(pack_path):
             return load_json_config(pack_path)
@@ -51,8 +51,14 @@ class BriefingManager:
                 pass
 
         # 2. 새로운 Gemini 브리핑 생성 (Gemini 서비스 내부에서 언어 인지)
+        print(
+            f"[BriefingManager] [ACTION] Generating fresh briefing for context keys: {list(context_data.keys())}"
+        )
         result = gemini_service.get_briefing(self.api_key, context_data)
         briefing_text = result.get("briefing", "")
+        print(
+            f"[BriefingManager] [DEBUG] Briefing text generated ({len(briefing_text)} chars). Sentiment: {result.get('sentiment')}"
+        )
 
         # 3. 파일 캐시 저장 (JSON)
         os.makedirs(os.path.dirname(self.text_cache_path), exist_ok=True)
@@ -60,6 +66,7 @@ class BriefingManager:
             json.dump(result, f, ensure_ascii=False, indent=2)
 
         # 4. 음성 파일 생성 (MP3) - Voice Service 내부에서 언어별 보이스 자동 할당
+        print(f"[BriefingManager] [ACTION] Generating MP3 for briefing text...")
         voice_service.generate_edge_tts(
             briefing_text, output_path=self.audio_cache_path
         )
@@ -150,22 +157,20 @@ class BriefingManager:
             # gemini_service.get_briefing 처럼 언어별 프롬프트를 가져와야 함
             # 여기서는 gemini_service에 로직을 맡기거나 직접 프롬프트 생성
             # gemini_service 고도화 버전을 사용
-            sys_config = load_json_config(SYSTEM_CONFIG_PATH)
-            lang = sys_config.get("lang", "ko")
-            prompts = load_json_config(PROMPTS_CONFIG_PATH)
-            prompt_tpl = (
-                prompts.get(lang, {}).get("DASHBOARD_INTERNAL", {}).get("proactive", "")
+            # [Plugin-X] proactive-agent 폴더에서 알림용 프롬프트 로드
+            prompt_tpl = gemini_service._load_plugin_prompt(
+                "proactive-agent", "proactive_alert"
             )
 
             if not prompt_tpl:
-                prompt_tpl = prompts.get("DASHBOARD_INTERNAL", {}).get("proactive", "")
+                prompt_tpl = "System Alert: {{triggers}}"
 
             prompt = prompt_tpl.replace("{{triggers}}", prompt_data)
             result = gemini_service.get_custom_response(self.api_key, prompt)
 
             # 음성 생성 (언어별 보이스 자동 선택)
             voice_service.generate_edge_tts(
-                result.get("text", ""), self.audio_cache_path
+                result.get("text", ""), output_path=self.audio_cache_path
             )
 
             return {

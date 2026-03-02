@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "panels": {
+            "p-notion": "노션 인텔리전스"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-notion": "Notion Intelligence"
+        }
+    }
+}

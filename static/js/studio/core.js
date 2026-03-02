@@ -18,7 +18,7 @@ async function initStudio() {
     // 다국어 매니저 초기화 및 적용
     if (window.I18nManager) {
         await I18nManager.init();
-        window._t = (key) => I18nManager._t(key);
+        window._t = (key) => I18nManager.translate(key);
     }
 
     // 렌더링된 HTML 데이터셋에서 스폰서 여부를 가져옵니다.

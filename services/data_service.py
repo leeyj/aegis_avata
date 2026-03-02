@@ -1,81 +1,19 @@
-from utils import load_json_config
-from services import (
-    google_calendar,
-    weather_service,
-    finance_service,
-    news_service,
-    notion_service,
-)
+from services.plugin_registry import get_plugin_context_data
 
 
 class DataService:
     """
-    브리핑에 필요한 날씨, 금융, 일정, 이메일 등의 데이터를 총괄 수집하는 서비스
+    브리핑에 필요한 데이터를 총괄 수집하는 서비스 (Plugin-X 기반)
     """
 
-    def __init__(self, config_paths):
-        self.config_paths = config_paths
-        self.notion = notion_service.NotionService()
+    def __init__(self, config_paths=None):
+        # config_paths는 레거시 호환을 위해 유지하지만 더 이상 주력으로 사용하지 않음
+        self.config_paths = config_paths or {}
 
     def collect_all_context(self):
         """
-        모든 외부 API 데이터를 수집하여 딕셔너리로 반환
+        [Plugin-X] 모든 등록된 플러그인의 데이터를 수집 (Pure Dynamic)
         """
-        context = {"weather": None, "finance": None, "calendar": [], "emails": []}
-
-        # 1. 날씨 데이터 수집
-        w_path = self.config_paths.get("weather")
-        if w_path:
-            w_conf = load_json_config(w_path)
-            if w_conf:
-                context["weather"] = weather_service.get_real_weather(
-                    w_conf.get("api_key"), w_conf.get("city", "Seoul")
-                )
-
-        # 2. 금융 데이터 수집
-        f_path = self.config_paths.get("finance")
-        if f_path:
-            f_conf = load_json_config(f_path)
-            if f_conf:
-                context["finance"] = finance_service.get_market_indices(
-                    f_conf.get("tickers", {})
-                )
-
-        # 3. 뉴스 데이터 수집 (요약용 상위 5개)
-        n_path = self.config_paths.get("news")
-        if n_path:
-            n_conf = load_json_config(n_path)
-            if n_conf:
-                # 쿼타 절약을 위해 요약용으로는 5개만 전달
-                context["news"] = news_service.get_news_rss(
-                    n_conf.get("rss_urls", {}), max_items=5
-                )
-
-        # 4. 구글 일정 및 이메일 수집
-        try:
-            cal_res = google_calendar.get_today_events()
-            if isinstance(cal_res, dict) and cal_res.get("status") == "SUCCESS":
-                context["calendar"] = cal_res.get("events", [])
-            else:
-                context["calendar"] = []
-
-            email_res = google_calendar.get_recent_emails()
-            if isinstance(email_res, dict) and email_res.get("status") == "SUCCESS":
-                context["emails"] = email_res.get("emails", [])
-            else:
-                context["emails"] = []
-        except Exception as e:
-            print(f"[DataService] Google Service Error: {e}")
-            context["calendar"] = []
-            context["emails"] = []
-
-        # 5. 노션 데이터 수집 (최적화)
-        try:
-            context["notion"] = self.notion.get_recent_items(
-                limit=self.notion.get_config().get("briefing_limit", 5)
-            )
-        except Exception as e:
-            print(f"[DataService] Notion Service Error: {e}")
-            context["notion"] = []
-
+        # 1. 동적 플러그인 데이터 통합 (Plugin-X Registry)
+        context = get_plugin_context_data()
         return context

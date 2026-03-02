@@ -1,0 +1,76 @@
+#mp3-widget {
+    padding: var(--pad-md);
+    background: var(--glass);
+    border: 1px solid var(--neon-border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    color: white;
+}
+
+.mp3-header {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon);
+    font-size: 0.9rem;
+    margin-bottom: var(--pad-sm);
+    letter-spacing: 1px;
+}
+
+.mp3-list {
+    max-height: 150px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.3);
+    padding: var(--pad-sm);
+    margin-bottom: var(--pad-sm);
+    border-radius: var(--radius-sm);
+}
+
+.mp3-item {
+    padding: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mp3-item:hover {
+    background: rgba(var(--neon-rgb), 0.1);
+    color: var(--neon);
+}
+
+.mp3-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+audio {
+    width: 100%;
+    height: 30px;
+}
+
+.mp3-info {
+    font-size: 0.8rem;
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ai-btn {
+    background: rgba(var(--neon-rgb), 0.1);
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.ai-result {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #ccc;
+    line-height: 1.4;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 5px;
+}

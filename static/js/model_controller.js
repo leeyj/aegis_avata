@@ -30,12 +30,12 @@ async function loadModel(name) {
     }
 
     try {
-        const res = await fetch(`/model_info/${name}`);
+        const res = await fetch(`/api/plugins/unit-select/info/${name}`);
         if (!res.ok) throw new Error(`Model info fetch failed: ${name}`);
         window.modelAssets = await res.json();
 
         const settingsFile = window.modelAssets.model_settings_file || `${name.replace('_vts', '')}.model3.json`;
-        const url = `/models/${name}/${settingsFile}`;
+        const url = `/api/plugins/unit-select/files/${name}/${settingsFile}`;
 
         if (window.logger) {
             window.logger.info(`[Model] Loading ${name} via ${settingsFile}. Assets: Expressions=${window.modelAssets.expressions.length}, Motions=${window.modelAssets.motions.length}`);
@@ -173,7 +173,7 @@ window.playMotionFile = async (fileName) => {
 
 window.refreshModelList = async (currentModel) => {
     try {
-        const response = await fetch('/list_models');
+        const response = await fetch('/api/plugins/unit-select/list');
         const models = await response.json();
         const select = document.getElementById('model-select');
         if (!select) return;

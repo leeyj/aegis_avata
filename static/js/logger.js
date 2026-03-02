@@ -13,6 +13,9 @@ const RemoteLogger = {
         RemoteLogger.add(text, 'ERROR');
     },
     add: (msg, level) => {
+        // [Core Control] test_mode가 꺼져 있으면 로그 전송 및 출력을 하지 않음
+        if (window.AEGIS_TEST_MODE === false) return;
+
         let text = typeof msg === 'object' ? JSON.stringify(msg) : String(msg);
         RemoteLogger.buffer.push({ message: text, level: level });
 

@@ -47,7 +47,7 @@ window.WidgetManager = {
             await Promise.all([
                 // 1. TTS 설정 로드
                 (async () => {
-                    const ttsRes = await fetch('/tts_config');
+                    const ttsRes = await fetch('/api/plugins/proactive-agent/config/tts');
                     const ttsData = await ttsRes.json();
                     if (typeof window.globalTtsConfig !== 'undefined') {
                         Object.assign(window.globalTtsConfig, ttsData);
@@ -70,25 +70,13 @@ window.WidgetManager = {
  * 전역 위젯 부트스트래퍼 (기존 인덱스 호환용)
  */
 async function initWidgets() {
-    // 위젯 등록 (미래에는 각 위젯 파일 하단에서 호출하도록 분리 가능)
+    // 위젯 매니저 초기화 및 공통 서비스 기동
     const wm = window.WidgetManager;
-    wm.registry = []; // 초기화
-
-    if (typeof startClock === 'function') wm.register('Clock', startClock);
-    if (typeof startWeather === 'function') wm.register('Weather', startWeather);
-    if (typeof initSystemUI === 'function') wm.register('SystemUI', initSystemUI);
-    if (typeof startFinance === 'function') wm.register('Finance', startFinance);
-    if (typeof startNews === 'function') wm.register('News', startNews);
-    if (typeof startCalendar === 'function') wm.register('Calendar', startCalendar);
-    if (typeof startTodo === 'function') wm.register('Todo', startTodo);
-    if (typeof startGmail === 'function') wm.register('Gmail', startGmail);
-    if (typeof initStockWidget === 'function') wm.register('Stock', initStockWidget);
-    if (typeof startProactiveAgent === 'function') wm.register('ProactiveAgent', startProactiveAgent);
-    if (typeof startYouTubeMusic === 'function') wm.register('YouTubeMusic', startYouTubeMusic);
-    if (typeof startWallpaper === 'function') wm.register('Wallpaper', startWallpaper);
+    wm.registry = [];
 
     // 외부 AI 연동 시작 (매니저 독립 구동)
     if (typeof initExternalAPI === 'function') initExternalAPI();
 
+    // 등록된 위젯(Terminal 등)들과 공통 설정 기동
     await wm.initAll();
 }

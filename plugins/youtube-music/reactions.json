@@ -1,0 +1,46 @@
+{
+    "ko": {
+        "youtube": {
+            "playing": {
+                "condition": "state === 'PLAYING'",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "MUSIC_START"
+                    }
+                ]
+            },
+            "stopped": {
+                "condition": "['PAUSED', 'ENDED'].includes(state)",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "MUSIC_STOP"
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "youtube": {
+            "playing": {
+                "condition": "state === 'PLAYING'",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "MUSIC_START"
+                    }
+                ]
+            },
+            "stopped": {
+                "condition": "['PAUSED', 'ENDED'].includes(state)",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "MUSIC_STOP"
+                    }
+                ]
+            }
+        }
+    }
+}

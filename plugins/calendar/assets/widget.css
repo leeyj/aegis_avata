@@ -1,0 +1,39 @@
+.calendar-widget {
+    color: var(--text-base);
+    font-family: 'Rajdhani', sans-serif;
+    padding: 10px;
+}
+
+.widget-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--neon-accent);
+    margin-bottom: 12px;
+}
+
+.calendar-item {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.time {
+    font-size: 10px;
+    color: var(--neon);
+    opacity: 0.8;
+}
+
+.summary {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.location {
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.status-msg {
+    font-size: 11px;
+    color: #ffbc00;
+}
