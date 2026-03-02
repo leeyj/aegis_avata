@@ -1,6 +1,6 @@
 # AEGIS Plugin-X 프레임워크 레퍼런스 가이드 (FRAMEWORK REFERENCE) v1.9
 
-이 문서는 AEGIS Plugin-X (v1.9) 아키텍처 환경에서 개발자 및 AI 에이전트가 활용할 수 있는 **모든 사용 가능한 권한(Permissions), 선언 가능한 시스템 자원(Exports), 프론트엔드 통신 규격(Context API), 백엔드 통신 규격**을 총망라한 종합 레퍼런스입니다.
+이 문서는 AEGIS Plugin-X (v1.9) 아키텍처 환경에서 개발자 및 AI 에이전트가 활용할 수 있는 **모든 사용 가능한 권한(Permissions), 선언 가능한 시스템 자원(Exports), 프론트엔드 통신 규격(Context API), 백엔드 통신 규격**을 총망라한 종합 레퍼런스입니다. v1.9부터는 실시간 환경 제어 권한이 추가되었습니다.
 
 ---
 
@@ -17,7 +17,7 @@
 | `api.voice_service` | TTS 제어 권한 | `proactive-agent`, `speaker`| 코어의 Edge-TTS 및 오디오 재생/저장 객체를 직접 통제할 수 있는 권한 |
 | `api.io_control` | 입출력/설정 제어 | `scheduler` | 애플리케이션의 설정 파일(`config`), 스케줄 데이터, IO 시스템 쓰기 작업을 수행할 수 있는 권한 |
 | `api.studio_service` | Live2D 코어 통제 | `studio` | 플러그인이 Live2D 아바타 모델 구성 파일, Alias 설정파일, 아바타 렌더러에 직접 접근해 강제 패치/수정하는 가장 강력한 권한 |
-| `ENVIRONMENT_CONTROL` | 전역 환경 시각효과 | `weather` | 화면 전체에 비, 눈, 번개 등 실시간 환경 효과를 생성하고 제어할 수 있는 권한 |
+| `ENVIRONMENT_CONTROL` | 전역 환경 시각효과 | `weather` | 화면 전체에 비(`RAINY`), 눈(`SNOWY`), 번개(`STORM`) 등 실시간 환경 효과를 생성하고 제어할 수 있는 권한 |
 
 ---
 
