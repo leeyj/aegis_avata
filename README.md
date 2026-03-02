@@ -1,8 +1,15 @@
 # AEGIS Intelligence Dashboard
 
+> 🚨 **필독 안내 (CRITICAL MUST-READ)** 🚨
+> 
+> 시스템을 원활하게 사용하고 개발하기 위해 **아래 가이드라인을 반드시 가장 먼저 읽어주세요!** (모든 설정과 확장 방법이 들어있습니다)
+> * ⚠️ **[v1.6 이하 버전을 쓰시던 분을 위한 업그레이드(Migration) 가이드](docs/MIGRATION_GUIDE.md)**
+> * 📖 **[일반 사용자를 위한 시스템 설정 가이드 (USER GUIDE)](docs/manual/USER_GUIDE.md)**
+> * 🛠️ **[개발자를 위한 Plugin-X 확장 모듈 가이드 (PLUGIN GUIDE)](docs/Plugin-X_Guide.md)**
+> * 🤖 **[AI(ChatGPT/Claude 등)에게 위젯을 만들어 달라고 지시할 때 쓰는 전용 프롬프트 메이커](docs/AI_AGENT_PROMPT.md)**
+
 AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실시간 지능형 개인 비서 대시보드입니다.  
 사용자의 하루 일정, 주식/금융 시장 데이터, 실시간 날씨, 최신 뉴스 헤드라인, 미확인 이메일 등을 수집하여 브리핑하고, 실시간 반응형 2D 아바타(Live2D)를 통해 시각적·음성적 상호작용을 제공합니다.
-
 
 ## ✨ 주요 기능
 - **통합 대시보드**: 날씨, 뉴스, 구글 일정, 투두리스트, 금융 지수 및 관심 주식 종목, 시스템 리소스 등 한눈에 확인.
@@ -149,7 +156,8 @@ AEGIS는 Google Calendar, Tasks, Gmail API를 읽기 전용(Read-only)으로 호
   * **주요 문법 및 구조**:
     * `"condition"`: 자바스크립트(JS) 조건식입니다. (예: 주가가 3% 이상 올랐을 때 ➔ `"change_pct >= 3"`)
     * `"actions"`: 조건이 맞을 때 수행할 행동(배열)입니다.
-      * `"type": "MOTION"` 또는 `"EMOTION"` ➔ 캐릭터의 애니메이션을 변경합니다. 이때 `"file"`에는 본인이 사용하는 Live2D 모델의 실제 모션/표정 파일명(예: `Shock.motion3.json`). (★사용하는 아바타 모델마다 파일 이름이 다르므로 반드시 확인 후 매핑해야 합니다.)
+      * `"type": "MOTION"` 또는 `"EMOTION"` ➔ 캐릭터의 애니메이션을 변경합니다. 이때 `"file"`에는 본인이 사용하는 Live2D 모델의 실제 모션/표정 파일명(예: `Shock.motion3.json`)을 넣거나, 스튜디오에서 맵핑한 **별명(Alias)**을 `"alias": "joy"`, `"alias": "superhappy"` 형식으로 지정할 수 있습니다.
+        * **💡 Custom Alias (커스텀 알리아스):** AEGIS는 `happy`, `idle` 등 정해진 이름뿐만 아니라, **사용자가 원하는 어떠한 이름의 알리아스도 무제한으로 지원**합니다. 스튜디오에서 `superhappy` 처럼 본인만의 이름을 생성해 맵핑한 뒤 이곳에 적어주기만 하면 즉시 동작합니다. (메인 코드 수정 불필요)
       * `"type": "TTS"` ➔ 대시보드의 스피커를 통해 알림을 읽어줍니다. `"template"` 내에 `{name}`, `{price}`, `{change_pct_abs}` 등 변수를 섞어 넣으면 실시간 데이터가 합성되어 음성으로 재생됩니다.
 
 * **루틴 매니저 (Routine Manager) & 브리핑 스케줄러** [v1.5 고도화]
@@ -253,6 +261,14 @@ MIT License (※ 본 프로젝트에 포함된 Live2D 모션/모델의 경우 Li
 ---
 
 # AEGIS Intelligence Dashboard (English)
+
+> 🚨 **CRITICAL MUST-READ** 🚨
+> 
+> To use and extend the system smoothly, **please read the following guidelines first!** (They contain all setup and extension instructions)
+> * ⚠️ **[Migration Guide for users upgrading from v1.6 or below](docs/MIGRATION_GUIDE.md)**
+> * 📖 **[System Setup Guide for General Users (USER GUIDE)](docs/manual/USER_GUIDE.md)**
+> * 🛠️ **[Plugin-X Extension Module Guide for Developers (PLUGIN GUIDE)](docs/Plugin-X_Guide.md)**
+> * 🤖 **[AI Prompt Template - Give this to ChatGPT/Claude to build custom widgets instantly!](docs/AI_AGENT_PROMPT.md)**
 
 AEGIS is a real-time intelligent personal assistant dashboard that combines AI (Gemini) models with Edge-TTS.  
 It collects and briefs users on their daily schedules, stock/financial market data, real-time weather, the latest news headlines, unread emails, and more. It provides visual and vocal interactions through a real-time responsive 2D avatar (Live2D).
@@ -402,7 +418,8 @@ Fetching playlists and queues requires the user's YouTube Music account informat
   * **Key Syntax and Structure**:
     * `"condition"`: JavaScript (JS) conditional expression. (e.g., when stock price rises by 3% or more ➔ `"change_pct >= 3"`)
     * `"actions"`: Array of actions to perform when the condition is met.
-      * `"type": "MOTION"` or `"EMOTION"` ➔ Changes the character's animation. The `"file"` field must be set to the actual motion/expression filename of your Live2D model (e.g., `Shock.motion3.json`). (★Since filenames differ per avatar model, ensure you verify and map them correctly.)
+      * `"type": "MOTION"` or `"EMOTION"` ➔ Changes the character's animation. The `"file"` field must be set to the actual motion/expression filename of your Live2D model (e.g., `Shock.motion3.json`), or you can specify an **Alias** mapped in the Studio (e.g., `"alias": "joy"`, `"alias": "superhappy"`).
+        * **💡 Custom Alias:** AEGIS supports unlimited **Custom Aliases**. You are not limited to default names like `happy` or `idle`. Simply create and map your own alias (like `superhappy`) in the Live2D Studio, and type it here to make it work instantly! (No main code modification required)
       * `"type": "TTS"` ➔ Reads the notification via the dashboard speaker. You can mix variables like `{name}`, `{price}`, `{change_pct_abs}` within the `"template"` to synthesize real-time data into speech.
 
 * **Live2D Studio 💎**

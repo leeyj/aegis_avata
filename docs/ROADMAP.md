@@ -64,7 +64,24 @@
     - `Obsidian Local REST API` 및 직접 파일 시스템 접근을 통한 노트 검색/읽기.
     - AI 질의 시 관련 노트를 참조하여 답변하는 RAG(검색 증강 생성) 기반 지식 주입.
 
-### 2. v1.3: 글로벌 확장 및 서비스 차별화 (Global & Service Optimization)
+### 1. v1.6: Open Aegis & Infinite Expansion (플랫폼화 및 미디어 고도화) [차기 과제]
+- **Plugin-X (위젯 완전 모듈화) [1순위]**:
+    - `index.html` 하드코딩 탈피: 위젯별 독립된 HTML/JS/CSS 조각을 런타임에 동적 로드하는 아키텍처 구축.
+    - 위젯 생명주기(Lifecycle) 표준화: `init`, `render`, `refresh` 규격 정의로 타 개발자 참여 기반 마련.
+- **모듈 의존성 관리 매니저 (Dependency Manager) [NEW]**:
+    - 위젯별 `manifest.json` 기반 라이브러리 의존성 자동 감지 엔진.
+    - 라이브러리 누락 시 아바타(ANIYA 등)가 직접 설치를 제안하고 승인 시 자동 설치하는 지능형 UI 가이드.
+    - 환경별(Windows/Linux) 실행 환경 검증 및 pip 자동 동기화 프로세스 구축.
+- **로컬 미디어 허브 (Local Media Sync)**:
+    - 유튜브 프리미엄 미사용자를 위한 로컬 `static/media/mp3` 폴더 연동 및 재생 위젯 구축.
+    - 비주얼라이저 및 TTS 음성과의 동시 출력 밸런싱 최적화.
+- **활성 콘텐츠 와처 (YouTube Watcher)**:
+    - 지정한 유튜브 채널의 신규 영상 업로드 감지 시 아바타가 실시간 음성 알림(RSS/API 기반).
+- **프리미엄 테마 시스템 v1.0 💎**:
+    - CSS 변수(Variables) 기반의 실시간 테마 교체 엔진 (Neon, Minimal, Cyber, Serene 등).
+    - 사용자 정의 색상 팔레트 저장 기능 연동.
+
+### 2. v1.7: 글로벌 확장 및 서비스 차별화 (Global & Service Optimization)
 - **영어 및 다국어 지원 (Global Support) [1순위]**:
     - **UI 로컬라이징**: 대시보드 및 스튜디오 인터페이스의 영어 버전 제공.
     - **다국어 브리핑**: AI 브리핑 및 알림 TTS의 영어 출력 기능 (Edge-TTS 영어 음성 매핑).
