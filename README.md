@@ -1,5 +1,7 @@
 # AEGIS Intelligence Dashboard
 
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-me-pink?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/leeyj)
+
 > 🚨 **필독 안내 (CRITICAL MUST-READ)** 🚨
 > 
 > 시스템을 원활하게 사용하고 개발하기 위해 **아래 가이드라인을 반드시 가장 먼저 읽어주세요!** (모든 설정과 확장 방법이 들어있습니다)
@@ -481,6 +483,17 @@ python routes/main.py
 ```
 * Access via `http://127.0.0.1:8001` in a local browser.
 * For deployment servers, access via the production/internal network IP (e.g., `http://192.168.0.x:8001`).
+
+## 💖 후원 (Sponsors)
+이 프로젝트가 도움이 되었다면 후원을 통해 지속적인 개발을 응원해 주세요!
+
+- [GitHub Sponsors에서 후원하기](https://github.com/sponsors/leeyj)
+
+> [!IMPORTANT]
+> **전용 키 발송 안내**: $10, $25 티어 후원자 및 $12 일회성 후원자분들께는 확인 후 1~2일 내로 전용 키를 발송해 드립니다. 후원 후 혜택 적용을 위해 [GitHub Sponsors](https://github.com/sponsors/leeyj) 메시지나 이메일(leeyj78@gmail.com)로 연락 주시기 바랍니다.
+
+<!-- github-sponsors:start -->
+<!-- github-sponsors:end -->
 
 ## 🤝 License
 MIT License (*Note: Live2D motions/models included in this project follow the official Live2D license or the license of their respective creators.)

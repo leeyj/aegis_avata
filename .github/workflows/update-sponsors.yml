@@ -1,0 +1,18 @@
+name: Update Sponsors
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 정각에 업데이트
+  workflow_dispatch:
+
+jobs:
+  update-sponsors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Update Sponsors in README
+        uses: JamesIves/github-sponsors-readme-action@v1
+        with:
+          token: ${{ secrets.SPONSORS_TOKEN }}
+          file: 'README.md'
