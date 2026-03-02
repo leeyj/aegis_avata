@@ -42,6 +42,26 @@
 - `plugins/{id}/assets/widget.js` (init / destroy 생명주기 및 렌더링 로직)
 - `plugins/{id}/assets/widget.css` (Shadow DOM 내 독립적 스타일 컴포넌트)
 
+# Permissions Specification
+`manifest.json`의 `"permissions": []` 배열에 시스템 권한을 명시해야 백엔드 API 단에서 차단되지 않습니다. 사용할 수 있는 주요 권한들은 다음과 같습니다:
+- `"api.media_proxy"`: 로컬 미디어 파일(MP3, 이미지 등) 접근 권한
+- `"api.ai_gateway"`: Gemini, Grok 등 내부 AI 프록시를 사용할 수 있는 권한
+- `"api.system_stats"`: CPU/RAM 등 시스템 자원 접근 권한
+- `"api.scheduler"`: 루틴 등록/조작 권한
+- `"api.notion"`: 노션 등 외부 API 호출을 대리 수행하는 프록시 권한
+
+# Context API Catalog (프론트엔드 통신 규격)
+`widget.js`의 `init(shadowRoot, context)` 에서 제공받는 `context` 객체는 다음과 같은 함수들을 제공합니다. **절대 글로벌 함수나 외부 로직을 호출하지 말고 context를 사용하세요.**
+
+| 함수명 | 전달 인자 (Parameters) | 리턴 값 / 설명 |
+|---|---|---|
+| `context.log(msg)` | `msg` (String) | 플러그인 전용 태그가 붙은 정상 콘솔 로그 출력 |
+| `context.askAI(task, data)` | `task` (String: 프롬프트 지시), `data` (Object: 컨텍스트 데이터) | AI의 응답을 JSON 형식 Promise로 반환 (`api.ai_gateway` 권한 필수) |
+| `context.speak(text, audioUrl, vType)`| `text` (String), `audioUrl` (String, 옵션), `vType` (옵션) | 텍스트를 즉시 TTS로 읽어주며 아바타 입모양(Lip-sync) 매칭 |
+| `context.appendLog(tag, msg)` | `tag` (String), `msg` (String) | 대시보드 하단의 공용 터미널 로그창에 메시지 출력 |
+| `context.registerCommand(pre, cb)` | `pre` (String: 명령어 시작어, 예: `/test`), `cb` (Function) | 사용자가 터미널에서 `/test 안녕` 입력 시 `cb("안녕")` 실행 |
+| `context.triggerReaction(type, data)`| `type` ("MOTION" \| "EMOTION"), `data` ({ file: '경로' } 또는 { alias: '별명' }) | 아바타의 모션/감정 즉시 변경. **사용자가 만든 alias를 그대로 넘기면 됨.** |
+
 # Exports Manifest Rules (Condition Watch 연동)
 루틴 매니저 엔진이 이 위젯의 수치 데이터를 읽고 자동화 루틴을 돌릴 수 있도록 `manifest.json` 하단에 `exports`를 선언하는 예시입니다:
 ```json
@@ -60,6 +80,68 @@
         { "prefix": "/mycmd", "name": "명령어 설명 가이드" }
     ]
 }
+```
+
+# Example Reference: 로컬 미디어 플레이어 위젯 예시
+실제로 구현해야 할 규격의 느낌을 파악할 수 있도록 제공되는 미디어 플레이어(`mp3-player`)의 초간단 구현 예시(일부 발췌)입니다. 생성할 코드의 톤앤매너를 이것과 정확히 일치시키세요.
+
+**1. manifest.json**
+```json
+{
+    "id": "mp3-player",
+    "name": "뮤직 플레이어",
+    "version": "1.0.0",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": ["api.media_proxy"]
+}
+```
+
+**2. router.py**
+```python
+import os
+from flask import Blueprint, jsonify
+from routes.decorators import login_required
+from services.plugin_security_service import require_permission
+from .mp3_service import Mp3Service
+
+mp3_plugin_bp = Blueprint("mp3_player_plugin", __name__)
+
+@mp3_plugin_bp.route("/api/plugins/mp3-player/list")
+@login_required
+@require_permission("api.media_proxy")
+def get_list():
+    return jsonify(Mp3Service.get_tracks())
+```
+
+**3. assets/widget.js**
+```javascript
+export default {
+    init: async function(shadowRoot, context) {
+        context.log("MP3 Player Initialize");
+        this.shadow = shadowRoot;
+        this.ctx = context;
+
+        // 버튼 클릭 이벤트 바인딩 (DOM 제어는 shadowRoot 안에서만!)
+        const btn = this.shadow.querySelector('#play-btn');
+        btn.addEventListener('click', () => {
+             this.ctx.speak("음악 재생을 시작합니다.");
+             this.ctx.triggerReaction('MOTION', { alias: 'happy' });
+        });
+
+        // 사용자가 터미널에 /play 입력 시 동작하도록 명령어 등록
+        this.ctx.registerCommand('/play', (param) => {
+             this.ctx.appendLog('MP3', param + ' 명령을 수신했습니다.');
+        });
+    },
+    destroy: function() {
+        this.ctx.log("MP3 Player Destroyed");
+    }
+};
 ```
 
 이제 이 아키텍처 규칙들을 당신의 메모리에 완벽히 세팅하십시오. 
