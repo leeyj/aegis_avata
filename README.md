@@ -6,6 +6,7 @@
 > * ⚠️ **[v1.6 이하 버전을 쓰시던 분을 위한 업그레이드(Migration) 가이드](docs/MIGRATION_GUIDE.md)**
 > * 📖 **[일반 사용자를 위한 시스템 설정 가이드 (USER GUIDE)](docs/manual/USER_GUIDE.md)**
 > * 🛠️ **[개발자를 위한 Plugin-X 확장 모듈 가이드 (PLUGIN GUIDE)](docs/Plugin-X_Guide.md)**
+> * 🗂️ **[개발자 및 AI를 위한 Plugin-X 종합 프레임워크 레퍼런스 (API & 권한 규격서)](docs/FRAMEWORK_REFERENCE.md)**
 > * 🤖 **[AI(ChatGPT/Claude 등)에게 위젯을 만들어 달라고 지시할 때 쓰는 전용 프롬프트 메이커](docs/AI_AGENT_PROMPT.md)**
 
 AEGIS(에이지스)는 AI(Gemini) 모델과 Edge-TTS를 결합하여 만든 실시간 지능형 개인 비서 대시보드입니다.  
@@ -268,6 +269,7 @@ MIT License (※ 본 프로젝트에 포함된 Live2D 모션/모델의 경우 Li
 > * ⚠️ **[Migration Guide for users upgrading from v1.6 or below](docs/MIGRATION_GUIDE.md)**
 > * 📖 **[System Setup Guide for General Users (USER GUIDE)](docs/manual/USER_GUIDE.md)**
 > * 🛠️ **[Plugin-X Extension Module Guide for Developers (PLUGIN GUIDE)](docs/Plugin-X_Guide.md)**
+> * 🗂️ **[Comprehensive Framework Reference for Developers & AI (API & Permissions)](docs/FRAMEWORK_REFERENCE.md)**
 > * 🤖 **[AI Prompt Template - Give this to ChatGPT/Claude to build custom widgets instantly!](docs/AI_AGENT_PROMPT.md)**
 
 AEGIS is a real-time intelligent personal assistant dashboard that combines AI (Gemini) models with Edge-TTS.  
