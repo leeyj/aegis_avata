@@ -4,6 +4,8 @@ config/credentials.json
 config/token_*.json
 config/weather.json
 config/system.json
+plugins/notion/config.json
+plugins/system-stats/config.json
 headers_auth.txt
 headers_auth.json
 
