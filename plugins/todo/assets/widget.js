@@ -24,7 +24,7 @@ export default {
                 const item = document.createElement('div');
                 item.className = `todo-item-container ${task.pendingCompletion ? 'pending' : ''}`;
                 item.innerHTML = `
-                    <div class="todo-check ${task.pendingCompletion ? 'checked' : ''}">
+                    <div class="todo-check no-drag ${task.pendingCompletion ? 'checked' : ''}">
                         ${task.pendingCompletion ? '✓' : ''}
                     </div>
                     <div class="todo-content">

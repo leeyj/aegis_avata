@@ -1,6 +1,6 @@
-# AEGIS Plugin-X: 확장 모듈 개발 가이드 (v1.8)
+# AEGIS Plugin-X: 확장 모듈 개발 가이드 (v1.9)
 
-AEGIS Plugin-X는 대시보드의 모든 위젯과 기능을 **완벽하게 독립된 모듈**로 분리하여 관리하는 차세대 아키텍처입니다. 본 가이드는 최신 **v1.8 표준 규격(Condition Watch 및 Exports 통합)**을 설명하며, **모든 AI 및 개발자는 이 문서의 정책을 반드시 준수**해야 합니다.
+AEGIS Plugin-X는 대시보드의 모든 위젯과 기능을 **완벽하게 독립된 모듈**로 분리하여 관리하는 차세대 아키텍처입니다. 본 가이드는 최신 **v1.9 표준 규격(Environment Control 기능 추가)**을 설명하며, **모든 AI 및 개발자는 이 문서의 정책을 반드시 준수**해야 합니다.
 
 ---
 
@@ -209,6 +209,7 @@ Plugin-X의 목표는 **각 플러그인이 메인 시스템과 물리적으로 
 | `context.changeModel(modelName)` | Live2D 모델 전환 |
 | `context.getMediaList()` | 미디어 프록시 목록 |
 | `context.getAudioUrl(filename)` | 미디어 스트리밍 URL |
+| `context.environment.applyEffect(type)` | 전역 환경 시각효과 트리거 (RAINY, SNOWY, STORM, CLEAR) |
 
 ### 💡 Custom Alias (커스텀 알리아스)를 활용한 확장
 AEGIS는 `idle`, `joy` 등 기본 지정된 모션 이름뿐만 아니라, **사용자나 개발자가 정의한 무제한의 커스텀 알리아스**를 지원합니다.
@@ -559,6 +560,7 @@ TTS Text:   현재 온도는 {{value}}도입니다.
 | v1.7 | 2026-03-02 | 정책 금지 규칙 명문화, 라우트 표준 강제, YT Music 경로 표준화, `terminal_notion.js` 제거(widget.js 통합), Loader Guard 문서화 |
 | v1.7.1 | 2026-03-02 | 스케줄러 범용 액션(`terminal_command`, `api_call`) 추가, 루틴 매니저 GUI 고도화 |
 | v1.8 | 2026-03-02 | **`exports` manifest 스펙** 구현, 조건 감시 루틴(Condition Watch) 구현, 타입 시스템(`number/string/boolean`), 템플릿 변수(`{{value}}`, `{{threshold}}`), `/exports` API, 4개 플러그인 manifest 업데이트 |
+| v1.9 | 2026-03-02 | **`ENVIRONMENT_CONTROL` 권한 및 API** 도입, 전역 환경 시각효과(비, 눈, 번개) 동적 로딩 엔진 구현, 코어-플러그인 캡슐화 정책 강화 |
 
 ---
 **AEGIS Plugin-X Standard v1.8 Documentation**

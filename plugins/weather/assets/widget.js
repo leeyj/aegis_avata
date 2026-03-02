@@ -48,6 +48,11 @@ export default {
                         iconEl.style.height = this.config.icon_size;
                     }
 
+                    // [NEW] Environment Effect Trigger (using new Capability)
+                    if (context.environment && typeof context.environment.applyEffect === 'function') {
+                        context.environment.applyEffect(data.status);
+                    }
+
                     context.triggerReaction('weather', data, 3600000);
                 }
             } catch (e) {

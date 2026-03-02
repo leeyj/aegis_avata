@@ -212,7 +212,39 @@ window.PluginLoader = {
                 if (typeof window.loadModel === 'function') window.loadModel(modelName);
                 else console.log(`[Plugin:${manifest.id}] Model load requested but service unavailable: ${modelName}`);
             },
-            getActiveModel: () => window.activeModelName || 'hiyori_vts'
+            getActiveModel: () => window.activeModelName || 'hiyori_vts',
+
+            // Capability: Environment Control (v1.9.0)
+            environment: (manifest.permissions && manifest.permissions.includes('ENVIRONMENT_CONTROL')) ? {
+                applyEffect: async (type) => {
+                    // 동적 에셋 로딩 (코어 분리 정책)
+                    if (!window.applyWeatherEffect) {
+                        console.log(`[Plugin:${manifest.id}] Loading weather effects script...`);
+
+                        // CSS 로드
+                        if (!document.getElementById('weather-effects-css')) {
+                            const link = document.createElement('link');
+                            link.id = 'weather-effects-css';
+                            link.rel = 'stylesheet';
+                            link.href = '/static/css/components/weather_effects.css';
+                            document.head.appendChild(link);
+                        }
+
+                        // JS 로드 (Promise 기반)
+                        await new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = '/static/js/weather_effects.js';
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.body.appendChild(script);
+                        });
+                    }
+
+                    if (window.applyWeatherEffect) {
+                        window.applyWeatherEffect(type);
+                    }
+                }
+            } : null
         };
     }
 };

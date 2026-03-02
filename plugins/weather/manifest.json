@@ -10,7 +10,8 @@
         "backend": "router.py"
     },
     "permissions": [
-        "api.briefing_scheduler"
+        "api.briefing_scheduler",
+        "ENVIRONMENT_CONTROL"
     ],
     "layout": {
         "default_size": "size-1"
