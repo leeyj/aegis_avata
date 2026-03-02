@@ -50,17 +50,16 @@
 ## 3. 위젯 및 리액션 (Widgets & Reactions)
 
 ### 3.1 실시간 데이터 위젯 관련
-- **`weather.json`**: 조회 도시(`city`) 및 갱신 주기(`update_interval_min`) 설정.
-- **`finance.json`**: 대시보드 상단에 표시할 시장 지수(`tickers`) 및 폰트 크기.
-- **`ticker.json`**: 관심 종목(`tickers`) 및 급등락 알림 기준(`alert_threshold`).
-- **`news.json`**: RSS 피드 주소(`rss_urls`) 및 표시할 기사 수(`max_items`).
-- **`clock.json`**: 시계 표시 형식(`format`) 및 텍스트 색상(`color`).
-- **`google.json`**: 캘린더, 할 일, 지메일 연동 옵션 및 인증 토큰 지정.
+- **`plugins/weather/config.json`**: 조회 도시(`city`) 및 갱신 주기(`update_interval_min`) 설정. 비/눈 효과는 이 데이터와 `reactions.json`이 연동되어 자동 트리거됩니다.
+- **`plugins/stock/config.json`**: 대시보드 상단에 표시할 시장 지수(`tickers`) 및 폰트 크기.
+- **`plugins/news/config.json`**: RSS 피드 주소(`rss_urls`) 및 표시할 기사 수(`max_items`).
+- **`plugins/clock/config.json`**: 시계 표시 형식(`format`) 및 텍스트 색상(`color`).
+- **`plugins/notion/config.json`**: 노션 워크스페이스 세부 설정 및 연동 DB ID 관리.
 
 ### 3.2 `reactions.json` (아바타 자동 반응)
 데이터 변화에 따라 아바타가 수행할 모션과 대사 규칙입니다. (상세 내용은 [리액션 가이드](./reactions_guide.md) 참조)
 - `condition`: 반응이 발동될 조건 (예: `change_pct >= 3`).
-- `actions`: 수행할 모션(`MOTION`), 표정(`EMOTION`), 대사(`TTS`)의 집합.
+- `actions`: 수행할 모션(`MOTION`), 표정(`EMOTION`), 대사(`TTS`), 환경 효과(`WEATHER_EFFECT`)의 집합.
 
 ### 3.4 `Live2D Studio` (아바타 개발 환경)
 - 신규 모델 테스트 및 `alias.json` 최적화를 위한 전용 툴입니다. (상세 내용은 [스튜디오 가이드](./live2d_studio.md) 참조)
@@ -99,4 +98,4 @@
 3. **오류 해결**: JSON 파일에 오타(`쉼표`, `중괄호` 누락 등)가 있으면 서버 구동에 실패할 수 있으니 주의하십시오.
 
 ---
-*최종 업데이트: 2026-02-27*
+*최종 업데이트: 2026-03-02 (v1.9)*
