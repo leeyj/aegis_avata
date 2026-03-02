@@ -9,20 +9,24 @@ window.WeatherEffects = {
     container: null,
 
     init: function () {
+        if (this.container) return true; // Already initialized
+
         this.container = document.getElementById('weather-effects');
         if (!this.container) {
             console.error("[WeatherEffects] Container #weather-effects not found.");
-            return;
+            return false;
         }
         console.log("[WeatherEffects] Manager initialized.");
+        return true;
     },
 
     /**
      * 전역 날씨 효과 적용
-     * @param {string} type 'RAIN', 'SNOW', 'STORM', 'CLEAR'
+     * @param {string} type 'RAINY', 'SNOWY', 'STORM', 'CLEAR'
      */
     apply: function (type) {
         if (this.activeEffect === type) return;
+        if (!this.init()) return; // Ensure initialized before applying
 
         this.clear();
         this.activeEffect = type;
@@ -41,11 +45,15 @@ window.WeatherEffects = {
         this.activeEffect = null;
         this.timers.forEach(t => clearInterval(t));
         this.timers = [];
-        if (this.container) this.container.innerHTML = '';
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     },
 
     startRain: function () {
+        if (!this.container) return;
         const createDrop = () => {
+            if (!this.container) return;
             const drop = document.createElement('div');
             drop.className = 'rain-drop';
             drop.style.left = Math.random() * 100 + 'vw';
@@ -53,7 +61,9 @@ window.WeatherEffects = {
             drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
 
             this.container.appendChild(drop);
-            setTimeout(() => drop.remove(), 2000);
+            setTimeout(() => {
+                if (drop.parentNode) drop.remove();
+            }, 2000);
         };
 
         const timer = setInterval(createDrop, 50);
@@ -61,7 +71,9 @@ window.WeatherEffects = {
     },
 
     startSnow: function () {
+        if (!this.container) return;
         const createFlake = () => {
+            if (!this.container) return;
             const flake = document.createElement('div');
             flake.className = 'snow-flake';
             const size = (Math.random() * 5 + 2) + 'px';
@@ -72,7 +84,9 @@ window.WeatherEffects = {
             flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
 
             this.container.appendChild(flake);
-            setTimeout(() => flake.remove(), 5000);
+            setTimeout(() => {
+                if (flake.parentNode) flake.remove();
+            }, 5000);
         };
 
         const timer = setInterval(createFlake, 200);
@@ -80,11 +94,13 @@ window.WeatherEffects = {
     },
 
     startLightning: function () {
+        if (!this.container) return;
         const flashInstance = document.createElement('div');
         flashInstance.className = 'lightning-flash';
         this.container.appendChild(flashInstance);
 
         const timer = setInterval(() => {
+            if (!this.container) return;
             if (Math.random() > 0.95) {
                 flashInstance.classList.add('animate-flash');
                 setTimeout(() => flashInstance.classList.remove('animate-flash'), 200);
@@ -101,7 +117,11 @@ window.applyWeatherEffect = (type) => {
     }
 };
 
-// Initialize on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
     window.WeatherEffects.init();
-});
+} else {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.WeatherEffects.init();
+    });
+}

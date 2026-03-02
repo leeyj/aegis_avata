@@ -28,7 +28,7 @@ function initSinglePanelDragging(panel) {
         const path = e.composedPath();
         const isInteractive = path.some(el =>
             el instanceof HTMLElement &&
-            el.closest('button, select, input, a, .finance-item, .no-drag, .notion-item, .resize-handle, .brief-speaker')
+            el.closest('button, select, input, a, .no-drag, .resize-handle, .brief-speaker')
         );
 
         if (isInteractive || e.ctrlKey || window.uiLocked) return;

@@ -1,6 +1,6 @@
 # AEGIS Intelligence - 통합 시스템 명세서 (SPECIFICATION)
 
-**최종 업데이트: 2026-03-02 (v1.8 Standard)**
+**최종 업데이트: 2026-03-03 (v1.9 Standard)**
 이 문서는 AEGIS 대시보드의 백엔드/프론트엔드 핵심 설계 원칙 및 시스템 사양을 정의합니다.
 
 ---
@@ -38,6 +38,14 @@
 - 플러그인은 `manifest.json`의 `exports` 필드를 통해 센서 데이터(`sensors[]`)와 명령어(`commands[]`)를 시스템에 공개합니다.
 - **`/api/plugins/scheduler/exports`** API가 전체 플러그인의 exports를 수집하여 GUI에 제공합니다.
 - `sensors[].type` 필드(`number`, `string`, `boolean`)에 따라 스케줄러가 자동 타입 변환을 수행합니다.
+
+### 2.4 Environment Capability (v1.9)
+- 플러그인은 `ENVIRONMENT_CONTROL` 권한을 요청하여 시스템의 전역 시각 효과를 제어할 수 있습니다.
+- **`context.environment.applyEffect(type)`**: `RAINY`, `SNOWY`, `STORM`, `CLEAR` 등의 효과를 실시간으로 주입합니다.
+
+### 2.5 UI Drag Lock & Resize Standard
+- 모든 위젯은 `ui_drag_manager.js`에 의해 중앙 제어됩니다.
+- **Lock State**: 잠금 상태에서는 마우스 드래그 및 크기 조절 핸들이 비활성화되어 사용자 실수에 의한 레이아웃 붕괴를 방지합니다.
 
 ---
 

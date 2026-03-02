@@ -71,6 +71,12 @@ class AvatarCommander {
                         window.speakTTS(message, audioUrl, visualType);
                     }
                     break;
+                case 'WEATHER_EFFECT':
+                    if (window.applyWeatherEffect) {
+                        const effectType = evaluator.format(action.value, data);
+                        window.applyWeatherEffect(effectType);
+                    }
+                    break;
             }
         });
     }

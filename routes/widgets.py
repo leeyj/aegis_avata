@@ -40,25 +40,26 @@ def get_config(name):
     if name in CORE_CONFIG_MAP:
         return jsonify(load_json_config(CORE_CONFIG_MAP[name]))
 
-    # 3. [Plugin-X] 플러그인 폴더 내 config.json 자동 탐색
-    # alias 매핑 (기본 키가 다른 경우 대응)
-    plugin_alias = {
-        "system": "system-stats",
-        "ticker": "stock",
-        "weather": "weather",
-        "clock": "clock",
-        "finance": "finance",
-        "news": "news",
-        "proactive": "proactive-agent",
-        "notion": "notion",
-        "wallpaper": "wallpaper",
-        "terminal": "terminal",
-    }
+    # 3. [Plugin-X] 플러그인 폴더 내 config.json 자동 탐색 (Dynamic Discovery)
+    # name이 실제 폴더명이거나, manifest의 id와 일치하는 폴더를 찾습니다.
+    target_id = None
 
-    target_id = plugin_alias.get(name, name)
-    plugin_config_path = os.path.join(PLUGINS_DIR, target_id, "config.json")
+    # 3.1 먼저 1:1 디렉토리 매칭 시도
+    direct_path = os.path.join(PLUGINS_DIR, name, "config.json")
+    if os.path.exists(direct_path):
+        target_id = name
+    else:
+        # 3.2 서칭 (디렉토리명과 요청명이 다른 경우 대비 하위 호환 매칭)
+        # 예: 'system' 요청 시 'system-stats' 매칭 등
+        for folder in os.listdir(PLUGINS_DIR):
+            if folder.startswith(name):
+                test_path = os.path.join(PLUGINS_DIR, folder, "config.json")
+                if os.path.exists(test_path):
+                    target_id = folder
+                    break
 
-    if os.path.exists(plugin_config_path):
+    if target_id:
+        plugin_config_path = os.path.join(PLUGINS_DIR, target_id, "config.json")
         return jsonify(load_json_config(plugin_config_path))
 
     return jsonify({"error": f"Config '{name}' not found"}), 404

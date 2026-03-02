@@ -2,7 +2,7 @@
     "ko": {
         "weather": {
             "bad": {
-                "condition": "['RAINY', 'STORM'].includes(status)",
+                "condition": "['RAINY', 'STORM', 'SNOWY'].includes(status)",
                 "actions": [
                     {
                         "type": "EMOTION",
@@ -41,7 +41,7 @@
     "en": {
         "weather": {
             "bad": {
-                "condition": "['RAINY', 'STORM'].includes(status)",
+                "condition": "['RAINY', 'STORM', 'SNOWY'].includes(status)",
                 "actions": [
                     {
                         "type": "EMOTION",

@@ -1,7 +1,7 @@
 # AEGIS Intelligence - 통합 개발 로드맵 (ROADMAP)
 
-**현재 배포 버전**: **v1.8 Condition Watch & Type System (2026-03-02)**
-**상태**: 🧩 Plugin-X 조건 감시 루틴 구현 완료. exports 스펙 확정 및 4개 플러그인 manifest 업데이트 완료.
+**현재 배포 버전**: **v1.9 Environment Dynamics & UI Controls (2026-03-03)**
+**상태**: ⛈️ 전역 환경 효과(Weather Effects) 및 🔓 UI 잠금/해제 기능 구현 완료. v1.9 문서 현행화 완료.
 
 ---
 
@@ -29,7 +29,12 @@
 *   **타입 시스템**: `condition.type`(number/string/boolean) 기반 자동 변환 및 비교.
 *   **템플릿 변수**: TTS 텍스트에 `{{value}}`, `{{threshold}}` 삽입 가능.
 *   **4개 플러그인 exports 등록**: weather(기온, 습도), stock(KOSPI, 등락률), system-stats(CPU, 메모리), notion(명령어).
-*   **미완료**: stock API 필드 매핑 검증, 루틴 편집 후 복원 정합성 회귀 테스트.
+
+### 5. ⛈️ 환경 역동성 & UI 제어 (v1.9) — [100% 완료] ✨NEW
+*   **ENVIRONMENT_CONTROL**: 플러그인이 `context.environment.applyEffect()`로 비, 눈, 번개 효과를 트리거.
+*   **UI Drag Lock**: 대시보드 상단 인터페이스를 통해 위젯 위치/크기 조절 권한 잠금 및 해제 통합.
+*   **Promo Control**: 홍보 및 테스트를 위한 시스템 이벤트 강제 발생기(Console) 탑재.
+*   **스폰서 시스템**: README 내 후원 배지 및 후원자 명단 자동 업데이트(GitHub Actions) 연동.
 
 ---
 
@@ -45,16 +50,20 @@
 - ~~README 파일 최신화 및 다국어(영문) 가이드라인/알리아스 부가 설명 추가 완료.~~
 - ~~v1.6 환경 사용자를 위한 MIGRATION_GUIDE.md 제공 및 클린 배포 스크립트 작성 완료.~~
 
-### 🏗️ v1.9: Connectivity & Knowledge Hub [차기 과제]
+### 🏗️ v1.10: Connectivity & Media Sync [차기 과제]
 - **의존성 관리자 (Dependency Manager)**: 플러그인별 Python 라이브러리 자동 감지 및 설치 인터랙션.
 - **로컬 미디어 싱크**: YouTube 외 로컬 MP3 자원 연동 및 비주얼라이저 동기화 고도화.
 - **반응형 그리드 엔진**: 모바일/태블릿을 위한 유동적 위젯 재배치 로직.
+- **에너지 세이버 (Eco Mode)**: 게이트키퍼 'Deny' 시간대에 아바타 애니메이션 및 위젯 갱신 주기 자동 최소화.
 
-### 🧬 v2.0: AI Agent Personality & Learning
-- **개인지식 학습 엔진 (PKM RAG)**: 노션 데이터를 넘어서는 장기 기억 비서화.
-- **멀티 아바타 자동 전환**: 상황(시간대, 기분)에 따른 페르소나 자동 오카스트레이션.
+### 🧬 v2.0: Native Intelligence & Pure Modularity [상위 과제] ✨FUTURE
+- **100% Plugin-X Compliance**: 터미널(Terminal), 서치 윈도우(Search) 등 모든 코어 위젯의 플러그인화 및 Shadow DOM 격리.
+- **Desktop Native Experience**: PyQt5 기반 투명 배경/항상 위에 모드 공식 지원 (`/desktop` 아키텍처 공식화).
+- **Click-through Engine**: 캐릭터/위젯 외 투명 영역의 클릭 이벤트를 OS 바탕화면으로 전달하는 네이티브 인터랙션.
+- **Anti-Zombie Policy**: 모든 소스 파일 내 가시적 버전 헤더(`@version`) 의무화 및 시스템 부팅 시 무결성 검사(`Integrity Check`) 도입.
+- **Auto-Startup**: 윈도우 부팅 시 시스템 트레이 자동 실행 및 저사양 모드(Static Mode) 최적화.
 
 ---
 
-**최종 업데이트: 2026-03-02 (v1.8)**
+**최종 업데이트: 2026-03-03 (v1.9)**
 *모든 상세 기술 명세는 `docs/SPECIFICATION.md`를 참조하십시오.*
