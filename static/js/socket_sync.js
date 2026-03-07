@@ -27,8 +27,16 @@ class SocketSyncClient {
                 return;
             }
 
-            // Flask-SocketIO 서버에 연결
-            this.socket = io();
+            // Flask-SocketIO 서버에 연결 (프록시 대응을 위해 전송 방식 명시 및 재연결 옵션 강화)
+            this.socket = io({
+                transports: ['websocket', 'polling'], // WebSocket 우선 시도
+                upgrade: true,
+                reconnection: true,
+                reconnectionAttempts: 10,
+                reconnectionDelay: 1000,
+                reconnectionDelayMax: 5000,
+                timeout: 20000
+            });
 
             this.socket.on('connect', () => {
                 console.log("[SocketSync] 🛡️ AEGIS Tactical Link Established.");

@@ -61,6 +61,11 @@ def create_app():
             x_prefix=p_count,
         )
 
+    # 2. SocketIO 초기화 (순환 참조 방지를 위해 지연 임포트)
+    from services.socket_service import socketio
+
+    socketio.init_app(app)
+
     app.secret_key = FLASK_SECRET_KEY
 
     # 블루프린트 등록
