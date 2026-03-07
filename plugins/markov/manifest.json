@@ -7,6 +7,6 @@
     "entry": {
         "js": "assets/widget.js"
     },
-    "hidden": false,
+    "hidden": true,
     "priority": 10
 }

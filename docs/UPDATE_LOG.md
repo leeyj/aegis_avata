@@ -1,5 +1,25 @@
 # AEGIS Intelligence - 업데이트 로그 (UPDATE LOG)
 
+## [v3.4.2] Live2D Look-at & Advanced Interactions (2026-03-07)
+
+### 🚀 주요 변경 사항 (Core Updates)
+
+1. **Live2D 마우스 포인터 추명(Look-at) 기능 도입**
+   - 아바타가 화면상의 마우스 커서를 자연스럽게 따라가도록 시선 처리 로직을 구현했습니다. (`static/js/ui_interaction_manager.js`)
+   - `pixi-live2d-display`의 `focus(x, y)` API를 활용하여 부드러운 댐핑(Damping) 효과를 적용했습니다.
+   - `core.js`에 `enableLookAtCursor` 전역 플래그를 추가하여 사용자 제어권을 확보했습니다.
+
+2. **아바타 기반 스마트 상호작용(Smart Hub) 통합**
+   - **더블 클릭 (Double-tap):** 퀘이크 HUD 스타일 터미널을 토글하고 입력창에 자동으로 포커스를 주는 단축 상호작용을 구현했습니다.
+   - **롱 클릭 (Long-press, 800ms):** 아바타의 위치(Offset)와 확대 배율(Zoom)을 표준 상태로 부드럽게 복구하는 레이아웃 리셋 기능을 추가했습니다.
+   - **트리플 클릭 (Triple-tap):** 기존 '아무말 대잔치(Markov)' 플러그인과 연동하여 비용 없는 랜덤 텍스트를 출력합니다.
+
+3. **플러그인 호환성 및 명칭 불일치 해결**
+   - 터미널 플러그인(v2.2.5+)의 `toggle()` 메서드와 코어 UI의 `setTerminalState()` 간의 호출 규격을 통합하여 더블 클릭 시 오작동하던 버그를 수정했습니다.
+   - `markov` 플러그인의 `hidden: true` 설정을 통해 대시보드 위젯 목록을 정리하고 백그라운드 전용 동작으로 전환했습니다.
+
+---
+
 ## [v3.4.0] Global I18n & Unified Command System (2026-03-07)
 
 ### 🚀 주요 변경 사항 (Core Updates)

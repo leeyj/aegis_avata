@@ -12,6 +12,7 @@ window.offsetY = 0;
 window.uiPositions = {};
 window.panelVisibility = {};
 window.uiLocked = false;
+window.enableLookAtCursor = true; // [v3.0.2] 마우스 추적(Look-at) 기능 활성화 플래그
 
 // [v2.0] Global Command Router has been migrated to static/js/widgets/ai_gateway.js
 
