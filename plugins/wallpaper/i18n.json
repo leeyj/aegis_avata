@@ -1,0 +1,18 @@
+{
+    "ko": {
+        "panels": {
+            "p-wallpaper": "배경화면 제어"
+        },
+        "widgets": {
+            "wallpaper_title": "전술 배경 관리"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-wallpaper": "Wallpaper Control"
+        },
+        "widgets": {
+            "wallpaper_title": "Tactical Background Control"
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "_comment": "시스템 리소스(CPU, 메모리, 저장소 용량) 모니터링 설정입니다. 디스크 경로는 운영 체제에 맞게 변경하세요.",
+    "show_cpu": true,
+    "show_memory": true,
+    "disks": {
+        "C:": "C:\\",
+        "Home": "/home/user"
+    }
+}

@@ -1,0 +1,55 @@
+/* AEGIS HUD (Global UI) Styles */
+
+/* --- Visualizer (Slim HUD Style) --- */
+.visualizer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 30px;
+    width: 60px;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+}
+
+.visualizer-bar {
+    width: 2px;
+    background: var(--neon);
+    border-radius: 1px;
+    transition: height 0.1s ease;
+    box-shadow: 0 0 8px var(--neon);
+    opacity: 0.6;
+}
+
+/* --- Speech Bubble (HUD Style) --- */
+.speech-bubble {
+    position: absolute;
+    top: 65%;
+    left: 40%;
+    background: rgba(10, 15, 25, 0.85);
+    backdrop-filter: blur(15px) saturate(180%);
+    color: #fff;
+    padding: 20px 30px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(0, 242, 255, 0.3);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 242, 255, 0.1);
+    z-index: 2000;
+    display: none;
+    max-width: 500px;
+    cursor: move;
+    transition: box-shadow 0.3s, background 0.3s;
+}
+
+.speech-bubble:hover {
+    background: rgba(10, 15, 25, 0.95);
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+#bubble-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: var(--bubble-font-size, 16px);
+    line-height: 1.5;
+    color: #fff;
+    word-break: break-word;
+}

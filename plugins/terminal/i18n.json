@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "terminal": {
+            "placeholder": "명령을 입력하세요... (/ 도움말)"
+        }
+    },
+    "en": {
+        "terminal": {
+            "placeholder": "Type a command... (/help)"
+        }
+    }
+}

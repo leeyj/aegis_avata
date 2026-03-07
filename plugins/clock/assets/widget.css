@@ -1,0 +1,22 @@
+.clock-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.clock {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    color: var(--neon);
+    text-shadow: 0 0 15px var(--neon);
+}
+
+.date {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 5px;
+    letter-spacing: 2px;
+}

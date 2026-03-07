@@ -1,0 +1,22 @@
+{
+    "id": "studio",
+    "name": "에이전트 스튜디오",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [
+        "api.studio_service"
+    ],
+    "csp_domains": {
+        "style-src": [
+            "https://fonts.googleapis.com"
+        ],
+        "font-src": [
+            "https://fonts.gstatic.com"
+        ]
+    },
+    "hidden": true
+}

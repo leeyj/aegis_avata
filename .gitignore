@@ -1,0 +1,64 @@
+# === Credentials & API Keys ===
+config/secrets.json
+config/credentials.json
+config/token_*.json
+config/weather.json
+config/system.json
+plugins/notion/config.json
+plugins/system-stats/config.json
+plugins/climate-control/
+headers_auth.txt
+headers_auth.json
+.github/
+
+# === Maintenance & Security Tools ===
+tools/
+auth_helper.py
+core_security.py
+utils.py
+core_security.c
+utils.c
+build/
+setup_security.py
+build_security_win.bat
+
+# Allow compiled binaries for core security & utils
+!core_security*.pyd
+!core_security*.so
+!utils*.pyd
+!utils*.so
+
+# === User Specific UI States ===
+settings.json
+wallpaper.json
+
+# === Cache, Media, Logs ===
+*.log
+img/ani4.gif
+static/audio/tts_cache/
+
+# === Python / Environment ===
+__pycache__/
+venv/
+.env
+.pytest_cache/
+.vscode/
+.idea/
+test/
+OLD/
+
+# === Project Assets & Models ===
+# 대용량 모델 데이터는 제외
+models/
+test_models/*/
+tmp/
+
+# === Documentation Rules ===
+# 모든 마크다운 포함하되, 개인 진행용 문서는 제외
+!docs/**/*.md
+docs/PROJECT_STATUS.md
+docs/REFACTORING_SPEC.md
+!test_models/*.md
+!test_models/*.py
+
+

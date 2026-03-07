@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AEGIS Tactical Intelligence Dashboard - AI Assisted Core Management">
+    <title>AEGIS Intelligence Dashboard</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png">
+    
+    <!-- CSS & Fonts -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components/dashboard.css">
+    <link rel="stylesheet" href="/static/css/components/sidebar.css">
+    <link rel="stylesheet" href="/static/css/components/scheduler_manager.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script>
+        window.AEGIS_TEST_MODE = {{ 'true' if settings.get('test_mode') else 'false' }};
+        window.IS_SPONSOR = {{ 'true' if is_sponsor() else 'false' }};
+        window.currentAvatar = null; // Initialize current avatar state
+        if (!window.AEGIS_TEST_MODE) {
+            // [UX] 테스트 모드가 아닐 때 콘솔 지우기 및 로그 비활성화
+            console.log = () => {};
+            console.debug = () => {};
+            console.info = () => {};
+            // console.warn, console.error는 시스템 모니터링을 위해 남겨둠
+        }
+    </script>
+
+    <!-- Core Engine Scripts (Synchronous) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/pixi.min.js"></script>
+    <script src="/static/js/live2d.min.js"></script>
+    <script src="/static/js/live2dcubismcore.min.js"></script>
+    <script src="/static/js/index.min.js"></script>
+</head>
+<body class="aegis-theme">
+
+    <!-- Wallpaper Engine Layer -->
+    <div id="wallpaper-image"></div>
+    <video id="wallpaper-video" muted loop playsinline></video>
+    <!-- Weather Dynamics Layer -->
+    <div id="weather-background" class="weather-bg"></div>
+    <div id="weather-effects" class="weather-effects"></div>
+
+    <!-- Background Elements -->
+    <div class="scan-line"></div>
+    <canvas id="live2d-canvas"></canvas>
+    
+    <!-- Avatar Loading HUD (v2.3.0) -->
+    <div id="model-loading-hud" class="hidden">
+        <script>
+            // [v2.3.5] Early activation: 즉시 현시
+            (function() {
+                const el = document.getElementById('model-loading-hud');
+                if (el) {
+                    el.classList.remove('hidden');
+                    el.classList.add('active');
+                }
+            })();
+        </script>
+        <div class="hud-content">
+            <div class="hud-scanner"></div>
+            <div class="hud-status">
+                <span class="hud-label">AVATAR UNIT</span>
+                <span class="hud-value loading-pulse">LOADING...</span>
+            </div>
+            <div class="hud-progress-container">
+                <div class="hud-progress-bar"></div>
+            </div>
+            <div class="hud-info">Connecting Tactical Link...</div>
+        </div>
+    </div>
+
+    <!-- UI Components -->
+    <button class="sidebar-toggle" id="sidebar-toggle">•••</button>
+    
+    <main id="main-content">
+        {% include 'components/dashboard.html' %}
+    </main>
+
+    {% include 'components/scheduler_manager.html' %}
+
+    <!-- UI Framework & Core Scripts -->
+    <script src="/static/js/logger.js" defer></script>
+    <script src="/static/js/animation_manager.js" defer></script>
+    <script src="/static/js/briefing_scheduler.js" defer></script>
+    <script src="/static/js/reaction_engine.js" defer></script>
+    <script src="/static/js/model_controller.js" defer></script>
+    <script src="/static/js/renderer.js" defer></script>
+    <script src="{{ url_for('static', filename='js/i18n_manager.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/widgets/visualizer.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/widgets/tts.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/widgets/speech_bubble.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/widgets/ai_gateway.js') }}?v=2.8.1" defer></script>
+    <!-- [Plugin-X] terminal_notion.js 제거됨 - 기능이 plugins/notion/assets/widget.js로 완전 이관 -->
+    <script src="{{ url_for('static', filename='js/plugin_loader.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/core.js') }}" defer></script>
+    <script src="/static/js/ui_drag_manager.js" defer></script>
+    <script src="/static/js/ui_briefing_manager.js" defer></script>
+    <script src="/static/js/ui_interaction_manager.js" defer></script>
+    <script src="/static/js/external_api_manager.js" defer></script>
+    
+    <!-- Socket.IO Engine & Sync Client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/socket_sync.js" defer></script>
+    
+    <!-- Wallpaper Manager Modules -->
+    <script src="/static/js/wallpaper/api.js" defer></script>
+    <script src="/static/js/wallpaper/render.js" defer></script>
+    <script src="/static/js/wallpaper/index.js" defer></script>
+    
+    <!-- Scheduler Manager Modules -->
+    <script src="/static/js/scheduler/api.js" defer></script>
+    <script src="/static/js/scheduler/render.js" defer></script>
+    <script src="/static/js/scheduler/editor.js" defer></script>
+    <script src="/static/js/scheduler/gk_editor.js" defer></script>
+    <script src="/static/js/scheduler/index.js" defer></script>
+    
+    <script src="/static/js/ui.js" defer></script>
+    
+    
+    <!-- Entry Point & Debug Tools -->
+    {% if settings.get('test_mode') %}
+    <script src="/static/js/animation_tester.js" defer></script>
+    {% endif %}
+    
+    <script>
+        // 초기화 시퀀스 통합
+        document.addEventListener('DOMContentLoaded', () => {
+            // core.js의 initEngine이 대부분의 초기화를 처리하며,
+            // PluginLoader.init()은 Plugin-X 로딩을 담당합니다.
+            // core.js 내부에서 이미 DOMContentLoaded 이벤트를 구독하고 있습니다.
+            console.log("[AEGIS] Main entry point initialized.");
+        });
+    </script>
+</body>
+</html>

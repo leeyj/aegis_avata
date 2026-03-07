@@ -1,0 +1,25 @@
+{
+    "id": "terminal",
+    "name": "AEGIS Core Terminal",
+    "version": "2.0.0",
+    "author": "AEGIS Core",
+    "description": "System command center",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [
+        "api.ai_gateway",
+        "api.io_control",
+        "api.ai_agent"
+    ],
+    "layout": {
+        "fixed": true,
+        "zIndex": 10000
+    },
+    "hidden": false,
+    "icon": "⌨️"
+}

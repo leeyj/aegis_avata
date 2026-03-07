@@ -1,0 +1,4 @@
+{
+    "_comment": "보유하신 MP3 파일들이 있는 폴더의 절대 경로를 입력해주세요. 예: D:\\Music 또는 /home/user/Music",
+    "media_directory": ""
+}

@@ -1,0 +1,74 @@
+/* --- Weather Dynamics Effects --- */
+.weather-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Rain Animation */
+.rain-drop {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    width: 1px;
+    height: 15px;
+    top: -20px;
+    animation: rain-fall 0.8s linear infinite;
+}
+
+@keyframes rain-fall {
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+/* Snow Animation */
+.snow-flake {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.8;
+    top: -10px;
+    animation: snow-fall linear infinite;
+}
+
+@keyframes snow-fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+/* Storm / Lightning Flash */
+.lightning-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.animate-flash {
+    animation: flash 0.2s ease-out;
+}
+
+@keyframes flash {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

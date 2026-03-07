@@ -1,0 +1,22 @@
+<!-- Speech Bubble & Visualizer -->
+<div id="speech-bubble" class="speech-bubble glass-panel">
+    <div id="visualizer-container" class="visualizer-container"></div>
+    <div id="bubble-text"></div>
+</div>
+
+<!-- Command Terminal -->
+<div id="terminal-container" class="terminal-container">
+    <div id="terminal-toggle-btn" class="terminal-toggle-btn">
+        <span class="toggle-icon">▼</span>
+    </div>
+    <div id="terminal-log" class="terminal-log"></div>
+    <div class="terminal-prompt-row">
+        <div class="terminal-prompt-wrapper">
+            <select id="ai-model-selector" class="terminal-select">
+                <option value="gemini">AEGIS (System)</option>
+            </select>
+            <span class="prompt-arrow">>></span>
+        </div>
+        <input type="text" id="terminal-input" placeholder="Type a command... (/help)" data-i18n="[placeholder]terminal.placeholder" autocomplete="off">
+    </div>
+</div>

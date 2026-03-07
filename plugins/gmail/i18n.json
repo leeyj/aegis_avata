@@ -1,0 +1,18 @@
+{
+    "ko": {
+        "panels": {
+            "p-gmail": "수신함"
+        },
+        "widgets": {
+            "gmail_title": "보안 통신망 (GMAIL)"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-gmail": "Inbox"
+        },
+        "widgets": {
+            "gmail_title": "SECURE COMMUNICATIONS (GMAIL)"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "_comment": "Chrome 브라우저 개발자 도구(F12)의 Network 탭에서 가져온 YouTube Music 권한 헤더를 여기에 붙여넣습니다.",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Cookie": "VISITOR_INFO1_LIVE=YOUR_COOKIE_DATA; LOGIN_INFO=YOUR_LOGIN_INFO; SID=YOUR_SID; __Secure-1PSID=YOUR_SECURE_1PSID; HSID=YOUR_HSID; SSID=YOUR_SSID; APISID=YOUR_APISID; SAPISID=YOUR_SAPISID; PREF=YOUR_PREF; YSC=YOUR_YSC;",
+    "Authorization": "SAPISIDHASH YOUR_SAPISID_HASH",
+    "Accept": "*/*",
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Origin": "https://music.youtube.com",
+    "Referer": "https://music.youtube.com/",
+    "X-Goog-AuthUser": "0",
+    "X-Goog-Visitor-Id": "YOUR_VISITOR_ID",
+    "X-Youtube-Bootstrap-Logged-In": "true",
+    "X-Youtube-Client-Name": "67",
+    "X-Youtube-Client-Version": "1.20260218.03.00"
+}

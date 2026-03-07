@@ -1,0 +1,50 @@
+{
+    "meta": {
+        "name": "🇺🇸 ENGLISH"
+    },
+    "sidebar": {
+        "panel_control": "PANEL CONTROL",
+        "save_settings": "SAVE CLOUD SETTINGS",
+        "lock_widgets": "LOCK WIDGETS",
+        "unlock_widgets": "UNLOCK WIDGETS",
+        "studio": "LIVE2D STUDIO",
+        "logout": "SYSTEM LOGOUT",
+        "sync_success": "Layout synced to server.",
+        "routine_manager": "🕒 ROUTINE MANAGER"
+    },
+    "widgets": {
+        "loading": "Loading Data...",
+        "no_data": "No Data Available.",
+        "refresh": "Refresh",
+        "briefing": "AI Briefing",
+        "search_placeholder": "Type to search and press Enter..."
+    },
+    "panels": {
+        "p-profit": "Trading Profit"
+    },
+    "directions": {
+        "up": "rising",
+        "down": "falling",
+        "rise": "surging",
+        "fall": "dropping"
+    },
+    "bot": {
+        "default_briefing": "Please summarize and brief the latest information.",
+        "hybrid_instruction": "You are a strategic AI assistant. Analyze the provided widget(@{plugin}) data and combine it with your knowledge (web search, etc.) to respond.",
+        "local_instruction": "Strict Guideline: You are a 'Local Data Analyzer' reporting ONLY the information in the provided [CONTEXT DATA]. DO NOT perform any external web searches.",
+        "user_request_label": "User Request",
+        "system_command_received": "✅ System command received",
+        "hud_refer_briefing": "(Please check the HUD avatar's voice briefing for details)",
+        "persona": "Analyze the user's request and respond. You are the AEGIS Strategic AI Assistant.",
+        "current_time_label": "Current System Time",
+        "current_server_time": "Current Server Time",
+        "polite_instruction": "Be polite and provide clear, concise answers focused on key information.",
+        "timezone_importance": "**IMPORTANT: All time operations (alarms, etc.) MUST be based on the {tz} system time above. NEVER use UTC.**",
+        "kst_importance": "**IMPORTANT: All time calculations MUST be based on the server time above. NEVER use UTC.**",
+        "executable_actions_label": "[Executable System Actions & Rules]",
+        "ai_error_no_response": "AI failed to generate a response.",
+        "no_action_parsed": "⚠️ No system actions were parsed from the AI response.",
+        "ai_fallback_error": "❌ AI Integration Error",
+        "ai_system_error": "⚠️ System error occurred during AI processing"
+    }
+}

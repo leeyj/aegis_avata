@@ -1,0 +1,9 @@
+{
+    "_comment": "가져올 공채 RSS 뉴스 피드 URL 구조입니다. 좌측은 매체명, 우측은 RSS 주소입니다.",
+    "rss_urls": {
+        "Yonhap": "https://www.yonhapnewstv.co.kr/browse/feed/",
+        "연합뉴스최신기사": "https://www.yna.co.kr/rss/news.xml"
+    },
+    "max_items": 20,
+    "update_interval_min": 30
+}

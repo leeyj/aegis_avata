@@ -1,0 +1,202 @@
+/* --- Shared Widget Elements --- */
+.panel-label {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-brief-btn {
+    background: transparent;
+    border: none;
+    color: var(--neon);
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.5;
+    transition: all 0.2s;
+    padding: 2px 5px;
+}
+
+.widget-brief-btn:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--neon);
+}
+
+/* --- Stats & Indicators --- */
+.stat-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* --- Common UI Parts --- */
+.clock {
+    font-family: 'Orbitron';
+    font-size: 32px;
+    text-shadow: 0 0 15px var(--neon);
+}
+
+
+select {
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--neon);
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-family: 'Rajdhani';
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.logout-btn {
+    color: #ff4b4b;
+    text-decoration: none;
+    font-family: 'Orbitron';
+    font-size: 12px;
+    letter-spacing: 2px;
+    border: 1px solid rgba(255, 75, 75, 0.3);
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 75, 75, 0.1);
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.2);
+}
+
+#sub-title {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 5px;
+    letter-spacing: 2px;
+}
+
+/* --- Avatar Loading HUD (v2.3.0) --- */
+#model-loading-hud {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    padding: 30px;
+    background: rgba(10, 15, 25, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 255, 0.1);
+    z-index: 10001;
+    /* Above almost everything */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    text-align: center;
+}
+
+#model-loading-hud.hidden {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+    display: none;
+}
+
+#model-loading-hud.active {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.hud-scanner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
+    background-size: 100% 200%;
+    animation: hud-scan 2s infinite linear;
+    border-radius: 15px;
+}
+
+@keyframes hud-scan {
+    0% {
+        background-position: 0 -100%;
+    }
+
+    100% {
+        background-position: 0 100%;
+    }
+}
+
+.hud-status {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hud-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 3px;
+    font-family: 'Orbitron';
+}
+
+.hud-value {
+    font-size: 18px;
+    color: var(--neon);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px var(--neon);
+}
+
+.hud-progress-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.hud-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--neon);
+    box-shadow: 0 0 10px var(--neon);
+    animation: bar-load 2s infinite ease-in-out;
+}
+
+@keyframes bar-load {
+    0% {
+        width: 0%;
+        left: 0;
+    }
+
+    50% {
+        width: 70%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.hud-info {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+    letter-spacing: 1px;
+}

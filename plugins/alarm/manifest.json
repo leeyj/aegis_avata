@@ -1,0 +1,25 @@
+{
+    "id": "alarm",
+    "name": "알람",
+    "version": "1.1.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "aliases": [
+        "알람",
+        "alram"
+    ],
+    "permissions": [
+        "api.io_control",
+        "api.ai_gateway",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1"
+    },
+    "icon": "⏰"
+}

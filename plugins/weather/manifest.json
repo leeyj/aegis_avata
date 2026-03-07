@@ -1,0 +1,59 @@
+{
+    "id": "weather",
+    "name": "날씨",
+    "version": "1.5.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler",
+        "ENVIRONMENT_CONTROL"
+    ],
+    "layout": {
+        "default_size": "size-1"
+    },
+    "csp_domains": {
+        "img-src": [
+            "https://*.openweathermap.org",
+            "http://*.openweathermap.org",
+            "https://openweathermap.org",
+            "http://openweathermap.org"
+        ]
+    },
+    "exports": {
+        "sensors": [
+            {
+                "id": "temperature",
+                "name": "현재 기온",
+                "unit": "°C",
+                "type": "number",
+                "endpoint": "/api/plugins/weather/data",
+                "field": "temp"
+            },
+            {
+                "id": "humidity",
+                "name": "현재 습도",
+                "unit": "%",
+                "type": "number",
+                "endpoint": "/api/plugins/weather/data",
+                "field": "humidity"
+            }
+        ],
+        "actions": [
+            {
+                "id": "briefing",
+                "name": "현재 날씨 브리핑",
+                "description": "변화된 날씨 상황에 맞춰 AI가 전략적 조언과 브리핑을 수행합니다.",
+                "type": "terminal_command",
+                "payload": {
+                    "command": "/w brief"
+                }
+            }
+        ]
+    },
+    "icon": "🌤️"
+}

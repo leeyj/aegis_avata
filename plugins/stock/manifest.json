@@ -1,0 +1,39 @@
+{
+    "id": "stock",
+    "name": "실시간 종목 모니터링",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "exports": {
+        "sensors": [
+            {
+                "id": "kospi",
+                "name": "KOSPI 지수",
+                "unit": "pt",
+                "type": "number",
+                "endpoint": "/api/plugins/stock/data",
+                "field": "KOSPI.raw_price"
+            },
+            {
+                "id": "change_rate",
+                "name": "KOSPI 등락률",
+                "unit": "%",
+                "type": "number",
+                "endpoint": "/api/plugins/stock/data",
+                "field": "KOSPI.change_pct"
+            }
+        ]
+    },
+    "icon": "📈"
+}

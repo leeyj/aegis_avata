@@ -1,0 +1,24 @@
+{
+    "ko": {
+        "panels": {
+            "p-calendar": "일일 일정"
+        },
+        "widgets": {
+            "calendar_title": "전략 캘린더 (GOOGLE)"
+        },
+        "system_alerts": {
+            "calendar_start": "곧 일정이 시작됩니다: {summary} ({diff}분 전)"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-calendar": "Daily Schedule"
+        },
+        "widgets": {
+            "calendar_title": "STRATEGIC CALENDAR (GOOGLE)"
+        },
+        "system_alerts": {
+            "calendar_start": "Upcoming Event: {summary} (in {diff} min)"
+        }
+    }
+}

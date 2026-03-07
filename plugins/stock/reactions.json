@@ -1,0 +1,118 @@
+{
+    "ko": {
+        "stock": {
+            "rise": {
+                "condition": "change_pct >= 3",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "HAPPY_DANCE",
+                        "duration": 8000
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "대박 뉴스입니다! {name} 주가가 전일 대비 {change_pct_abs}퍼센트나 급등했어요! 현재가는 {price}입니다."
+                    }
+                ]
+            },
+            "fall": {
+                "condition": "change_pct <= -3",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "sad"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "안좋은 소식이에요. {name} 주가가 전일 대비 {change_pct_abs}퍼센트 하락했습니다. 현재가는 {price}입니다."
+                    }
+                ]
+            }
+        },
+        "stock_bulk": {
+            "summary": {
+                "condition": "count >= 2",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "관심 종목들에서 다수의 변동이 감지되었습니다. 현재 {summary} 중입니다."
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "stock": {
+            "rise": {
+                "condition": "change_pct >= 3",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "HAPPY_DANCE",
+                        "duration": 8000
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "Great news! {name} stock has surged by {change_pct_abs} percent! The current price is {price}."
+                    }
+                ]
+            },
+            "fall": {
+                "condition": "change_pct <= -3",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "sad"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "Bad news. {name} stock has dropped by {change_pct_abs} percent. The current price is {price}."
+                    }
+                ]
+            }
+        },
+        "stock_bulk": {
+            "summary": {
+                "condition": "count >= 2",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "briefing"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "Multiple changes detected in your watchlist. Currently summarizing {summary}."
+                    }
+                ]
+            }
+        }
+    }
+}

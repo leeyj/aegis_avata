@@ -1,0 +1,10 @@
+{
+    "_comment1": "OpenWeatherMap에서 무료로 발급받은 API 키를 넣으세요.",
+    "api_key": "YOUR_OPENWEATHERMAP_API_KEY",
+    "_comment2": "날씨를 조회할 영문 도시명입니다.",
+    "city": "Seoul",
+    "font_size_temp": "24px",
+    "font_size_status": "16px",
+    "icon_size": "50px",
+    "update_interval_min": 60
+}

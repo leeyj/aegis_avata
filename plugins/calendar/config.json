@@ -1,0 +1,5 @@
+{
+    "max_events": 5,
+    "refresh_interval_min": 1,
+    "token_file": "token_personal.json"
+}

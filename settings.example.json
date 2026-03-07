@@ -1,0 +1,16 @@
+{
+    "_comment": "대시보드 배치(uiPositions), 활성화(panelVisibility), 언어(lang: ko/en), 타임존(timezone: 예: Asia/Seoul, America/New_York) 설정을 포함합니다.",
+    "test_mode": false,
+    "last_model": "akari_vts",
+    "lang": "ko",
+    "timezone": "Asia/Seoul",
+    "userZoom": 3.0,
+    "offsetX": 0.0,
+    "offsetY": 0.0,
+    "uiPositions": {},
+    "panelVisibility": {
+        "p-clock": true,
+        "p-weather": true,
+        "p-news": true
+    }
+}

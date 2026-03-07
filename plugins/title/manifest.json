@@ -1,0 +1,15 @@
+{
+    "id": "title",
+    "name": "타이틀",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "css": "assets/widget.css",
+        "js": "assets/widget.js"
+    },
+    "permissions": [],
+    "layout": {
+        "default_size": "size-1-5"
+    }
+}

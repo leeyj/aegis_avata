@@ -1,0 +1,19 @@
+{
+    "id": "mp3-player",
+    "name": "로컬 미디어 허브",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.media_proxy",
+        "api.ai_gateway"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    }
+}

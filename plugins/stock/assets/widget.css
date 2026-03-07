@@ -1,0 +1,71 @@
+.panel-label {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.stock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stock-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    border-left: 2px solid var(--glass-border);
+    transition: all 0.2s;
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stock-name {
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+}
+
+.stock-symbol {
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.stock-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 4px;
+}
+
+.price {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+}
+
+.change_pct {
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.up {
+    border-left-color: var(--danger);
+}
+
+.down {
+    border-left-color: var(--accent);
+}
+
+.up-text {
+    color: var(--danger);
+}
+
+.down-text {
+    color: var(--accent);
+}

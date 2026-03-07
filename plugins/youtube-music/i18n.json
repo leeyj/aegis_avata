@@ -1,0 +1,26 @@
+{
+    "ko": {
+        "panels": {
+            "p-youtube": "YouTube 뮤직",
+            "p-youtube-music": "YouTube 뮤직"
+        },
+        "widgets": {
+            "yt_wait": "로딩 대기 중...",
+            "yt_select": "플레이리스트 선택",
+            "yt_auth_prompt": "유튜브 뮤직 'Headers' 또는 'cURL'을 붙여넣으세요.\\n(F12 -> Network -> 요청 우클릭 -> Copy as cURL(bash) 또는 헤더 드래그 복사본 그대로 붙여넣기)",
+            "yt_auth_success": "인증 정보가 성공적으로 갱신되었습니다. 페이지를 새로고침합니다."
+        }
+    },
+    "en": {
+        "panels": {
+            "p-youtube": "YouTube Music",
+            "p-youtube-music": "YouTube Music"
+        },
+        "widgets": {
+            "yt_wait": "Wait for Load...",
+            "yt_select": "Select Playlist",
+            "yt_auth_prompt": "Paste YouTube Music 'Headers' or 'cURL'.\\n(F12 -> Network -> Right Click Request -> Copy as cURL(bash) or drag and paste raw headers)",
+            "yt_auth_success": "Authentication successfully updated. Reloading page..."
+        }
+    }
+}

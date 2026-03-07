@@ -1,0 +1,18 @@
+{
+    "ko": {
+        "panels": {
+            "p-weather": "환경 정보"
+        },
+        "widgets": {
+            "weather_template": "{city}의 {status}"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-weather": "Environmental Info"
+        },
+        "widgets": {
+            "weather_template": "{status} in {city}"
+        }
+    }
+}

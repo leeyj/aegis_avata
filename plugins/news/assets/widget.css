@@ -1,0 +1,45 @@
+.panel-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.widget-brief-btn {
+    background: transparent;
+    border: none;
+    color: var(--neon);
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.widget-brief-btn:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--neon);
+}
+
+.news-ticker {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.loading-text {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+.news-provider {
+    color: var(--neon);
+    font-size: 10px;
+    margin-bottom: 2px;
+}
+
+.news-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}

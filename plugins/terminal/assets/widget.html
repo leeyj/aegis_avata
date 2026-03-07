@@ -1,0 +1,24 @@
+<div id="terminal-plugin-wrapper" class="terminal-plugin-wrapper">
+    <!-- Quake-style Floating HUD Terminal Container -->
+    <div id="terminal-container" class="terminal-container collapsed">
+        <div id="terminal-log" class="terminal-log"></div>
+        <div class="terminal-prompt-row">
+            <div class="terminal-prompt-wrapper">
+                <select id="ai-model-selector" class="terminal-select">
+                    <option value="gemini">AEGIS (System)</option>
+                </select>
+                <span class="prompt-arrow">>></span>
+            </div>
+            <input type="text" id="terminal-input" placeholder="Enter command or AI query... (Press Esc/` to toggle)" autocomplete="off">
+        </div>
+        <!-- Minimal status bar -->
+        <div class="terminal-status-bar">
+            <span class="status-node">READY</span>
+            <span class="status-info">DNA SYNERGY v2.2</span>
+        </div>
+        <!-- Resize Handle -->
+        <div id="terminal-resizer" class="terminal-resizer"></div>
+    </div>
+    
+</div>
+

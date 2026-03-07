@@ -1,0 +1,24 @@
+{
+    "ko": {
+        "panels": {
+            "p-todo": "할 일 목록"
+        },
+        "widgets": {
+            "todo_title": "일 관리",
+            "todo_placeholder": "할 일을 입력하세요...",
+            "todo_syncing": "(동기화 중...)",
+            "no_objectives": "진행 중인 작전 목표가 없습니다."
+        }
+    },
+    "en": {
+        "panels": {
+            "p-todo": "Todo List"
+        },
+        "widgets": {
+            "todo_title": "Tactical Todo Management",
+            "todo_placeholder": "Enter task...",
+            "todo_syncing": "(Syncing...)",
+            "no_objectives": "No active objectives."
+        }
+    }
+}

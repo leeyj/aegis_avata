@@ -1,0 +1,12 @@
+{
+    "ko": {
+        "panels": {
+            "p-title": "시스템 타이틀"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-title": "System Title"
+        }
+    }
+}

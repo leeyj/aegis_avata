@@ -1,0 +1,50 @@
+{
+    "meta": {
+        "name": "🇰🇷 KOREAN"
+    },
+    "sidebar": {
+        "panel_control": "PANEL CONTROL",
+        "save_settings": "설정 저장(Cloud)",
+        "lock_widgets": "위젯 위치 고정",
+        "unlock_widgets": "위젯 고정 해제",
+        "studio": "Live2D 스튜디오",
+        "logout": "시스템 로그아웃",
+        "sync_success": "설정 설정이 서버와 동기화되었습니다.",
+        "routine_manager": "🕒 루틴 매니저"
+    },
+    "widgets": {
+        "loading": "데이터 로드 중...",
+        "no_data": "데이터가 없습니다.",
+        "refresh": "새로고침",
+        "briefing": "AI 브리핑",
+        "search_placeholder": "검색어를 입력하고 엔터를 누르세요..."
+    },
+    "panels": {
+        "p-profit": "거래 수익"
+    },
+    "directions": {
+        "up": "상승",
+        "down": "하락",
+        "rise": "급등",
+        "fall": "급락"
+    },
+    "bot": {
+        "default_briefing": "최근 정보를 요약해서 브리핑해줘.",
+        "hybrid_instruction": "당신은 전략 AI 어시스턴트입니다. 제공된 위젯(@{plugin}) 데이터와 당신의 지식(웹 검색 등)을 결합하여 답변하십시오.",
+        "local_instruction": "초정밀 지침: 당신은 오직 제공된 [CONTEXT DATA]의 정보만을 보고하는 '로컬 데이터 분석기'입니다. 절대 외부 웹 검색을 사용하지 마십시오.",
+        "user_request_label": "사용자 요청",
+        "system_command_received": "✅ 시스템 명령어를 수신했습니다",
+        "hud_refer_briefing": "(상세 정보는 HUD 아바타의 음성 브리핑을 확인해 주세요)",
+        "persona": "사용자의 요청을 분석하여 응답하십시오. 당신은 AEGIS 전략 AI 어시스턴트입니다.",
+        "current_time_label": "현재 시스템 시각",
+        "current_server_time": "현재 서버 시각",
+        "polite_instruction": "존댓말을 사용하고 핵심 위주로 명확하게 답변하십시오.",
+        "timezone_importance": "**중요: 모든 시간 처리(알람 등)는 위 {tz} 시각을 기준으로 하며, 절대 UTC를 사용하지 마십시오.**",
+        "kst_importance": "**중요: 모든 시간 계산은 위 서버 시각을 기준으로 하며, 절대 UTC를 사용하지 마십시오.**",
+        "executable_actions_label": "[실행 가능한 시스템 액션 및 규칙]",
+        "ai_error_no_response": "AI가 응답을 생성할 수 없습니다.",
+        "no_action_parsed": "⚠️ AI 응답에서 감지된 시스템 액션이 없습니다.",
+        "ai_fallback_error": "❌ AI 연동 에러",
+        "ai_system_error": "⚠️ AI 처리 중 시스템 오류가 발생했습니다"
+    }
+}

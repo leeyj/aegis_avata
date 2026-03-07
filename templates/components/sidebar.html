@@ -1,0 +1,32 @@
+<!-- Sidebar Menu -->
+<button class="sidebar-toggle" id="sidebar-toggle">•••</button>
+<div class="sidebar" id="sidebar">
+    <div class="menu-section">
+        <h3 data-i18n="sidebar.panel_control">PANEL CONTROL</h3>
+        <div id="sidebar-widgets-list">
+            <!-- PluginLoader에 의해 동적으로 채워집니다. -->
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+        
+        <div class="sidebar-action-container">
+            <button id="lock-toggle-btn" class="sidebar-btn" onclick="toggleWidgetLock()" data-i18n="sidebar.lock_widgets" data-i18n-safe>
+                LOCK WIDGETS
+            </button>
+            <button id="routine-manager-btn" class="sidebar-btn primary" onclick="openSchedulerManager()" data-i18n="sidebar.routine_manager" data-i18n-safe>
+                🕒 ROUTINE MANAGER
+            </button>
+            <button class="sidebar-btn accent" onclick="persistToServer().then(ok => ok && alert(_t('sidebar.sync_success')))" data-i18n="sidebar.save_settings">
+                SAVE CLOUD SETTINGS
+            </button>
+            <a href="/studio" class="sidebar-btn studio" data-i18n="sidebar.studio">
+                LIVE2D STUDIO
+            </a>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;">
+            <div id="language-selector" style="display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;">
+                <!-- I18nManager에 의해 동적으로 생성됩니다. -->
+            </div>
+            <a href="/logout" class="logout-btn" data-i18n="sidebar.logout" style="width: 100%; text-align: center;">SYSTEM LOGOUT</a>
+        </div>
+    </div>
+</div>

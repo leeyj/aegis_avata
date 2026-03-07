@@ -1,0 +1,44 @@
+{
+    "ko": {
+        "gmail": {
+            "new_mail": {
+                "condition": "count > 0",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "{sender}님이 발송한 메일이 도착했습니다."
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "gmail": {
+            "new_mail": {
+                "condition": "count > 0",
+                "actions": [
+                    {
+                        "type": "MOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "shock"
+                    },
+                    {
+                        "type": "TTS",
+                        "template": "A new email from {sender} has arrived."
+                    }
+                ]
+            }
+        }
+    }
+}
