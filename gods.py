@@ -32,8 +32,11 @@ if __name__ == "__main__":
 
             sys.exit(1)
 
-    # 내부망 및 외부망 접근 허용을 위해 0.0.0.0 포커싱 (로컬 개발용)
-    # SocketIO 지원을 위해 app.run 대신 socketio.run 사용
+    # [v3.4.2] 홈 서버 및 클라우드 환경에서 debug=False 실행 시 발생하는
+    # Werkzeug RuntimeError 방지를 위해 allow_unsafe_werkzeug 옵션을 공식 활성화합니다.
+    # 이는 gunicorn 등을 사용하지 않고 직접 실행하는 모든 사용자에게 필수적인 설정입니다.
     from services.socket_service import socketio
 
-    socketio.run(app, host="0.0.0.0", port=PORT, debug=False)
+    socketio.run(
+        app, host="0.0.0.0", port=PORT, debug=False, allow_unsafe_werkzeug=True
+    )
