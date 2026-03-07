@@ -21,8 +21,11 @@
 3.  **인프라 및 배포 정보**:
     *   **홈 서버**: 동일 네트워크의 `192.168.0.20` 이다. ([tools/deploy.py](file:///c:/Python312/gods/tools/deploy.py) 참조)
 
-4.  **보안 및 프라이버시**:
-    *   Git Push를 수행하기 전, 반드시 개인정보나 민감한 정보가 포함되어 있는지 점검한다. ([tools/privacy_check.py](file:///c:/Python312/gods/tools/privacy_check.py) 참조)
+4.  **보안 및 프라이버시 (Hard Rules)**:
+    *   **Git Pre-commit Hook 의무화**: 모든 커밋은 로컬 Git Hook(`.git/hooks/pre-commit`)에 의해 자동 점검된다. Hook이 실패하여 커밋이 차단될 경우, 강제로 우회(bypass)하여 커밋하지 마라.
+    *   **Push 전 이중 검증**: `git push`를 수행하기 전, 반드시 로컬에서 `python tools/privacy_check.py`를 실행하여 `[PASSED]` 로그를 확인하고 그 결과를 사용자에게 보고한다.
+    *   **민감 정보 발견 시 즉시 활동 중단**: 점검 도중 비밀번호나 API 키가 발견되면 즉시 작업을 멈추고 보안 위험을 보고한 뒤 사용자의 지시를 기다린다.
+    *   **Credentials 보호**: 계정 정보나 API 키는 반드시 `.env` 파일에 보관하며, 절대 소스코드에 하드코딩하지 않는다.
 
 5.  **의사소통 및 협업**:
     *   특정 구현 방향에 대한 의견을 요청받았을 때, 코드를 바로 수정하지 말고 **먼저 의견을 보고**한다.
