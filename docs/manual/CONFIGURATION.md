@@ -33,6 +33,14 @@
 - `panel_visibility`: 각 패널의 활성화/비활성화 상태.
 - `user_zoom / offset_x / offset_y`: 화면 전체 배율 및 중심 위치 조정값. 이 값은 자동으로 저장되며 사용자가 직접 수정할 필요가 없습니다.
 
+### 1.5 `settings.json` - 네트워크 및 보안 (Network & Security) [v3.4.5]
+역방향 프록시 환경 대응 및 브라우저 보안 정책(CSP)을 설정합니다.
+- `network.use_proxy`: Nginx, Render.com 등 역방향 프록시 뒤에서 실행 시 `true`로 설정 (IP/HTTPS 인식 개선).
+- `network.proxy_count`: 거치는 프록시 서버의 개수 (보통 `1`).
+- `network.csp_allow_list`: 보안 정책상 기본적으로 차단되는 외부 도메인을 수동으로 허용합니다.
+    - `connect-src`: Socket.IO(웹소켓) 연결이 차단될 때 서버 주소를 추가합니다. (예: `["https://my-aegis.com", "ws://127.0.0.1:8001"]`)
+    - `script-src / img-src`: 수동으로 추가한 외부 스크립트나 이미지 호스트가 있을 때 사용합니다.
+
 ---
 
 ## 2. 지능형 비서 설정 (Intelligent Assistant)

@@ -17,7 +17,10 @@
         "use_proxy": false,
         "proxy_count": 1,
         "csp_allow_list": {
-            "connect-src": [],
+            "connect-src": [
+                "https://your-domain.com",
+                "ws://127.0.0.1:8001"
+            ],
             "script-src": [],
             "img-src": []
         }

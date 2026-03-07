@@ -10,6 +10,7 @@ plugins/climate-control/
 headers_auth.txt
 headers_auth.json
 .github/
+plugins/timeline-ui/
 
 # === Maintenance & Security Tools ===
 tools/

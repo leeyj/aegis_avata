@@ -182,6 +182,7 @@ pip install -r requirements.txt
 1. [Live2D 공식 샘플 모델 배포처](https://www.live2d.com/en/learn/sample/)에서 원하시는 샘플 모델(예: 아카리, 히요리 등)을 다운로드 받습니다.
 2. 다운로드 받은 파일들의 압축을 푼 뒤, 프로젝트 루트 디렉토리 안에 있는 `models/` 폴더 내부에 모델별 폴더명(예: `models/akari_vts`)으로 모두 붙여넣습니다.
 3. 캐릭터 사용 시 `settings.json`의 `"last_model"` 값을 본인이 다운로드해 지정한 폴더 이름(예: `"akari_vts"`)으로 일치시켜야 정상적으로 화면에 나타납니다.
+4. **네트워크 접속 설정 (중요) [v3.4.5]**: 외부 도메인이나 공인 IP로 접속 시 웹소켓(Socket.IO)이 차단될 수 있습니다. `settings.json`의 `network.csp_allow_list.connect-src`에 본인의 접속 주소(예: `https://my-aegis.com`, `ws://IP:PORT`)를 반드시 추가해야 합니다.
 
 ### 4. 모델 검증 및 자동화 도구 (선택 사항)
 다양한 Live2D 모델의 모션/표정 파일명을 표준화된 별명(Alias)으로 통합 관리할 수 있는 도구를 제공합니다.
