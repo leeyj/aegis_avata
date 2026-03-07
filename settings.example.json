@@ -12,5 +12,14 @@
         "p-clock": true,
         "p-weather": true,
         "p-news": true
+    },
+    "network": {
+        "use_proxy": false,
+        "proxy_count": 1,
+        "csp_allow_list": {
+            "connect-src": [],
+            "script-src": [],
+            "img-src": []
+        }
     }
 }
