@@ -40,7 +40,7 @@ EXCLUDE = [
     "test_models",  # 테스트 모델 파일 제외
     "tools",  # 도구 폴더 전체 제외 (보안)
     "deploy.py",
-    # "settings.json",  # [v3.4.5] 네트워크 설정(use_proxy 등) 동기화를 위해 제외 해제
+    "settings.json",  # 서버 설정 보호 (환경 차별화를 위해 로컬 설정 덮어쓰기 방지)
     "secrets.json",  # 인증키 보호
     "auth_helper.py",
     ".agent",  # 에이전트 규칙 파일 (보안)

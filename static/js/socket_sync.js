@@ -27,14 +27,12 @@ class SocketSyncClient {
                 return;
             }
 
-            // Flask-SocketIO 서버에 연결 (프록시 대응을 위해 전송 방식 명시 및 재연결 옵션 강화)
+            // Flask-SocketIO 서버에 연결 (세션 고정 문제를 해결하기 위해 WebSocket 전용 모드 강제)
             this.socket = io({
-                transports: ['websocket', 'polling'], // WebSocket 우선 시도
-                upgrade: true,
+                transports: ['websocket'], // polling을 건너뛰고 직접 연결하여 400 에러 방지
                 reconnection: true,
                 reconnectionAttempts: 10,
                 reconnectionDelay: 1000,
-                reconnectionDelayMax: 5000,
                 timeout: 20000
             });
 
