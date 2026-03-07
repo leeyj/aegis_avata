@@ -1,5 +1,23 @@
 # AEGIS Intelligence - 업데이트 로그 (UPDATE LOG)
 
+## [v3.4.5] Universal Connectivity & Security Hardening (2026-03-07)
+
+### 🚀 주요 변경 사항 (Core Updates)
+
+1. **외부 라이브러리 자산 로컬화 (Local Assets)**
+   - `Socket.IO` 및 `MarkedJS` 라이브러리를 CDN(`cdnjs`, `jsdelivr`) 의존성 없이 서버 내부에서 직접 서빙하도록 로컬 자산화했습니다.
+   - 이를 통해 폐쇄망 환경이나 엄격한 보안 정책(CSP) 하에서도 시스템이 끊김 없이 작동합니다.
+
+2. **지능형 네트워크 설정 도입 (`settings.json`)**
+   - **ProxyFix 스위치:** 역방향 프록시(Nginx, Render 등) 뒤에서 구동될 때의 호환성을 `settings.json`의 `use_proxy` 설정으로 제어할 수 있습니다.
+   - **커스텀 CSP 화이트리스트:** 사용자가 하드코딩 없이 `settings.json`의 `csp_allow_list`를 통해 허용 도메인을 동적으로 추가할 수 있는 유연한 보안 체계를 구축했습니다.
+
+3. **시스템 아키텍처 안정화**
+   - `app_factory.py`의 CSP 생성 로직을 모듈별 통합 방식으로 재설계하여 중복을 제거하고 린트 오류를 해결했습니다.
+   - 윈도우 환경에서의 라이브러리 자동 다운로드 스크립트를 통한 배포 편의성을 확보했습니다.
+
+---
+
 ## [v3.4.2] Live2D Look-at & Advanced Interactions (2026-03-07)
 
 ### 🚀 주요 변경 사항 (Core Updates)

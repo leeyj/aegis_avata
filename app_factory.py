@@ -3,6 +3,9 @@ AEGIS v3.1 Core Engine
 @version v3.1.0
 """
 
+import os
+import json
+import sys
 from flask import Flask, request
 from routes.main import main_bp
 from routes.auth import auth_bp
@@ -27,6 +30,37 @@ def create_app():
     앱 인스턴스를 생성하고 블루프린트 및 설정을 초기화합니다.
     """
     app = Flask(__name__, template_folder="templates", static_folder="static")
+
+    # [v3.4.5] 통합 설정 로드 및 네트워크 최적화
+    def get_settings():
+        settings_path = os.path.join(app.root_path, "settings.json")
+        if os.path.exists(settings_path):
+            with open(settings_path, "r", encoding="utf-8") as f:
+                try:
+                    return json.load(f)
+                except Exception:
+                    return {}
+        return {}
+
+    settings = get_settings()
+    network_config = settings.get("network", {})
+    if not isinstance(network_config, dict):
+        network_config = {}
+
+    # 1. 역방향 프록시 대응 (Nginx 등)
+    if network_config.get("use_proxy", False):
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        p_count = network_config.get("proxy_count", 1)
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=p_count,
+            x_proto=p_count,
+            x_host=p_count,
+            x_port=p_count,
+            x_prefix=p_count,
+        )
+
     app.secret_key = FLASK_SECRET_KEY
 
     # 블루프린트 등록
@@ -48,33 +82,48 @@ def create_app():
     for bp in plugin_blueprints:
         app.register_blueprint(bp)
 
-    # [보안] 플러그인별 선언된 CSP 도메인 초기 수집
+    # [보안] 플러그인별 선언된 CSP 도메인 수집
     plugin_csp = get_all_plugin_csp_domains()
+    user_csp = network_config.get("csp_allow_list", {})
 
     # 템플릿 제어용 글로벌 함수 등록
     @app.context_processor
     def inject_globals():
         from utils import is_sponsor
 
-        return dict(is_sponsor=is_sponsor)
+        return dict(is_sponsor=is_sponsor, settings=settings)
 
     @app.after_request
     def add_security_headers(response):
-        """브라우저 수준의 보안 강화 (v1.6.3 동적 CSP 적용)"""
-        # 플러그인에서 수집된 도메인 병합
-        dynamic_img_src = " ".join(plugin_csp.get("img-src", []))
-        dynamic_script_src = " ".join(plugin_csp.get("script-src", []))
-        dynamic_connect_src = " ".join(plugin_csp.get("connect-src", []))
-        dynamic_frame_src = " ".join(plugin_csp.get("frame-src", []))
+        """브라우저 수준의 보안 강화 (v3.4.5 동적 CSP 및 로컬 자산 우선 정책)"""
+
+        def merge_csp(key, core_list):
+            plugin_list = plugin_csp.get(key, [])
+            custom_list = user_csp.get(key, [])
+            # 중복 제거 및 공백 병합
+            return " ".join(set(core_list + plugin_list + custom_list))
+
+        script_src = merge_csp(
+            "script-src", ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"]
+        )
+        style_src = merge_csp(
+            "style-src", ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"]
+        )
+        img_src = merge_csp("img-src", ["'self'", "data:"])
+        connect_src = merge_csp("connect-src", ["'self'", "ws:", "wss:"])
+        frame_src = merge_csp("frame-src", ["'self'"])
+        font_src = merge_csp(
+            "font-src", ["'self'", "https://fonts.gstatic.com", "data:"]
+        )
 
         response.headers["Content-Security-Policy"] = (
             f"default-src 'self'; "
-            f"script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com {dynamic_script_src}; "
-            f"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            f"font-src 'self' https://fonts.gstatic.com data:; "
-            f"img-src 'self' data: {dynamic_img_src}; "
-            f"frame-src 'self' {dynamic_frame_src}; "
-            f"connect-src 'self' ws: wss: {dynamic_connect_src};"
+            f"script-src {script_src}; "
+            f"style-src {style_src}; "
+            f"font-src {font_src}; "
+            f"img-src {img_src}; "
+            f"frame-src {frame_src}; "
+            f"connect-src {connect_src};"
         )
         return response
 
@@ -119,17 +168,21 @@ def create_app():
 
     # 디스코드 등 외부 봇 백그라운드 기동
     # Flask 재구동 시 봇 중복 실행을 막기 위해 서버 워커(Runtime) 환경에서만 1회 처리
-    import os
-    import sys
 
-    # gods.py 로 구동되는 개발 서버인지 확인
+    # [v3.4.3] 배포 환경 대응: gods.py를 배포 모드(debug=False)로 직접 실행하거나
+    # 상용 WAS(Gunicorn 등)에서 구동될 때 봇이 초기화되도록 보장합니다.
     is_dev_server = "gods.py" in sys.argv[0] or "flask" in sys.argv[-1]
+    is_reloader_child = os.environ.get("WERKZEUG_RUN_MAIN") == "true"
+
+    # 봇 기동 허용 조건:
+    # 1. 상용 WAS 환경 (is_dev_server=False)
+    # 2. 로컬 개발 서버의 리로더 자식 프로세스 (is_reloader_child=True)
+    # 3. 리로더를 사용하지 않는 직접 실행 환경 (not app.debug)
+    should_init_bot = not is_dev_server or is_reloader_child or not app.debug
 
     if getattr(app, "bot_initialized", False):
         pass
-    elif (
-        is_dev_server and os.environ.get("WERKZEUG_RUN_MAIN") == "true"
-    ) or not is_dev_server:
+    elif should_init_bot:
         app.bot_initialized = True
         from services.bot_init import initialize_bots
 
