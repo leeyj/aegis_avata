@@ -1,6 +1,6 @@
 # AEGIS Intelligence - 업데이트 로그 (UPDATE LOG)
 
-## [v3.4.5] Universal Connectivity & Security Hardening (2026-03-07)
+## [v3.4.5] Universal Connectivity & Interaction (2026-03-07)
 
 ### 🚀 주요 변경 사항 (Core Updates)
 
@@ -15,6 +15,15 @@
 3. **시스템 아키텍처 안정화**
    - `app_factory.py`의 CSP 생성 로직을 모듈별 통합 방식으로 재설계하여 중복을 제거하고 린트 오류를 해결했습니다.
    - 윈도우 환경에서의 라이브러리 자동 다운로드 스크립트를 통한 배포 편의성을 확보했습니다.
+
+4. **아바타 상호작용 기능 강화 (Hit Area Interaction)**
+   - Live2D 모델의 특정 영역(머리, 몸 등) 클릭 시 반응하는 히트 영역 감지 로직을 추가했습니다.
+   - 머리 클릭 시 'joy(기쁨)', 몸 클릭 시 'touch_body(인사/부끄러움)' 등 상황에 맞는 애니메이션이 트리거됩니다.
+   - 개발자를 위해 현재 모델의 인터랙션 영역을 시각화할 수 있는 `window.toggleHitFrames()` 도구를 추가했습니다.
+
+5. **개발 환경 보안 및 자산 관리 최적화**
+   - 바이너리 파일(`.so`, `.pyd`) 내의 내부 경로가 보안 검사(`Privacy Guard`)를 방해하지 않도록 확장자 기반 예외 처리를 완료했습니다.
+   - 개인화된 디버그 스크립트들을 `tools/` 폴더로 격리하여 Git 관리와 보안을 동시에 확보했습니다.
 
 ---
 

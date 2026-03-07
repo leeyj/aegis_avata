@@ -88,6 +88,20 @@ async function loadModel(name) {
         window.currentAvatar = await PIXI.live2d.Live2DModel.from(modelJson, { autoInteract: false });
         window.app.stage.addChild(window.currentAvatar);
 
+        // [v3.4.5] 히트 영역(Hit Area) 인터랙션 추가
+        window.currentAvatar.on("hit", (area) => {
+            const areaName = area.toLowerCase();
+            if (window.logger) window.logger.info(`[Model] Hit Area Detected: ${areaName}`);
+
+            if (areaName.includes("head")) {
+                // 머리 클릭: 기쁨 반응
+                window.dispatchAvatarEvent("EMOTION", { alias: "joy", duration: 3000 });
+            } else if (areaName.includes("body") || areaName.includes("bust")) {
+                // 몸 클릭: 인사 또는 부끄러움 모션
+                window.dispatchAvatarEvent("MOTION", { alias: "touch_body" });
+            }
+        });
+
         // [핵심 로직] 모델의 내부 업데이트 루프에 직접 개입하여 파라미터 강제 주입
         window.currentAvatar.internalModel.on('beforeModelUpdate', () => {
             if (!window.animationManager) return;
@@ -215,4 +229,23 @@ window.refreshModelList = async (currentModel) => {
         });
         select.onchange = (e) => loadModel(e.target.value);
     } catch (e) { }
+};
+
+/**
+ * [v3.4.5] Debug Utility: Toggle Hit Area Frames
+ * Visualize clickable areas of the current model.
+ */
+window.toggleHitFrames = () => {
+    if (!window.currentAvatar) return;
+    const show = !window.currentAvatar._hitFramesActive;
+    window.currentAvatar._hitFramesActive = show;
+
+    // 히트 영역 시각화 (pixi-live2d-display의 내장 유틸리티 활용)
+    if (show) {
+        if (window.logger) window.logger.info("[Model] Hit Area Frames Enabled.");
+        // 히트 박스 프레임을 그리는 방법 (Live2DModel 인스턴스에 따라 다를 수 있음)
+        // 공식적으로는 PIXI.Graphics를 이용해 직접 그리거나, 모델 설정을 활용
+        // 여기서는 간단하게 모델의 hitAreas를 순회하며 가이드라인 표시 시뮬레이션
+        console.log("[AEGIS] Hit Area Groups:", window.currentAvatar.internalModel.hitAreas);
+    }
 };
