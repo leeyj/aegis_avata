@@ -88,17 +88,53 @@ async function loadModel(name) {
         window.currentAvatar = await PIXI.live2d.Live2DModel.from(modelJson, { autoInteract: false });
         window.app.stage.addChild(window.currentAvatar);
 
-        // [v3.4.5] 히트 영역(Hit Area) 인터랙션 추가
-        window.currentAvatar.on("hit", (area) => {
-            const areaName = area.toLowerCase();
-            if (window.logger) window.logger.info(`[Model] Hit Area Detected: ${areaName}`);
+        // [v3.4.5] 인터랙션 활성화 및 히트 영역 설정
+        window.currentAvatar.interactive = true; // PIXI 인터랙션 활성화 (필수)
+        window.currentAvatar.anchor.set(0.5, 0.5);
 
+        // 1. 전문화된 히트 영역(Hit Area) 감지
+        window.currentAvatar.on("hit", (area) => {
+            const availableAreas = window.currentAvatar.internalModel.hitAreas;
+            console.log("%c[Model] Hit Area Detected!", "color: #ff00ff; font-weight: bold;", {
+                detectedArea: area,
+                allAvailableAreas: Object.keys(availableAreas)
+            });
+
+            const areaName = area.toLowerCase();
             if (areaName.includes("head")) {
-                // 머리 클릭: 기쁨 반응
                 window.dispatchAvatarEvent("EMOTION", { alias: "joy", duration: 3000 });
-            } else if (areaName.includes("body") || areaName.includes("bust")) {
-                // 몸 클릭: 인사 또는 부끄러움 모션
+            } else if (areaName.includes("body") || areaName.includes("bust") || areaName.includes("arm")) {
                 window.dispatchAvatarEvent("MOTION", { alias: "touch_body" });
+            }
+            window.currentAvatar._hitHandled = true; // 일반 클릭과 중복 처리 방지
+        });
+
+        // 2. 일반 클릭(Tap) 반응 (히트 영역이 없는 모델을 위한 폴백)
+        window.currentAvatar.on("pointertap", (e) => {
+            // 히트 영역에서 이미 처리되었다면 통과
+            if (window.currentAvatar._hitHandled) {
+                window.currentAvatar._hitHandled = false;
+                return;
+            }
+
+            // 우클릭은 ui_interaction_manager에서 처리하므로 좌클릭만 대응
+            if (e.data.button !== 0) return;
+
+            console.log("%c[Model] Interaction: General Tap", "color: #00ff00; font-weight: bold;");
+
+            // [v3.4.5] 강력한 폴백: touch_body가 없으면 0번 모션 실행
+            let targetMotion = "touch_body";
+            const hasAlias = window.modelAssets && window.modelAssets.aliases && window.modelAssets.aliases.motions && window.modelAssets.aliases.motions[targetMotion];
+
+            if (hasAlias) {
+                console.log(`[Model] Triggering defined motion: ${targetMotion}`);
+                window.dispatchAvatarEvent("MOTION", { alias: targetMotion });
+            } else if (window.modelAssets && window.modelAssets.motions && window.modelAssets.motions.length > 0) {
+                const fallbackFile = window.modelAssets.motions[0];
+                console.log(`[Model] Alias "${targetMotion}" not found. Falling back to motion index 0: ${fallbackFile}`);
+                window.dispatchAvatarEvent("MOTION", { file: fallbackFile });
+            } else {
+                console.warn("[Model] No motions available for interaction.");
             }
         });
 
