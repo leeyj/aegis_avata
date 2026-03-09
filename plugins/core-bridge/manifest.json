@@ -1,0 +1,22 @@
+{
+    "id": "core-bridge",
+    "name": "AEGIS Core Bridge",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "description": "Unified Command Router and AI Gateway service.",
+    "entry": {
+        "js": "assets/widget.js",
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [
+        "api.ai_gateway",
+        "api.plugin_registry"
+    ],
+    "layout": {
+        "fixed": true,
+        "hidden": true
+    },
+    "hidden": true,
+    "icon": "🌉"
+}

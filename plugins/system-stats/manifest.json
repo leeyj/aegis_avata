@@ -35,5 +35,19 @@
             }
         ]
     },
-    "icon": "⚙️"
+    "icon": "⚙️",
+    "actions": [
+        {
+            "id": "report",
+            "commands": [
+                "보고",
+                "상태",
+                "report",
+                "status",
+                "st"
+            ],
+            "params": [],
+            "desc": "Show system resource report"
+        }
+    ]
 }

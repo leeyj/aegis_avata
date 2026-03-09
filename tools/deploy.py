@@ -56,7 +56,8 @@ EXCLUDE = [
 
 
 def deploy():
-    print(f"[AEGIS] Starting Deployment to {SERVER_IP}...")
+    print(f"\n🚀 [AEGIS] Starting Deployment to {SERVER_IP}...")
+    start_time = time.time()
 
     # 1. Connect SSH
     ssh = paramiko.SSHClient()
@@ -64,12 +65,13 @@ def deploy():
 
     try:
         ssh.connect(SERVER_IP, port=SSH_PORT, username=USERNAME, password=PASSWORD)
-        print("SSH Connection Established.")
+        print("✅ SSH Connection Established.")
 
         # 2. Kill existing process
-        print("Killing existing service...")
-        ssh.exec_command("pkill -9 -f gods.py")
-        time.sleep(2)  # Wait for process to terminate
+        print("⏳ Killing existing service (if running)...")
+        # pkill may return 1 if no process found; we use a shell or check to ignore it
+        ssh.exec_command("pkill -f gods.py || true")
+        time.sleep(2)
 
         # 3. SFTP for file transfer
         sftp = ssh.open_sftp()
@@ -78,75 +80,102 @@ def deploy():
             try:
                 sftp.mkdir(remote_dir)
             except IOError:
-                pass  # Already exists
+                pass
 
+            file_count = 0
             for item in os.listdir(local_dir):
-                if item in EXCLUDE:
+                if item in EXCLUDE or any(
+                    item.endswith(ext) for ext in [".so", ".pyd", ".c"]
+                ):
                     continue
 
                 local_item = os.path.join(local_dir, item)
                 remote_item = os.path.join(remote_dir, item).replace("\\", "/")
 
                 if os.path.isdir(local_item):
-                    sftp_upload_dir(local_item, remote_item)
+                    file_count += sftp_upload_dir(local_item, remote_item)
                 else:
-                    # 파일명에 비-ASCII 문자가 포함될 경우 Windows 터미널에서 인코딩 에러가 발생할 수 있어 출력을 단순화함
                     sftp.put(local_item, remote_item)
+                    file_count += 1
+            return file_count
 
-        print("Uploading files (mirroring local state)...")
-        sftp_upload_dir(LOCAL_PATH, REMOTE_PATH)
+        print("📤 Uploading files (mirroring local state)...")
+        total_uploaded = sftp_upload_dir(LOCAL_PATH, REMOTE_PATH)
+        print(f"✅ Uploaded {total_uploaded} files.")
 
-        # --- NEW: Core Hardening (Build & Download) ---
-        print("\n[AEGIS] Hardening Core Security on Remote...")
+        # --- Hardening Core (Build & Download) ---
+        print("\n🛡️  [Hardening] Compiling Core Security on Remote Server...")
 
-        # 1. Ensure Cython (for the build process)
-        ssh.exec_command("python3 -m pip install --user Cython")
+        # 1. Check/Install Cython
+        _, stdout, _ = ssh.exec_command("cython --version")
+        if stdout.channel.recv_exit_status() != 0:
+            print("📦 Installing Cython on remote...")
+            ssh.exec_command("python3 -m pip install --user Cython")
 
         # 2. Build .so on remote
+        print("🔨 Running Cython build_ext...")
         build_cmd = f"cd {REMOTE_PATH} && python3 setup_security.py build_ext --inplace"
         stdin, stdout, stderr = ssh.exec_command(build_cmd)
-        if stdout.channel.recv_exit_status() != 0:
-            print(f"[ERROR] Remote build failed: {stderr.read().decode()}")
-        else:
-            print("Remote build successful.")
 
-            # 3. Find and Download .so files (core_security & utils)
-            for module_name in ["core_security", "utils"]:
-                stdin, stdout, stderr = ssh.exec_command(
-                    f"ls {REMOTE_PATH}/{module_name}*.so"
-                )
+        # Wait for build to complete
+        exit_status = stdout.channel.recv_exit_status()
+        if exit_status != 0:
+            print(f"❌ [ERROR] Remote build failed (Exit Code: {exit_status})")
+            error_msg = stderr.read().decode()
+            if error_msg:
+                print(f"Details:\n{error_msg}")
+        else:
+            print("✅ Remote build successful.")
+
+            # 3. Find and Download .so files
+            download_count = 0
+            for module in ["core_security", "utils"]:
+                # Check existance and get full filename
+                _, stdout, _ = ssh.exec_command(f"ls {REMOTE_PATH}/{module}*.so")
                 remote_so_files = stdout.read().decode().strip().split("\n")
 
                 for remote_so in remote_so_files:
-                    if not remote_so:
+                    if not remote_so or not remote_so.endswith(".so"):
                         continue
+
                     so_filename = os.path.basename(remote_so)
                     local_so_path = os.path.join(LOCAL_PATH, so_filename)
-                    print(f"Downloading {so_filename} to local root...")
-                    sftp.get(remote_so, local_so_path)
 
-            # 4. Cleanup source on remote (Keep only binary)
-            print("Cleaning up remote source files...")
-            ssh.exec_command(
-                f"rm {REMOTE_PATH}/core_security.py {REMOTE_PATH}/utils.py {REMOTE_PATH}/setup_security.py {REMOTE_PATH}/core_security.c {REMOTE_PATH}/utils.c"
-            )
+                    print(f"⬇️  Downloading {so_filename}...")
+                    sftp.get(remote_so, local_so_path)
+                    download_count += 1
+
+            if download_count > 0:
+                print(f"✅ Successfully downloaded {download_count} binary modules.")
+
+            # 4. Cleanup source on remote
+            print("🧹 Cleaning up remote source files and temporary build artifacts...")
+            cleanup_files = [
+                "core_security.py",
+                "utils.py",
+                "setup_security.py",
+                "core_security.c",
+                "utils.c",
+            ]
+            cleanup_cmd = f"cd {REMOTE_PATH} && rm -f " + " ".join(cleanup_files)
+            ssh.exec_command(cleanup_cmd)
             ssh.exec_command(f"rm -rf {REMOTE_PATH}/build")
 
         sftp.close()
 
         # 5. Restart service
-        print("\nRestarting service in background...")
-        # nohup과 & 를 사용하여 백그라운드 실행, 로그는 gods_output.log에 기록
+        print("\n🔄 Restarting service in background...")
         start_cmd = (
             f"cd {REMOTE_PATH} && nohup python3 gods.py > gods_output.log 2>&1 &"
         )
         ssh.exec_command(start_cmd)
 
-        print("\nDeployment & Hardening Completed Successfully!")
-        print(f"Check your dashboard at http://{SERVER_IP}:8001")
+        elapsed = time.time() - start_time
+        print(f"\n✨ Deployment & Hardening Completed Successfully! ({elapsed:.1f}s)")
+        print(f"🔗 Dashboard: http://{SERVER_IP}:8001")
 
     except Exception as e:
-        print(f"Deployment Failed: {str(e)}")
+        print(f"\n❌ Deployment Failed: {str(e)}")
     finally:
         ssh.close()
 

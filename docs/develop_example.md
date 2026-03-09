@@ -1,4 +1,4 @@
-# AEGIS Plugin-X: 홈 어시스트 개발 실전 사례 (v2.1)
+# AEGIS Plugin-X: 홈 어시스트 개발 실전 사례 (v2.2)
 
 본 문서는 **TinyTuya 기반 에어컨 제어 시스템**을 AEGIS의 차세대 아키텍처인 **Plugin-X**로 이관하면서 논의된 핵심 설계 철학과 기술적 구현 사례를 상세히 기록합니다.
 
@@ -9,7 +9,7 @@
 > [!NOTE]
 > **[그림 1: AEGIS Plugin-X 통합 아키텍처 다이어그램]**
 > - 좌측: 독립된 Plugin 폴더 (Manifest, Assets, Router)
-> - 중앙: AEGIS Core (Loader, Security, Capability Proxy)
+> - 중앙: AEGIS Core (Modular Loader, Modular Scheduler, Security, Capability Proxy)
 > - 우측: 서비스 레이어 (Routine Manager, AI Engine, TTS)
 > - 하단: IoT 하드웨어 (TinyTuya Hub, AC)
 
@@ -155,7 +155,7 @@ def set_ac(self, power=True, temp=24, mode=1, wind=1):
 context.registerCommand('/climate-control', (cmd) => this.handleCommand(cmd));
 context.registerCommand('/ac', (cmd) => this.handleCommand(cmd));
 ```
-```
+
 
 ### 2-3. 리터럴 액션 (Routine Trigger)
 실제 구동 시 루틴 매니저는 다음과 같은 논리로 동작합니다.

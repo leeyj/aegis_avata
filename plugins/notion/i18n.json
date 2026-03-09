@@ -2,11 +2,35 @@
     "ko": {
         "panels": {
             "p-notion": "노션 인텔리전스"
+        },
+        "actions": {
+            "add": {
+                "desc": "노션 데이터베이스에 새로운 메모나 일기를 추가합니다.",
+                "args": [
+                    "기록할 내용"
+                ]
+            }
+        },
+        "views": {
+            "success": "노션에 성공적으로 기록되었습니다.",
+            "fail": "노션 기록에 실패했습니다."
         }
     },
     "en": {
         "panels": {
             "p-notion": "Notion Intelligence"
+        },
+        "actions": {
+            "add": {
+                "desc": "Adds a new memo or diary entry to the Notion database.",
+                "args": [
+                    "Content to record"
+                ]
+            }
+        },
+        "views": {
+            "success": "Successfully recorded to Notion.",
+            "fail": "Failed to record to Notion."
         }
     }
 }

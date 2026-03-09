@@ -51,5 +51,20 @@
             }
         ]
     },
-    "icon": "📓"
+    "icon": "📝",
+    "actions": [
+        {
+            "id": "add",
+            "commands": [
+                "추가",
+                "기록",
+                "add",
+                "w"
+            ],
+            "params": [
+                "text"
+            ],
+            "desc": "Add a memo to Notion"
+        }
+    ]
 }

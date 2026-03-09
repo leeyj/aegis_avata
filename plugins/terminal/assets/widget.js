@@ -68,7 +68,24 @@ export default {
 
         const toggleTerminal = () => {
             const isHidden = terminalContainer.classList.contains('collapsed');
-            setTerminalState(isHidden);
+            const terminalId = 'terminal';
+
+            // [v2.5.0] 코어 가시성과 내부 확장 상태를 동시에 제어
+            if (window.togglePanel) {
+                // 만약 코어 레이어에서 숨겨져 있다면 먼저 보이게 함
+                const isVisibleInCore = window.panelVisibility ? (window.panelVisibility[terminalId] !== false) : true;
+                if (!isVisibleInCore) {
+                    window.togglePanel(terminalId, true);
+                    setTerminalState(true);
+                } else {
+                    // 이미 보이고 있다면 내부 상태를 토글하고 코어 가시성도 동기화
+                    const nextState = !isHidden;
+                    setTerminalState(nextState);
+                    if (!nextState) window.togglePanel(terminalId, false);
+                }
+            } else {
+                setTerminalState(isHidden);
+            }
         };
 
 
@@ -142,14 +159,18 @@ export default {
 
         // --- Shortcuts & Global Integration ---
         this._handleKeyDown = (e) => {
-            // [v2.2.8] HUD Toggle: Shift + ~ (Quake style) OR Esc(to close)
-            const isInputActive = (document.activeElement.tagName === 'INPUT' || shadowRoot.activeElement === input);
+            // [v2.5.0] HUD Toggle: Shift + ~ or ` (Quake style)
+            const isInputActive = (document.activeElement.tagName === 'INPUT' ||
+                document.activeElement.tagName === 'TEXTAREA' ||
+                shadowRoot.activeElement === input);
 
-            if (e.shiftKey && (e.key === '~' || e.key === '`' || e.code === 'Backquote') && !isInputActive) {
+            if (!isInputActive && e.shiftKey && (e.key === '~' || e.key === '`' || e.code === 'Backquote')) {
                 e.preventDefault();
                 toggleTerminal();
             } else if (e.key === 'Escape' && !terminalContainer.classList.contains('collapsed')) {
+                // Esc로 닫을 때는 내부 상태와 코어 가시성 모두 끔
                 setTerminalState(false);
+                if (window.togglePanel) window.togglePanel('terminal', false);
             }
         };
         window.addEventListener('keydown', this._handleKeyDown);

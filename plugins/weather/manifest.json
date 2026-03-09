@@ -55,5 +55,21 @@
             }
         ]
     },
-    "icon": "🌤️"
+    "icon": "🌤️",
+    "actions": [
+        {
+            "id": "get",
+            "commands": [
+                "조회",
+                "날씨",
+                "weather",
+                "now",
+                "w"
+            ],
+            "params": [
+                "city"
+            ],
+            "desc": "Check current weather for a city"
+        }
+    ]
 }

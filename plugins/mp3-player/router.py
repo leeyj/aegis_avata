@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, jsonify, send_from_directory
 from routes.decorators import login_required
-from utils import load_json_config
+from utils import load_json_config, get_plugin_i18n
 
 mp3_plugin_bp = Blueprint("mp3_plugin", __name__)
 
@@ -10,12 +10,14 @@ from services.plugin_registry import register_context_provider
 
 def get_mp3_context():
     try:
-        return {"status": "로컬 MP3 플레이어 기능 활성화"}
+        return {"status": get_plugin_i18n("mp3-player", "views.active")}
     except Exception:
-        return "로컬 MP3 플레이어 오류"
+        return get_plugin_i18n("mp3-player", "views.error")
 
 
-register_context_provider("mp3-player", get_mp3_context, aliases=["로컬음악", "mp3"])
+register_context_provider(
+    "mp3-player", get_mp3_context, aliases=["로컬음악", "mp3", "local-music"]
+)
 
 
 def get_media_dir():
@@ -46,5 +48,10 @@ def list_media():
 def stream_media(filename):
     media_dir = get_media_dir()
     if ".." in filename or filename.startswith("/"):
-        return jsonify({"status": "error", "message": "Invalid filename"}), 400
+        return jsonify(
+            {
+                "status": "error",
+                "message": get_plugin_i18n("mp3-player", "views.invalid_filename"),
+            }
+        ), 400
     return send_from_directory(media_dir, filename)

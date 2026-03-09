@@ -67,8 +67,12 @@ class AvatarCommander {
                     if (window.speakTTS) {
                         const message = evaluator.format(action.template, data);
                         const audioUrl = action.audioUrl ? evaluator.format(action.audioUrl, data) : null;
-                        const visualType = action.visualType ? evaluator.format(action.visualType, data) : null;
-                        window.speakTTS(message, audioUrl, visualType);
+                        const vType = action.visualType || action.visual_type;
+                        const visualType = vType ? evaluator.format(vType, data) : null;
+
+                        // [v3.4.7] 음성 전용 텍스트가 있을 경우(briefing 등) 전달
+                        const speechText = data.briefing || data.text || message;
+                        window.speakTTS(message, audioUrl, visualType, speechText);
                     }
                     break;
                 case 'WEATHER_EFFECT':

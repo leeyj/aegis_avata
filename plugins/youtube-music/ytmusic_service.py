@@ -109,20 +109,22 @@ class YTMusicService:
                 )
                 return True
 
-            print(f"[YTMusic] No headers extracted from provided text.", flush=True)
+            print("[YTMusic] No headers extracted from provided text.", flush=True)
             return False
         except Exception as e:
             print(f"[YTMusic] Smart Update Auth Error: {e}", flush=True)
             return False
 
     def get_my_playlists(self):
-        """내 라이브러리의 플레이리스트 목록 가져오기"""
+        """내 라이브러리의 플레이리스트 목록 가져오기 (캐싱 추가)"""
         if not self.yt:
             print("[YTMusic] Service not initialized", flush=True)
             return []
         try:
             print("[YTMusic] Fetching library playlists...", flush=True)
             playlists = self.yt.get_library_playlists(limit=20)
+            # [v3.8.7] 인덱스 참조를 위해 최근 플레이리스트 캐싱
+            self.last_playlists = playlists
             print(f"[YTMusic] Found {len(playlists)} playlists", flush=True)
             return playlists
         except Exception as e:
@@ -157,8 +159,35 @@ class YTMusicService:
             return None
 
     def search_tracks(self, query):
-        """곡 검색"""
+        """곡 검색 또는 플레이리스트 인덱스 선택"""
         try:
+            # [v3.8.7] 숫자 입력 처리 로직 통합 (Terminal & Discord 동기화)
+            if query.isdigit():
+                idx = int(query) - 1
+                if hasattr(self, "last_playlists") and 0 <= idx < len(
+                    self.last_playlists
+                ):
+                    playlist = self.last_playlists[idx]
+                    playlist_id = playlist.get("playlistId")
+                    print(
+                        f"[YTMusic] Numeric index {query} detected. Loading playlist: {playlist.get('title')}",
+                        flush=True,
+                    )
+                    data = self.get_playlist_tracks(playlist_id)
+                    return data.get("tracks", []) if data else []
+                else:
+                    print(
+                        f"[YTMusic] Index {query} out of range or no cached playlists.",
+                        flush=True,
+                    )
+                    # 캐시가 없으면 일단 목록을 새로 불러와서 시도
+                    self.get_my_playlists()
+                    if 0 <= idx < len(self.last_playlists):
+                        playlist = self.last_playlists[idx]
+                        data = self.get_playlist_tracks(playlist.get("playlistId"))
+                        return data.get("tracks", []) if data else []
+
+            # 일반 검색
             results = self.yt.search(query, filter="songs")
             return [
                 {

@@ -45,6 +45,46 @@
         "ai_error_no_response": "AI failed to generate a response.",
         "no_action_parsed": "⚠️ No system actions were parsed from the AI response.",
         "ai_fallback_error": "❌ AI Integration Error",
-        "ai_system_error": "⚠️ System error occurred during AI processing"
+        "ai_system_error": "⚠️ System error occurred during AI processing",
+        "report_generated": "Tactical report generated.",
+        "unknown_command": "'{root} {action}' is an unknown command. Please check '/help'.",
+        "action_success": "Action executed successfully.",
+        "action_fail": "Action execution failed.",
+        "no_data_fallback": "No results or list is empty.",
+        "unauthorized": "Unauthorized access.",
+        "hybrid_not_supported": "⚠️ The '{plugin}' widget does not support 'Intelligent Hybrid (/@)' commands yet. Please use deterministic commands (/) or general AI search (#)."
+    },
+    "help": {
+        "title": "### 🛰️ AEGIS Tactical Interface Help (v3.7.1)",
+        "mode_1_title": "**1. ⚡ Deterministic Command (/) - Systematic**",
+        "mode_1_desc": "- Logic executed directly without passing through AI. (Saves Quota)",
+        "mode_1_format": "- **Format:** `/plugin_name action_name arg1 | arg2`",
+        "mode_1_tip": "- **Input Tip:** Multiple parameters are separated by `|`, but spaces are also supported for simple inputs.",
+        "widget_ref_label": "**[Widget Action Reference]**",
+        "mode_2_title": "**2. 🧠 Intelligent Hybrid (/@) - Hybrid**",
+        "mode_2_desc": "- Combines specific plugin data with AI judgment to interpret natural language.",
+        "mode_2_example": "- **Ex:** `/@schedule set alarm for 2 PM`",
+        "mode_2_alias_label": "- **Current recognized aliases:**",
+        "mode_3_title": "**3. 🌐 Pure AI & Search (/# or #) - Pure AI**",
+        "mode_3_desc": "- Forces AI knowledge or Google search without plugin context.",
+        "mode_3_example": "- **Ex:** `/#Tesla stock price`, `/#Explain quantum mechanics`",
+        "mode_4_title": "**4. 🔇 Other Options**",
+        "mode_4_desc": "- Add `--m` to the end of a command to skip voice briefing and reply with text only.",
+        "footer": "*(All inputs trigger reactions of the desktop HUD avatar in real-time)*",
+        "table_header": {
+            "widget": "Widget",
+            "action": "Action",
+            "params": "Parameters",
+            "desc": "Description"
+        }
+    },
+    "help_center": {
+        "loading": "Decrypting tactical docs...",
+        "error": "Failed to load data",
+        "status": "Status",
+        "no_data": "No status data available.",
+        "actions": "Actions",
+        "aliases": "Aliases",
+        "doc_not_found": "Document not found"
     }
 }

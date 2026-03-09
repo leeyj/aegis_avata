@@ -1,0 +1,24 @@
+{
+    "id": "core-voice",
+    "name": "AEGIS Core Voice & HUD",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "description": "Unified TTS, Speech Bubble, and Audio Visualization service.",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "priority": 1,
+    "permissions": [
+        "api.voice_service",
+        "api.ai_gateway"
+    ],
+    "layout": {
+        "fixed": true,
+        "zIndex": 2000
+    },
+    "hidden": false,
+    "icon": "🗣️"
+}

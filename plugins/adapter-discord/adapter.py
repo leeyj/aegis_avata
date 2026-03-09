@@ -70,7 +70,17 @@ class DiscordAdapter(BotAdapter):
                         str(message.channel.id), image_path, text_response
                     )
                 elif text_response:
-                    await message.channel.send(text_response)
+                    # [v3.7.6] Discord 2000자 제한 대응을 위한 청킹(Chunking) 로직
+                    if len(text_response) > 2000:
+                        chunks = [
+                            text_response[i : i + 2000]
+                            for i in range(0, len(text_response), 2000)
+                        ]
+                        for chunk in chunks:
+                            await message.channel.send(chunk)
+                            await asyncio.sleep(0.5)  # 속도 제한 방지
+                    else:
+                        await message.channel.send(text_response)
 
     def start(self):
         """별도의 스레드에서 봇을 비동기로 실행"""
@@ -106,7 +116,14 @@ class DiscordAdapter(BotAdapter):
                     channel = user.dm_channel or await user.create_dm()
 
             if channel:
-                await channel.send(text)
+                # [v3.7.6] Discord 2000자 제한 대응
+                if len(text) > 2000:
+                    chunks = [text[i : i + 2000] for i in range(0, len(text), 2000)]
+                    for chunk in chunks:
+                        await channel.send(chunk)
+                        await asyncio.sleep(0.5)
+                else:
+                    await channel.send(text)
         except Exception as e:
             logger.error(f"Discord send_text error: {e}")
 

@@ -1,0 +1,27 @@
+<div class="help-container">
+    <div class="help-header">
+        <div class="help-title">
+            <span class="icon">🛰️</span>
+            <span class="text">AEGIS TACTICAL HELP CENTER</span>
+        </div>
+        <div class="help-tabs no-drag" id="tab-container">
+            <!-- Tabs will be rendered here -->
+            <button class="tab-btn active" data-tab="systematic">⚡ Systematic</button>
+            <button class="tab-btn" data-tab="hybrid">🧠 Hybrid</button>
+            <button class="tab-btn" data-tab="pure-ai">🌐 Pure AI</button>
+            <button class="tab-btn" data-tab="status">📊 Status</button>
+        </div>
+    </div>
+    
+    <div class="help-content">
+        <div id="markdown-viewer" class="markdown-body">
+            <!-- Markdown content will be rendered here -->
+            <div class="loading-spinner">Loading tactical data...</div>
+        </div>
+        
+        <!-- Systematic Grid (Keep as secondary view or integrated) -->
+        <div id="systematic-overlay" class="sub-pane" style="display:none">
+            <div class="plugin-grid" id="grid-systematic"></div>
+        </div>
+    </div>
+</div>

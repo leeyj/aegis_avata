@@ -1,134 +1,200 @@
-# AEGIS Plugin-X: Extension Module Development Guide (v3.4.0)
+# AEGIS Plugin-X: Extension Module Development Guide (v3.7.0)
 
 ---
 
 ## ⚡ 0. Performance Architecture: AXC (AEGIS Extreme Cache)
 Introduced in v2.4.5, **AXC** maximizes plugin boot speed.
 - **IndexedDB**: All plugin assets (HTML/JS/CSS) are permanently stored in the browser's IndexedDB.
-- **SHA256 Versioning**: If the hash matches the server's, the plugin loads instantly in **under 10ms** without network download.
-- **Two-Step Hydration**: Creates DOM structure first, then injects assets in parallel to ensure both speed and layer consistency.
+- **SHA256 Versioning**: If the server's hash matches, assets are loaded instantly in **under 10ms** without network downloads.
+- **Two-Step Hydration**: The DOM structure is created first, followed by parallel asset injection, ensuring both loading speed and layer integrity.
 
 ---
 
-## 📌 0. Plugin-X Core Policies (Must Read)
+## 📌 0. Core Plugin-X Policies (Must Read)
 
-### 0-1. Architectural Vision: Complete Independent Modularity
-The goal of Plugin-X is for each plugin to operate as an independent module physically separated from the main system. Plugins must be able to extend or remove features simply by adding or deleting folders, without modifying the core system files (e.g., `app_factory.py`, `index.html`, `static/js/`).
+### 0-1. Architecture Direction: Complete Independent Modularity & Deterministic Control
+The goal of Plugin-X is for **each plugin to operate as an independent module** physically separated from the main system. Plugins must be expandable or removable simply by adding/deleting a folder, without modifying the core code (`app_factory.py`, `templates/index.html`, `static/js/`, etc.). Since v3.7.0, the priority is to provide **immediate and deterministic reactions (Deterministic Action)** for clear user commands (Command) without AI intervention.
 
-### 0-2. Hard Rules (⛔ DO NOT VIOLATE)
+### 0-2. Absolute Prohibitions (⛔ HARD RULES)
 
-| # | Policy | Problem Caused by Violation |
+| # | Policy | Consequence of Violation |
 |---|---|---|
-| 1 | Do not write plugin logic in **`/static/js/widgets/`** or **`/services/`**. | Creates dependencies on the main system, breaking core functionality when the module is removed. |
-| 2 | Do not name your service file **`service.py`** (generic name). | Python namespace conflicts causing other plugins to malfunction. |
-| 3 | Do not use short route paths without the **`/api/plugins/[id]/`** prefix. | The security system (`plugin_security_service`) fails to identify the plugin and bypasses permission checks. |
-| 4 | Do not use absolute imports like **`import service`** in `router.py`. | Global module cache pollution causing the wrong service to load. |
-| 5 | Do not load global objects via **`<script>` tags in `index.html`**. | Violates Plugin-X isolation. All logic must be self-contained in `widget.js`. |
-| 6 | Do not reference context-dependent objects like **Flask `request`/`session`** outside of `init()` in `widget.js`. | Causes `RuntimeError: Working outside of request context` during blueprint discovery at app startup. |
+| 1 | Do NOT write plugin logic in **`/static/js/widgets/`** or **`/services/`** | Creates dependency on main system; core breaks when module is removed |
+| 2 | Do NOT use generic service filenames like **`service.py`** | Python namespace conflicts causing other plugins to malfunction |
+| 3 | Do NOT use short paths without the **`/api/plugins/[id]/`** prefix | Security system (`plugin_security_service`) fails to identify the plugin, bypassing permission checks |
+| 4 | Do NOT use absolute path imports like **`import service`** in `router.py` | Global module cache pollution leading to the wrong service being loaded |
+| 5 | Do NOT load global objects via **`<script>` tags in `index.html`** | Violates Plugin-X isolation; all logic must reside within `widget.js` |
+| 6 | Do NOT reference request/session context outside of `init()` in `widget.js`| Causes `RuntimeError: Working outside of request context` during blueprint discovery |
+| 7 | **[v3.7.0]** Do NOT rely solely on AI prompts for fixed commands | AI hallucinations may prevent critical functions (alarms, playback) from executing |
 
-### 0-3. Soft Rules (✅ RECOMMENDATIONS)
+### 0-3. Recommendations (✅ SOFT RULES)
 
-- Mediate all inter-plugin communication through the **`context` API** (Capability Proxy).
-- If global variables (`window.xxx`) are necessary, register them only inside `init()` and clear them in `destroy()`.
-- **[v2.3]** Always apply `e.stopPropagation()` to clickable elements like buttons or checkboxes. If a container is clickable, include one of `.no-drag`, `.interactive`, or `.clickable` in its class to avoid interference with widget move events.
-- `config.json` should only be referenced within the plugin; do not read other plugins' configuration files directly.
-- Register terminal command handlers via `context.registerCommand()` within `widget.js`; do not create separate external JS files.
-- **[v2.4.5] AXC Integrity**: Since assets are managed by hashes, if you manually modify assets during development, restart the server or clear the browser cache to trigger a hash update.
+- All inter-plugin communication must pass through the **`context` API** (Capability Proxy).
+- If global variables (`window.xxx`) are necessary, register them only inside `init()` and clean up in `destroy()`.
+- **[v2.3]** For interactive elements like buttons and checkboxes, call `e.stopPropagation()`. For containers, add `.no-drag`, `.interactive`, or `.clickable` to avoid widget drag interference.
+- `config.json` is for internal use; do not directly read other plugins' config files.
+- Command handlers should be registered via `context.registerCommand()`. No separate JS files. (v3.7.0+ recommends manifest actions)
+- **[v2.4.5] AXC Integrity**: Since assets are managed by hash, if you manually modify assets during development, you must restart the server or clear the browser cache to trigger a hash update.
 
 ---
 
 ## 🏗️ 1. Standard Plugin Structure
 
-All plugins reside in the `/plugins` directory with a unique folder name. Features can be added or removed simply by adding or deleting folders without modifying system code.
+All plugins reside in the `/plugins` directory with a unique folder name.
 
 ```text
 /plugins/[plugin-id]/
-├── __init__.py               # Python package soul (Required, empty file)
-├── manifest.json             # Metadata, permissions, CSP declaration (Required)
-├── config.json               # Plugin-specific local settings (Optional)
-├── router.py                 # Flask Blueprint (Backend, Optional)
-├── {plugin_id}_service.py    # Business logic (Optional, Naming convention required)
+├── __init__.py               # Python package sentinel (Required, empty)
+├── manifest.json             # Required (Includes Action definitions)
+├── config.json               # Plugin-specific local config (Optional)
+├── router.py                 # Required (Blueprint & initialize_plugin)
+├── {plugin_id}_service.py    # Required (Naming convention strictly enforced)
 └── assets/                   # Frontend assets folder
-    ├── widget.html           # HTML snippet (for Shadow DOM injection)
-    ├── widget.js             # Logic execution module (Init/Destroy + Command handlers)
-    └── widget.css            # Style sheet (Shadow DOM isolation)
+    ├── widget.html           # HTML snippet (For Shadow DOM injection)
+    ├── widget.js             # Logic module (Init/Destroy + Signal handling)
+    └── widget.css            # Stylesheet (Shadow DOM isolation)
 ```
 
-> ⚠️ **Relative imports (`from .xxx_service import ...`) will not work without `__init__.py`.**
+> ⚠️ **Without `__init__.py`, relative imports (`from .xxx_service import ...`) will not work.**
 
 ---
 
-## 📜 2. manifest.json Specification (v1.7)
+## 📜 2. manifest.json Specification (v3.7.0)
 
-`manifest.json` is the most critical file defining the plugin's identity, **Security Permissions (CSP)**, and backend entry points.
+`manifest.json` defines identity, **Deterministic Actions**, security permissions (CSP), and backend entry points.
 
-### Mandatory Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Unique plugin ID (must match the folder name) |
-| `name` | string | Plugin name displayed to the user |
-| `version` | string | Semantic versioning |
-| `entry.html` | string | Path to widget HTML file |
-| `entry.js` | string | Path to widget JS module |
-
-### Optional Fields
+### 🎯 Actions Definition (Deterministic Actions) ✨NEW
+Defines fixed commands and actions supported by the plugin. Executed immediately by the system before AI processing.
 
 | Field | Type | Description |
 |---|---|---|
-| `entry.css` | string | Path to widget CSS file |
+| `actions` | array | List of actions the plugin can perform |
+| `actions[].id` | string | Unique Action ID (for mapping in `router.py`) |
+| `actions[].name` | string | Display name for the action |
+| `actions[].commands` | string[] | List of trigger commands (shortcuts, synonyms) |
+| `actions[].params` | string[] | List of parameter keys passed with the command |
+
+### Required/Optional Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Unique Plugin ID (must match folder name) |
+| `name` | string | Display name |
+| `version` | string | Semantic version |
+| `entry.html` | string | Entry HTML path |
+| `entry.js` | string | Entry JS module path |
+| `entry.css` | string | Entry CSS path |
 | `entry.backend` | string | Backend router filename (e.g., `"router.py"`) |
 | `permissions` | string[] | System permission list (`api.ai_agent`, `api.voice_service`, etc.) |
-| `csp_domains` | object | List of external domains for CSP (`script-src`, `frame-src`, `img-src`, `connect-src`) |
-| `layout.default_size` | string | Default widget size (`size-1`, `size-1-5`, `size-2`) |
+| `csp_domains` | object | CSP external domain whitelist (`script-src`, `frame-src`, `img-src`, `connect-src`) |
+| `layout.default_size`| string | Initial widget size (`size-1`, `size-1-5`, `size-2`) |
 | `hidden` | boolean | If `true`, loads backend only without UI panel |
-| `exports` | object | Public data points for scheduler/external integration |
-| `exports.sensors` | array | List of monitorable data points |
-| `exports.commands` | array | List of available terminal commands |
+| `exports` | object | Declares sensors/commands for the Scheduler/External integration |
 
-### Full Example (IoT Widget with exports)
+### Full Example (YouTube Music v3.7.0)
 
 ```json
 {
-    "id": "home-assist",
-    "name": "Home Assist Thermometer",
-    "version": "1.0.0",
+    "id": "youtube-music",
+    "name": "YouTube Music Player",
+    "version": "3.7.0",
     "entry": {
         "html": "assets/widget.html",
         "js": "assets/widget.js",
+        "css": "assets/widget.css",
         "backend": "router.py"
     },
-    "exports": {
-        "sensors": [
-            {
-                "id": "indoor_temp",
-                "name": "Indoor Temperature",
-                "unit": "°C",
-                "type": "number",
-                "endpoint": "/api/plugins/home-assist/temperature",
-                "field": "temp"
-            },
-            {
-                "id": "humidity",
-                "name": "Indoor Humidity",
-                "unit": "%",
-                "type": "number",
-                "endpoint": "/api/plugins/home-assist/humidity",
-                "field": "humidity"
-            }
-        ],
-        "commands": [
-            { "prefix": "/ha", "name": "Home Assist Control", "examples": ["/ha status", "/ha fan on"] }
-        ]
+    "actions": [
+        {
+            "id": "play",
+            "name": "Play Music",
+            "commands": ["play", "재생", "p"],
+            "params": ["query"]
+        },
+        {
+            "id": "pause",
+            "name": "Pause",
+            "commands": ["pause", "정지", "s"]
+        }
+    ],
+    "permissions": ["api.ai_agent", "api.voice_service"],
+    "csp_domains": {
+        "img-src": ["https://*.ytimg.com"],
+        "connect-src": ["https://*.google.com"]
     }
 }
 ```
+
+### Tutorial Example: mp3-player Configuration
+
+A practical `manifest.json` example for developers wondering which files to load or how to request permissions. Sensitive tasks like handling local files or communicating with the AI engine must specify permissions.
+
+```json
+{
+    "id": "mp3-player",
+    "name": "Local Media Hub",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.media_proxy",
+        "api.ai_gateway"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    }
+}
+```
+
+**Example Interpretation:**
+1. **`entry` field:** 
+   Fetches `widget.html` at start, loads `widget.js` for logic and `widget.css` for view. The server registers a separate `/api/plugins/mp3-player/...` route via `router.py`.
+2. **`permissions` field:** 
+   * `"api.media_proxy"`: Since the plugin must read MP3 files from the system, it requires permission to pass the security proxy.
+   * `"api.ai_gateway"`: Required for AI engine communication, such as AI-generated music briefings.
+   Failing to declare these while calling restricted APIs in `router.py` will trigger a 403 Forbidden error via the `@require_permission` decorator.
+3. **`layout` field:** 
+   Sets the default grid width to `size-1-5` (1.5 units) when opened from the sidebar.
+4. **Media File Location:**
+   * Do not put heavy media files directly inside the plugin folder. 
+   * **External Volume Mount:** Use `config.json` to receive absolute paths externally to avoid copying large folders.
+   * **`plugins/mp3-player/config.json`:**
+     ```json
+     { "media_directory": "D:\\MyMusic" }
+     ```
+   * **Backend Handling:** `router.py` should check `media_directory` and fallback to a default folder (`static/media/mp3/`) if it's missing (Use `utils.load_json_config`).
+
+### `exports.sensors[]` Spec
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | string | ✅ | Unique Sensor ID within the plugin |
+| `name` | string | ✅ | Display name (e.g., "Indoor Temperature") |
+| `unit` | string | ✅ | Unit (e.g., "°C", "%") |
+| `type` | string | ✅ | `number`, `string`, `boolean` |
+| `endpoint` | string | ✅ | Data API path (Standard `/api/plugins/...`) |
+| `field` | string | ✅ | Key to extract data from the JSON response |
+
+### `exports.commands[]` Spec
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `prefix` | string | ✅ | Command prefix (e.g., `/ha`) |
+| `name` | string | ✅ | Command description |
+| `examples`| string[] | ❌ | Usage examples |
+
+> ⛔ **Failure to declare `exports` will prevent the plugin's data from appearing in the Routine Manager's monitoring.**
 
 ---
 
 ## ⚖️ 2-2. Special Layout: Fixed HUD (v2.2)
 
-Certain plugins (e.g., terminal, full-screen overlay) should not be dragged or recalculated based on aspect ratios like normal widgets. For this purpose, `manifest.json` supports the `layout.fixed` property.
+Certain plugins (Terminal, Fullscreen Overlays) should not be dragged or relocated like normal widgets. Use `layout.fixed` in `manifest.json`.
 
 ### Configuration
 ```json
@@ -138,44 +204,43 @@ Certain plugins (e.g., terminal, full-screen overlay) should not be dragged or r
 }
 ```
 
-### Key Features and Specs (⛔ Mandatory)
-1. **Pinned Position**: When `fixed: true` is set, the plugin is **automatically excluded** from global `applyUIPositions` (position recalculation on window resize). It remains at (0, 0) by default.
-2. **Style Isolation**: The parent container (`fixed-plugin-wrapper`) does not have the global glass/blur effect. Control styles only within the plugin (`widget.css`) to minimize interference with system layout.
-3. **Event Passthrough**: Fixed plugin wrappers are `pointer-events: none` by default. You must individually grant `pointer-events: auto` to internal interactive elements (input bars, buttons).
+### Key Features & Specs (⛔ MANDATORY)
+1. **Fixed Position**: If `fixed: true`, the plugin is **automatically excluded** from `applyUIPositions` (recalculation based on window size). It always stays at (0, 0).
+2. **Style Isolation**: The parent container (`fixed-plugin-wrapper`) does not have the global glass/blur effect. Control styles only within the plugin (`widget.css`).
+3. **Event Transparency**: The wrapper's pointer-events are `none`. Explicitly set `pointer-events: auto` only for interactive elements (Inputs, Buttons).
 
 ---
 
 ## 🧩 3. Frontend: Runtime Environment (Capability Proxy)
 
-When a plugin is loaded, the `init(shadowRoot, context)` function is called. System resources must be accessed **only through the `context` object**.
+When a plugin loads, `init(shadowRoot, context)` is called. Access system resources ONLY via the **`context` object**.
 
 ### Context API List
 
 | API | Description |
 |---|---|
-| `context.log(msg)` | Console log (automatically tagged with plugin ID) |
+| `context.log(msg)` | Console log with automatic tagging |
 | `context._t(key)` | i18n translation |
-| `context.applyI18n()` | Re-translates inside Shadow DOM |
-| `context.askAI(task, data)` | AI Gateway request (returns standard display/briefing response) |
-| `context.speak(display, briefing, visualType)` | Unified TTS output (Note: voice is skipped if `--m` flag is detected) |
-| `context.appendLog(tag, message)` | Prints log to terminal window |
-| `context.registerCommand(prefix, callback)` | Registers a terminal command |
-| `context.registerTtsIcon(type, icon)` | Registers a TTS icon |
-| `context.triggerReaction(type, data, timeout)` | Triggers avatar reaction |
-| `context.triggerBriefing(feedbackEl, options)` | **[v2.3]** Executes tactical briefing (automatically applies Proactive-Agent filters) |
-| `context.registerSchedule(name, type, callback)` | Registers global tick scheduler |
-| `context.playMotion(filename)` | Plays Live2D motion (supports path or Alias) |
-| `context.changeModel(modelName)` | Switches Live2D model |
-| `context.getMediaList()` | Lists media proxy files |
-| `context.getAudioUrl(filename)` | Returns media streaming URL |
-| `context.environment.applyEffect(type)` | Triggers global environmental effects (RAINY, SNOWY, STORM, CLEAR) |
+| `context.applyI18n()` | Re-translates Shadow DOM elements |
+| `context.askAI(task, data)` | AI Gateway request (Returns standard response) |
+| `context.speak(display, briefing, visualType)` | Unified TTS utterance (Skips audio if `--m` flag is present) |
+| `context.appendLog(tag, msg)` | Terminal log output |
+| `context.registerCommand(p, cb)` | Registers terminal command |
+| `context.registerTtsIcon(t, i)` | Registers TTS icons |
+| `context.triggerReaction(t, d, to)`| Triggers avatar reaction |
+| `context.triggerBriefing(el, opt)` | **[v2.3]** Tactical briefing. Automatically applies Proactive-Agent filters. |
+| `context.registerSchedule(n, t, cb)`| Registers global tick scheduler |
+| `context.playMotion(filename)` | Plays Live2D motion (Supports path or Alias) |
+| `context.changeModel(name)` | Switches Live2D model |
+| `context.getMediaList()` | Media proxy list |
+| `context.getAudioUrl(file)` | Media streaming URL |
+| `context.environment.applyEffect(t)`| Triggers RAINY, SNOWY, STORM, CLEAR |
 
-### 💡 Extension via Custom Aliases
-AEGIS supports not only default motion names like `idle` or `joy` but also **unlimited Custom Aliases** defined by users or developers.
-* Users can create names like `superhappy` or `grey_face` in the Studio UI and map motions to them.
-* Developers can call these **user-defined Custom Aliases** directly within `widget.js` without modifying main code.
+### 💡 Extension via Custom Alias
+AEGIS supports unlimited **Custom Aliases** defined by users or developers, beyond standard ones like `idle` or `joy`.
+* Users can map motions to names like `superhappy` via the Studio UI.
+* Developers can call these aliases directly in `widget.js` without core modification.
   ```javascript
-  // If the user has created a 'superhappy' alias, the avatar performs it immediately
   context.triggerReaction('MOTION', { alias: 'superhappy' });
   ```
 
@@ -189,31 +254,28 @@ export default {
     init: async function (shadowRoot, context) {
         context.log("Widget Initializing...");
 
-        // 1. Load configuration
+        // 1. Load config
         try {
             const res = await fetch('/api/plugins/[plugin-id]/config');
             const data = await res.json();
             Object.assign(this.config, data);
         } catch (e) { }
 
-        // 2. Load data & Render
-        const refresh = async () => { /* ... */ };
+        // 2. HUD Real-time Sync (sync_cmd) ✨NEW
+        window.addEventListener('sync_cmd', (e) => {
+            if (e.detail.command === 'refresh_data') this.refresh();
+        });
+
+        // 3. Initial Load
+        const refresh = async () => { /* Logic */ };
+        this.refresh = refresh;
         await refresh();
 
-        // 3. Global exposure (if needed, only inside init)
+        // 4. Global Exposure (Only if needed, inside init)
         window.refreshMyWidget = refresh;
 
-        // 4. Register command (Essential for terminal alias integration)
-        context.registerCommand('/[plugin-id]', (cmd) => this.refresh());
-        context.registerCommand('/mycmd', (cmd) => this.handleMyCommand(cmd));
-
-        // 5. Periodic update
+        // 5. Periodic Refresh
         this.updateTimer = setInterval(refresh, this.config.polling_interval_ms || 300000);
-    },
-
-    // Handlers must be defined within the same object
-    async handleMyCommand(command) {
-        // ...
     },
 
     destroy: function () {
@@ -222,203 +284,98 @@ export default {
 };
 ```
 
-### 3-6. Widget Lifecycle and DOM Restrictions
-The system mounts and destroys widgets in an isolated state. Please follow these rules:
-
-1. **Injection**: The system fetches `assets/widget.html` and inserts it via `shadowRoot.innerHTML`.
-   - ⛔ **Warning**: Since it is inserted as `innerHTML`, **`<script>` tags inside `widget.html` will NOT be executed by the browser.** All logic must be in `widget.js`.
-   - ⛔ **Warning**: Plugins cannot use the `<slot>` API; limit all DOM manipulation to `shadowRoot.querySelector()`.
-2. **Initialization**: After HTML injection, `widget.js`'s `init(shadowRoot, context)` is called exactly once. Start fetching data and `setInterval` here.
-3. **Destruction**: When the user closes the widget or refreshes the dashboard, `destroy()` is called. Clear polling timers and event listeners here to prevent **Memory Leaks**.
+### 3-6. Widget Lifecycle & DOM Constraints
+1. **Injection**: `widget.html` is fetched and inserted via `innerHTML`.
+   - ⛔ **Warning**: `<script>` tags inside `widget.html` will **NOT be executed**. Write all logic in `widget.js`.
+2. **Initialization**: `init()` is called once after injection. Start fetching data and `setInterval` here.
+3. **Destruction**: `destroy()` is called when the widget is closed. Clear timers and listeners to avoid **Memory Leaks**.
 
 ---
 
 ## ⚡ 3.5. Boot Optimization: AXC & Parallel Hydration (v2.4.5) ✨NEW
+
 The system uses the following pipeline to launch 20+ plugins instantly:
-1. **Synchronous Wrapper Creation**: Creates all plugin wrappers in DOM first to guarantee priority.
-2. **Parallel Hydration**: Asset loading and `init()` execution are performed simultaneously via `Promise.all`.
-3. **Blob URL Isolation**: Bundled JS runs instantly from memory via `URL.createObjectURL(blob)`, zero network latency.
+1. **Synchronous Wrapper Creation**: DOM wrappers are created first to ensure priority order.
+2. **Parallel Hydration**: Loading assets and executing `init()` are performed concurrently via `Promise.all`.
+3. **Blob URL Isolation**: Bundled JS executes instantly in-memory via `URL.createObjectURL(blob)`, providing 0 network latency.
 
 ---
 
-## 🛠️ 4. Backend: Router and Service Standards (v1.7)
+## 🛠️ 4. Backend: Router & Service Standards (v3.7.0)
 
-### 4-1. Naming Conventions (⛔ Do Not Violate)
+### 4-1. Deterministic Action Registration Pattern (⛔ MANDATORY) ✨NEW
+Every `router.py` must register its action handlers at startup.
+
+```python
+from services.plugin_registry import register_plugin_action
+
+# [v3.7.0] Initialization function
+def initialize_plugin():
+    # Register handler matching the Action ID in manifest.json
+    register_plugin_action("my-plugin-id", "play", handle_play)
+    
+def handle_play(params, target_id=None):
+    # params: String after the command
+    result = MyService.play(params)
+    return {
+        "text": f"Processed successfully: {result}",
+        "sync_cmd": "refresh_data" # Optional UI sync trigger
+    }
+```
+
+### 4-2. File Naming Rules (⛔ MANDATORY)
 
 ```text
-✅ Correct Examples              ❌ Incorrect Examples
+✅ Correct Examples              ❌ Wrong Examples
 ─────────────────────────────    ─────────────────────────
 notion_service.py               service.py
-weather_service.py              weather.py (vague)
-stock_service.py                data_fetcher.py (non-standard)
+weather_service.py              weather.py (Ambiguous)
+stock_service.py                data_fetcher.py (Non-standard)
 ```
-**Rule: `{plugin_id with hyphens changed to underscores}_service.py`**
+**Rule: `{plugin_id_with_underscores}_service.py`**
 
-### 4-2. Route Path Rules (⛔ Do Not Violate)
-
-All backend API endpoints must follow this pattern:
-```
-/api/plugins/{plugin-id}/{action}
-```
-**Reason**: `plugin_security_service.py` extracts the plugin ID from the 3rd segment of the URL. Bypassing this pattern disables **Security Permission Checks**.
-
-### 4-3. Import Standards and Utilities (⛔ Do Not Violate)
-
-Plugins must use the parent `utils.py` module for file I/O instead of direct `json.load` for stability.
+### 4-4. Import Standards & Utilities (⛔ MANDATORY)
+Use standard `utils.py` instead of direct `json.load`.
 
 ```python
 # ✅ Correct Imports
-from .notion_service import NotionService  # Relative path
+from .notion_service import NotionService  # Relative import
 from utils import load_json_config, save_json_config  # System utilities
-from services.plugin_registry import register_context_provider # Briefing engine registration
+from services.plugin_registry import register_context_provider # Registry
 ```
 
-#### 🛠️ Standard Utility APIs (`utils.py`)
-| Function | Parameters | Return | Features |
-|---|---|---|---|
-| `load_json_config(path)` | `path` (str) | `dict` | Returns `{}` if file is missing, auto-handles `utf-8-sig`. |
-| `save_json_config(path, data, merge=True)` | `path`, `data`, `merge` | `bool` | Atomic Write. Preserves existing data if `merge=True`. |
-| `clean_ai_text(text)` | `text` (str) | `str` | Removes markdown wrappers (```json) and unnecessary tags from AI response. |
-
-### 4-4. router.py Standard Core
+### 4-5. router.py Standard Skeleton
 
 ```python
 import os
 from flask import Blueprint, jsonify, request
 from routes.decorators import login_required
-from .{plugin_id}_service import MyService    # Relative import
+from .{plugin_id}_service import MyService    # Relative
 from utils import load_json_config
-from services import require_permission
-from services.plugin_registry import register_context_provider
+from services.plugin_registry import register_context_provider, register_plugin_action
 
-PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_PATH = os.path.join(PLUGIN_DIR, "config.json")
+def initialize_plugin():
+    register_plugin_action("{id}", "action_id", my_handler)
+    register_context_provider("{id}", get_my_context)
 
-my_plugin_bp = Blueprint("{plugin_id}_plugin", __name__)
-
-# 0. Context Provider Registration (Briefing Engine)
+@login_required
 def get_my_context():
     return MyService.get_data()
 
-register_context_provider("{plugin-id}", get_my_context)
-
-# 1. Config Retrieval
-@my_plugin_bp.route("/api/plugins/{plugin-id}/config")
-@login_required
-def get_config():
-    return jsonify(load_json_config(CONFIG_PATH))
-
-# 2. Data Retrieval
-@my_plugin_bp.route("/api/plugins/{plugin-id}/data")
-@login_required
-@require_permission("api.{permission}")
-def get_data():
-    return jsonify(MyService.get_data())
+def my_handler(params, target_id=None):
+    result = MyService.do_action(params)
+    return {"text": "Done", "sync_cmd": "refresh"}
 ```
 
-### 4-5. Context Provider & Multi-Alias Engine (v2.7+) ✨NEW
-`register_context_provider('my-plugin', get_my_plugin_context, aliases=['Schedule', 'Routine'])`
-* Backend aliases are synced to the frontend `CommandRouter` at startup.
-* Entering `/Schedule` in the terminal will be routed to `/my-plugin`.
-
 ---
 
-## 🤖 5. AI Response Standardization & Prompt Policy (v3.0+)
-
-### 5-1. De-hardcoding Prompts
-Do not hardcode AI agent names ("AEGIS") or response labels ("Response:") inside prompts. Instructions are injected dynamically via `get_i18n()` based on the user's `lang` setting.
-
-### 5-2. Clean Response Standards
-Even if the AI includes markdown wrappers (```json), the system automatically removes them via `utils.clean_ai_text()`. Developers receive cleaned data. Note: instructions for `briefing` fields for TTS must strictly forbid markdown symbols.
-
-1. **No Cross-plugin Interference**: A plugin must NEVER `import` Python files from another plugin. All communication must happen via `fetch()` or `context`.
-2. **Explicit Relative Imports**: Avoid absolute imports in backend scripts.
-3. **Global Namespace Safety**: Global variables at the module level are shared across all instances. Be careful not to overwrite request-specific data.
-
----
-
-## 🛡️ 5. Security and Design Guide
+## 🛡️ 5. Security & Design Guide
 
 ### 5-1. CSS Isolation (Shadow DOM Boundary)
-Styles are encapsulated within the Shadow DOM and do not pollute the main page. Use system standard CSS variables (`--neon`, `--glass`, `--bg-dark`) to maintain design consistency.
+Styles are encapsulated. Use standard CSS variables (`--neon`, `--glass`) to maintain the tone.
 
 ### 5-2. CSP (Content Security Policy)
-Register external domains in `manifest.json > csp_domains`. Unregistered domains will be blocked immediately by the browser.
-
-### 5-3. Resource Cleanup (Memory Leak Prevention)
-Always clear `setInterval`, `setTimeout`, and event listeners in the `destroy()` function.
-
-### 5-5. Backend Service Connection Lifecycle
-Plugins maintaining long-term connections (IMAP, WebSocket) must include keepalive/reconnect logic. (See `FRAMEWORK_REFERENCE §3-6`)
-
-### 5-6. Email Protocol Clarification (SMTP vs IMAP)
-- **Receiving/Reading**: `IMAP` (`imaplib.IMAP4_SSL`)
-- **Sending**: `SMTP` (`smtplib.SMTP_SSL`)
-
----
-
-## 🛠️ 6. Config Management Interface ✨NEW
-Plugins with `config.json` are encouraged to implement the following standard POST endpoint to allow GUI-based configuration changes.
-
-```python
-@plugin_bp.route("/api/plugins/{id}/config", methods=["GET", "POST"])
-@login_required
-@standardized_plugin_response
-def handle_config():
-    if request.method == "POST":
-        data = request.json
-        current = load_json_config(CONFIG_PATH)
-        current.update(data)
-        save_json_config(CONFIG_PATH, current)
-        return jsonify({"status": "success", "config": current})
-    return jsonify(load_json_config(CONFIG_PATH))
-```
-
----
-
-## 💅 7. Premium Design Guide (Aesthetics) ✨NEW
-AEGIS widgets should provide a "WOW" visual experience.
-1. **Typography**: Use `Google Fonts (Inter, Outfit, Roboto)` instead of default fonts.
-2. **Glassmorphism**: Combine `backdrop-filter: blur(12px)` with semi-transparent backgrounds for depth.
-3. **Micro-animations**: Use smooth `transition` and `pulse` effects for button hovers or state changes.
-4. **Color Palette**: Use harmonious HSL colors or system neon colors (`--neon-blue`) instead of raw primary colors.
-
----
-
-## 📐 6. Loader Mechanism (Reference)
-`discover_plugin_blueprints()` in `routes/plugins.py` handles automatic loading at startup:
-1. Scans all folders under `/plugins/`.
-2. Checks `entry.backend` in `manifest.json`.
-3. Performs isolated module loading.
-4. Searches for `Blueprint` objects via `isinstance` check.
-5. Registers found Blueprints to the Flask app.
-
----
-
-## ⏰ 7. Scheduler Integration: Universal Routine Registration (v1.7.1)
-The scheduler handles time-based automation. Plugins reserve features simply by adding routines to `config.json`.
-
-### 7-2. `terminal_command` — Reserved Execution
-Any command registered in `CommandRouter` can be scheduled.
-```json
-{
-    "id": "notion_daily_cleanup",
-    "action": "terminal_command",
-    "command": "/ns clean"
-}
-```
-
-### 7-3. `api_call` — Direct Backend Call
-Used when bypassing the terminal UI to call a backend API directly.
-
----
-
-## 🧬 7-5. Conditional Watch Routine (v1.8+)
-Routines triggered by **data conditions** rather than just time.
-* API polling via `condition.source`.
-* Type conversion (`number`, `string`, `boolean`) based on `exports.sensors`.
-* Comparison via `condition.operator`.
-* **Action Sync**: Executes `action` when conditions are met.
+Register domains in `csp_domains` of `manifest.json`. **Unregistered domains will be blocked immediately by the browser.**
 
 ---
 
@@ -426,51 +383,19 @@ Routines triggered by **data conditions** rather than just time.
 
 | Version | Date | Key Changes |
 |---|---|---|
-| v1.6 | 2026-02-28 | Introduced Plugin-X architecture, Frontend isolation |
-| v1.7 | 2026-03-02 | Enforced route standards, Namespace isolation |
-| v1.8 | 2026-03-02 | **`exports` manifest spec**, Condition Watch implementation |
-| v2.0 | 2026-03-03 | Agent Tool architecture, Google Search tool integration |
-| v2.4.5 | 2026-03-04 | **AXC (AEGIS Extreme Cache)**, Parallel Hydration |
-| **v3.4.0** | 2026-03-07 | **Global I18n & BotManager** introduction. Unified Command routing (/@, /, /#) and Discord adapter standardization. |
+| v2.4.5 | 2026-03-04 | **AXC (Extreme Cache)** & Parallel Loading |
+| v3.4.0 | 2026-03-07 | **Global I18n & BotManager** |
+| v3.7.0 | 2026-03-08 | **Deterministic Actions** & **HUD Sync (sync_cmd)** |
 
 ---
 
-## 🤖 8. AI Response Standardization (v2.1)
-
-### 8-1. Standard Field Definitions
-| Field | Purpose | Features |
-|---|---|---|
-| **`display`** | Visual Output | Full response (Markdown/Rich text). Printed to terminal. |
-| **`briefing`** | Voice/Tooltip | Pure text for TTS. No Markdown. Spoken sentences. |
-| `sentiment` | Avatar Reaction | Emotion keywords (`happy`, `neutral`, `serious`, `alert`). |
-| `visual_type` | Visual Hint | HUD icon type (`weather`, `finance`, `calendar`, etc.). |
-
-### 8-2. Action Synchronization (Action Sync) ✨NEW
-If the AI response contains reserved tags like **`[ACTION] SET_ALARM`**, `BotManager` interprets it and instantly triggers the registered plugin handler or system action.
+## ⌨️ 9. Unified Command System & Priority (v3.7.0)
+1. **System Core**: `/config`, `/help`, etc.
+2. **Deterministic Actions**: Defined in `manifest.json` (No AI intervention).
+3. **Hybrid Context (@)**: Widget data + External search.
+4. **Local Context (/)**: Local summary report.
+5. **AI Fallback**: General conversation.
 
 ---
-
-## ⌨️ 9. Unified Command routing (v3.4) ✨NEW
-
-Starting from v3.4.0, all messaging interfaces (Web, Discord) follow the same command system.
-
----
-
-## ⚠️ 10. Common Errors and Solutions (Troubleshooting)
-
-### 10-1. Widget Moves when Clicking Interactive Elements
-AEGIS widgets are draggable. To prevent moving when clicking buttons/inputs:
-1. Call `e.stopPropagation()` and `e.preventDefault()` in `mousedown` and `click` handlers.
-2. Add class **`.no-drag`**, **`.interactive`**, or **`.clickable`** to the container.
-
----
-
-## 🧠 11. Messaging Hub Integration (BotManager) ✨NEW
-
-To extend the system to support new messaging channels (Telegram, Slack, etc.), follow the `BotAdapter` spec.
-1. **BotManager**: Central brain interpreting intents and gathering plugin data.
-2. **I18n Prompt**: AI persona and guidelines are managed via `config/i18n/` JSON files. Use `utils.get_i18n(key, lang)` on the backend.
-3. **Cross-Platform Sync**: Dashboard changes can be synced to all connected bot adapters.
-
----
-**AEGIS Plugin-X Standard v3.4.0 Documentation**
+**AEGIS Plugin-X Standard v3.7.0 Documentation**
+*Official Architecture Agreement between developers and AI agents.*

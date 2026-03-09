@@ -1,11 +1,8 @@
 import os
-import uuid
 import hashlib
 from flask import Blueprint, request, jsonify
 from routes.config import SECRETS_CONFIG_PATH
-from services import ai_service, voice_service
 from utils import load_json_config
-import time
 
 api_v1_bp = Blueprint("api_v1", __name__, url_prefix="/api/v1/external")
 
@@ -43,7 +40,7 @@ def get_external_config():
 @api_v1_bp.route("/interact", methods=["POST"])
 def interact():
     """
-    외부 시스템으로부터 아바타 제어 명령을 수신하여 큐에 저장합니다.
+    외부 시스템으로부터 아바타 제어 명령을 수신합니다. (v3.8.0 통합 라우팅 적용)
     """
     api_key = request.headers.get("X-AEGIS-API-KEY")
     source = validate_api_key(api_key)
@@ -52,36 +49,15 @@ def interact():
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
     payload = request.json
-    command = payload.get("command", "speak")
-
-    # 이벤트 객체 생성
-    event_id = str(uuid.uuid4().hex)
-    audio_url = payload.get("payload", {}).get("audio_url")
     text = payload.get("payload", {}).get("text", "")
-    motion = payload.get("payload", {}).get("motion", "idle")
 
-    # 만약 음성 파일이 없고 텍스트만 있다면 서버사이드 TTS 생성 시도 (모듈화된 서비스 이용)
-    if not audio_url and text:
-        audio_url = voice_service.generate_cached_tts(text, prefix=source)
+    from services.bot_gateway import bot_manager
 
-    event = {
-        "id": event_id,
-        "source": source,
-        "command": command,
-        "text": text,
-        "motion": motion,
-        "audio_url": audio_url,
-        "interrupt": payload.get("payload", {}).get("interrupt", False),
-        "timestamp": time.time(),
-    }
+    result = bot_manager.handle_incoming_message(
+        platform=source, user_id=source, text=text, target_id="HUD"
+    )
 
-    external_events_queue.append(event)
-
-    # 큐 크기 관리 (최근 50개 유지)
-    if len(external_events_queue) > 50:
-        external_events_queue.pop(0)
-
-    return jsonify({"status": "success", "event_id": event_id})
+    return jsonify({"status": "success", "answer": result.get("text")})
 
 
 @api_v1_bp.route("/events", methods=["GET"])
@@ -108,43 +84,25 @@ def query():
     if not prompt:
         return jsonify({"status": "error", "message": "No prompt provided"}), 400
 
-    # ai_service 호출 (answer: 터미널용, briefing: 음성용이 분리되어 반환됨)
-    ai_result = ai_service.query_ai(prompt, source_key=source)
+    # [v3.8.0] BotManager를 통한 통합 메시지 처리 (Web/CLI/Discord 일원화)
+    from services.bot_gateway import bot_manager
 
-    if ai_result["status"] == "error":
-        return jsonify(ai_result), 500
-
-    display_answer = ai_result.get("answer", "")
-    voice_briefing = ai_result.get("briefing", "")
-
-    # 음성 파일 생성 (모듈화된 서비스 이용)
-    audio_url = voice_service.generate_cached_tts(
-        voice_briefing, prefix=f"query_{source}"
+    result = bot_manager.handle_incoming_message(
+        platform=source,  # 외부 앱 소스명을 플랫폼으로 처리
+        user_id=source,
+        text=prompt,
+        target_id="HUD",  # HUD 전용 채널 ID (가상)
+        model=data.get("model", "gemini"),
     )
 
-    # 이벤트 큐 삽입
-    event_id = str(uuid.uuid4().hex)
-    event = {
-        "id": event_id,
-        "source": source,
-        "command": "speak",
-        "text": voice_briefing,  # 아바타가 읽을 텍스트
-        "display_text": display_answer,  # 화면에 남길 텍스트 (옵션)
-        "motion": "joy"
-        if any(k in prompt for k in ["안녕", "반가워", "고마워"])
-        else "idle",
-        "audio_url": audio_url,
-        "interrupt": True,
-        "timestamp": time.time(),
-    }
-    external_events_queue.append(event)
+    display_answer = result.get("text", "")
+    # briefing은 BotManager -> IntelligenceHub 내에서 이미 TTS 생성 및 HUD 전송됨.
+    # api_v1은 터미널 응답만 반환하면 됨.
 
     return jsonify(
         {
             "status": "success",
             "answer": display_answer,  # 터미널에 표시될 데이터
-            "briefing": voice_briefing,  # 음성으로 출력될 데이터 (참조용)
-            "model": ai_result.get("model"),
-            "event_id": event_id,
+            "model": result.get("model", "gemini"),
         }
     )

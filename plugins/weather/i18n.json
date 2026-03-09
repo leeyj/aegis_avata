@@ -5,6 +5,18 @@
         },
         "widgets": {
             "weather_template": "{city}의 {status}"
+        },
+        "actions": {
+            "get": {
+                "desc": "현재 날씨 정보를 조회합니다.",
+                "args": [
+                    "도시 이름(선택)"
+                ]
+            }
+        },
+        "views": {
+            "fail": "날씨 정보를 가져올 수 없습니다.",
+            "format": "🌦️ {city}의 현재 날씨: {desc} (온도: {temp}℃, 습도: {humidity}%)"
         }
     },
     "en": {
@@ -13,6 +25,18 @@
         },
         "widgets": {
             "weather_template": "{status} in {city}"
+        },
+        "actions": {
+            "get": {
+                "desc": "Retrieves the current weather information.",
+                "args": [
+                    "City Name (Optional)"
+                ]
+            }
+        },
+        "views": {
+            "fail": "Failed to retrieve weather information.",
+            "format": "🌦️ Current weather in {city}: {desc} (Temp: {temp}℃, Humidity: {humidity}%)"
         }
     }
 }

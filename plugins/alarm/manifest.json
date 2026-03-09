@@ -21,5 +21,45 @@
     "layout": {
         "default_size": "size-1"
     },
-    "icon": "⏰"
+    "icon": "⏰",
+    "actions": [
+        {
+            "id": "set",
+            "commands": [
+                "설정",
+                "추가",
+                "set",
+                "s",
+                "예약"
+            ],
+            "params": [
+                "time",
+                "title"
+            ],
+            "desc": "Set an alarm"
+        },
+        {
+            "id": "del",
+            "commands": [
+                "삭제",
+                "del",
+                "rm"
+            ],
+            "params": [
+                "id"
+            ],
+            "desc": "Delete an alarm"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "ls",
+                "l"
+            ],
+            "params": [],
+            "desc": "Show scheduled alarms"
+        }
+    ]
 }

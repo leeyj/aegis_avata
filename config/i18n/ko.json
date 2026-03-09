@@ -30,21 +30,55 @@
     },
     "bot": {
         "default_briefing": "최근 정보를 요약해서 브리핑해줘.",
-        "hybrid_instruction": "당신은 전략 AI 어시스턴트입니다. 제공된 위젯(@{plugin}) 데이터와 당신의 지식(웹 검색 등)을 결합하여 답변하십시오.",
-        "local_instruction": "초정밀 지침: 당신은 오직 제공된 [CONTEXT DATA]의 정보만을 보고하는 '로컬 데이터 분석기'입니다. 절대 외부 웹 검색을 사용하지 마십시오.",
         "user_request_label": "사용자 요청",
         "system_command_received": "✅ 시스템 명령어를 수신했습니다",
         "hud_refer_briefing": "(상세 정보는 HUD 아바타의 음성 브리핑을 확인해 주세요)",
-        "persona": "사용자의 요청을 분석하여 응답하십시오. 당신은 AEGIS 전략 AI 어시스턴트입니다.",
         "current_time_label": "현재 시스템 시각",
         "current_server_time": "현재 서버 시각",
-        "polite_instruction": "존댓말을 사용하고 핵심 위주로 명확하게 답변하십시오.",
-        "timezone_importance": "**중요: 모든 시간 처리(알람 등)는 위 {tz} 시각을 기준으로 하며, 절대 UTC를 사용하지 마십시오.**",
-        "kst_importance": "**중요: 모든 시간 계산은 위 서버 시각을 기준으로 하며, 절대 UTC를 사용하지 마십시오.**",
-        "executable_actions_label": "[실행 가능한 시스템 액션 및 규칙]",
         "ai_error_no_response": "AI가 응답을 생성할 수 없습니다.",
         "no_action_parsed": "⚠️ AI 응답에서 감지된 시스템 액션이 없습니다.",
         "ai_fallback_error": "❌ AI 연동 에러",
-        "ai_system_error": "⚠️ AI 처리 중 시스템 오류가 발생했습니다"
+        "ai_system_error": "⚠️ AI 처리 중 시스템 오류가 발생했습니다",
+        "branding_name": "AEGIS",
+        "report_generated": "분석 리포트를 생성했습니다.",
+        "unknown_command": "'{root} {action}'은(는) 알 수 없는 명령어입니다. '/도움말'을 확인해 주세요.",
+        "action_success": "명령을 성공적으로 수행했습니다.",
+        "action_fail": "명령 수행에 실패했습니다.",
+        "no_data_fallback": "결과가 없거나 목록이 비어 있습니다.",
+        "unauthorized": "허가되지 않은 접근입니다.",
+        "hybrid_not_supported": "⚠️ '{plugin}' 위젯은 아직 '지능형 하이브리드(/@)' 명령을 지원하지 않습니다. 일반 명령어(/) 또는 AI 검색(#)을 이용해 주세요."
+    },
+    "help": {
+        "title": "### 🛰️ AEGIS Tactical Interface Help (v3.7.1)",
+        "mode_1_title": "**1. ⚡ 확정적 명령어 (/) - Systematic**",
+        "mode_1_desc": "- AI를 거치지 않고 직접 실행되는 로직입니다. (Quota 절약)",
+        "mode_1_format": "- **형식:** `/플러그인명 액션명 인자1 | 인자2`",
+        "mode_1_tip": "- **입력 팁:** 다중 파라미터는 `|` 기호로 구분하지만, 단순한 경우 공백만으로도 인지가 가능합니다.",
+        "widget_ref_label": "**[Widget Action Reference]**",
+        "mode_2_title": "**2. 🧠 지능형 하이브리드 (/@) - Hybrid**",
+        "mode_2_desc": "- 특정 플러그인의 데이터와 AI의 판단을 결합하여 자연어를 해석합니다.",
+        "mode_2_example": "- **예:** `/@일정 오후 2시에 화장실 청소 잡아줘`",
+        "mode_2_alias_label": "- **현재 인지 가능 별명:**",
+        "mode_3_title": "**3. 🌐 순수 AI & 검색 (/# 또는 #) - Pure AI**",
+        "mode_3_desc": "- 플러그인 컨텍스트 없이 AI의 지식이나 구글 검색을 강제합니다.",
+        "mode_3_example": "- **예:** `/#테슬라 주가`, `/#양자 역학에 대해 설명해줘`",
+        "mode_4_title": "**4. 🔇 기타 옵션**",
+        "mode_4_desc": "- 명령어 뒤에 `--m`을 붙이면 음성 브리핑을 생략하고 텍스트로만 응답합니다.",
+        "footer": "*(모든 입력은 데스크탑 HUD 아바타의 반응을 실시간으로 트리거합니다)*",
+        "table_header": {
+            "widget": "위젯",
+            "action": "액션",
+            "params": "파라미터",
+            "desc": "설명"
+        }
+    },
+    "help_center": {
+        "loading": "기밀 문서 해독 중...",
+        "error": "데이터 로드 실패",
+        "status": "상태",
+        "no_data": "데이터가 없습니다.",
+        "actions": "액션",
+        "aliases": "알리아스",
+        "doc_not_found": "문서를 찾을 수 없습니다"
     }
 }

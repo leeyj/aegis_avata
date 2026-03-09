@@ -15,6 +15,12 @@ def favicon():
     )
 
 
+@main_bp.route("/img/<path:filename>")
+def serve_img(filename):
+    """루트 img 폴더의 자산을 서빙 (도움말 위젯용)"""
+    return send_from_directory(os.path.join(main_bp.root_path, "..", "img"), filename)
+
+
 @main_bp.route("/")
 @login_required
 def index():

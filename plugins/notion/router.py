@@ -3,6 +3,7 @@ from .notion_service import NotionService
 from routes.decorators import login_required
 from services import require_permission
 from services.plugin_registry import register_context_provider
+from utils import get_plugin_i18n
 
 notion_plugin_bp = Blueprint("notion_plugin", __name__)
 notion_service = NotionService()
@@ -29,6 +30,31 @@ register_context_provider(
     ai_processor=get_notion_ai_context,
     aliases=["노션", "메모", "문서"],
 )
+
+
+def initialize_plugin():
+    """노션 플러그인 초기화 및 BotManager 액션 등록 (Systemic v3.6.0)"""
+    from services.plugin_registry import register_plugin_action
+
+    def add_memo_handler(content):
+        return notion_service.add_item(content)
+
+    def notion_add_view_handler(result, platform="web", lang=None):
+        if result is True:
+            return get_plugin_i18n("notion", "views.success", lang=lang)
+        return get_plugin_i18n("notion", "views.fail", lang=lang)
+
+    register_plugin_action(
+        plugin_id="notion",
+        action_id="add",
+        handler=add_memo_handler,
+        desc=get_plugin_i18n("notion", "actions.add.desc"),
+        args=get_plugin_i18n("notion", "actions.add.args"),
+        view_handler=notion_add_view_handler,
+    )
+
+
+initialize_plugin()
 
 
 @notion_plugin_bp.route("/api/plugins/notion/add", methods=["POST"])

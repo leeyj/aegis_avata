@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AEGIS Plugin-X 보일러플레이트 생성기 (v1.0)
+AEGIS Plugin-X 보일러플레이트 생성기 (v1.1.0) [v3.8.5 호환]
 ==============================================
 플러그인 개발 시 약 30개의 필수 규칙을 자동으로 준수하는 템플릿을 생성합니다.
 이 도구를 사용하면 개발자는 비즈니스 로직에만 집중할 수 있습니다.
@@ -168,31 +168,41 @@ def create_router(
     # 주석 언어 분기
     if lang == "en":
         c_header = f"AEGIS Plugin-X Backend Router: {name}"
-        c_rules = """⛔ Required Rules:\n  1. All routes must follow /api/plugins/{id}/... pattern.\n  2. register_context_provider must be called once at module level.\n  3. Use relative imports (from .xxx_service import ...)"""
+        c_rules = """⛔ Required Rules:\n  1. All routes must follow /api/plugins/{id}/... pattern.\n  2. register_context_provider must be called once at module level.\n  3. register_plugin_action must be used for all terminal/AI actions.\n  4. Use relative imports (from .xxx_service import ...)"""
         c_imports = "System standard imports (never use json.load directly)"
         c_security = "Security decorators"
         c_briefing = "Briefing engine integration"
         c_relative = f"Relative import (service file: {service_name}_service.py)"
         c_ctx_warn = "CAUTION: This call must run once at module top level only.\n#    Calling inside a route handler causes duplicate registration bugs!"
         c_ctx_doc = "Returns plugin status summary for AI briefing."
+        c_init_doc = "Initialize plugin and register actions"
+        init_doc = c_init_doc
+        c_action_doc = f"Action: Get current status of {name}"
+        c_view_doc = "View Handler: Formats result for Discord/Web"
         c_alias = "Terminal alias for this plugin"
         c_config_doc = "Plugin config GET/POST endpoint"
         c_data_doc = "Returns plugin data."
         c_status_doc = "Returns current status. Matches exports.sensors endpoint."
     else:
         c_header = f"AEGIS Plugin-X 백엔드 라우터: {name}"
-        c_rules = f"""⛔ 필수 규칙:\n  1. 모든 라우트 경로는 /api/plugins/{plugin_id}/... 패턴을 따라야 합니다.\n  2. register_context_provider는 모듈 로드 시 1회만 호출합니다.\n  3. 상대 경로 임포트 사용 필수 (from .{service_name}_service import ...)"""
+        c_rules = f"""⛔ 필수 규칙:\n  1. 모든 라우트 경로는 /api/plugins/{plugin_id}/... 패턴을 따라야 합니다.\n  2. register_context_provider는 모듈 로드 시 1회만 호출합니다.\n  3. 모든 터미널/AI 액션은 register_plugin_action을 통해 등록해야 합니다.\n  4. 상대 경로 임포트 사용 필수 (from .{service_name}_service import ...)"""
         c_imports = "시스템 표준 임포트 (절대 json.load 직접 사용 금지)"
         c_security = "보안 데코레이터 임포트"
         c_briefing = "브리핑 엔진 연동"
         c_relative = f"상대 경로 임포트 (서비스 파일명: {service_name}_service.py)"
         c_ctx_warn = "주의: 이 호출은 모듈 최상단에서 1회만 실행되어야 합니다.\n#    라우트 핸들러 내부에서 호출하면 중복 등록 버그 발생!"
+        c_ctx_doc = "AI 브리핑용 상태 요약을 반환합니다."
+        c_init_doc = "플러그인 초기화 및 액션 등록"
+        init_doc = c_init_doc
+        c_action_doc = f"액션: {name} 현재 상태 조회"
+        c_view_doc = "뷰 핸들러: 결과를 Discord/Web에 맞게 포맷팅"
         c_alias = "터미널에서 한글 별칭으로 호출 가능"
         c_config_doc = "플러그인 설정 조회/수정 엔드포인트"
         c_data_doc = "플러그인 데이터를 반환합니다."
         c_status_doc = (
             "현재 상태를 반환합니다. exports.sensors의 endpoint와 매칭됩니다."
         )
+
     return f'''"""
 {c_header}
 ======================================
@@ -202,7 +212,7 @@ import os
 from flask import Blueprint, jsonify, request
 
 # ✅ {c_imports}
-from utils import load_json_config, save_json_config
+from utils import load_json_config, save_json_config, get_plugin_i18n
 
 # ✅ {c_security}
 from routes.decorators import login_required, standardized_plugin_response
@@ -242,7 +252,37 @@ register_context_provider(
 
 
 # ═══════════════════════════════════════════════════════
-# [1] 설정 관리 (GET/POST 표준 패턴)
+# [1] Plugin Initialization & Actions (v3.6.0 i18n)
+# ═══════════════════════════════════════════════════════
+def initialize_plugin():
+    """{init_doc}"""
+    from services.plugin_registry import register_plugin_action
+
+    # 1. 커스텀 액션 등록 예시
+    def my_action_view_handler(result, platform="web", lang=None):
+        """{c_view_doc}"""
+        if not result:
+            return get_plugin_i18n("{plugin_id}", "views.fail", lang=lang)
+        
+        msg = get_plugin_i18n("{plugin_id}", "views.success", lang=lang)
+        return f"{{msg}} (Data: {{result}})"
+
+    register_plugin_action(
+        plugin_id="{plugin_id}",
+        action_id="my_action",
+        handler=lambda: {service_class}.get_status(), # 예시 핸들러
+        desc=get_plugin_i18n("{plugin_id}", "actions.my_action.desc"),
+        args=get_plugin_i18n("{plugin_id}", "actions.my_action.args"),
+        view_handler=my_action_view_handler,
+    )
+
+
+# 플러그인 로드 시 초기화 실행
+initialize_plugin()
+
+
+# ═══════════════════════════════════════════════════════
+# [2] 설정 관리 (GET/POST 표준 패턴)
 # ═══════════════════════════════════════════════════════
 @{bp_name}_bp.route("/api/plugins/{plugin_id}/config", methods=["GET", "POST"])
 @login_required
@@ -259,7 +299,7 @@ def handle_config():
 
 
 # ═══════════════════════════════════════════════════════
-# [2] 데이터 조회 API
+# [3] 데이터 조회 API (Dashboard 기반)
 # ═══════════════════════════════════════════════════════
 @{bp_name}_bp.route("/api/plugins/{plugin_id}/data")
 @login_required
@@ -272,7 +312,7 @@ def get_data():
 
 
 # ═══════════════════════════════════════════════════════
-# [3] Status API
+# [4] Status API (Sensor 기반)
 # ═══════════════════════════════════════════════════════
 @{bp_name}_bp.route("/api/plugins/{plugin_id}/status")
 @login_required
@@ -578,6 +618,35 @@ def create_config(lang: str = "ko") -> dict:
     }
 
 
+def create_i18n_json(plugin_path, plugin_id):
+    content = {
+        "ko": {
+            "panels": {"p-" + plugin_id: plugin_id.capitalize()},
+            "actions": {
+                "my_action": {"desc": "내 커스텀 액션 설명", "args": ["인자1"]}
+            },
+            "views": {
+                "success": "작업이 성공적으로 완료되었습니다.",
+                "fail": "작업 처리에 실패했습니다.",
+            },
+        },
+        "en": {
+            "panels": {"p-" + plugin_id: plugin_id.capitalize()},
+            "actions": {
+                "my_action": {"desc": "My custom action description", "args": ["Arg1"]}
+            },
+            "views": {
+                "success": "Task completed successfully.",
+                "fail": "Failed to process task.",
+            },
+        },
+    }
+    file_path = os.path.join(plugin_path, "i18n.json")
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(content, f, ensure_ascii=False, indent=4)
+    print(f"Created: {file_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="AEGIS Plugin-X 보일러플레이트 생성기",
@@ -701,10 +770,13 @@ def main():
             f.write(create_router(args.id, args.name, args.permissions, lang))
         print("  ✅ router.py")
 
-        service_path = os.path.join(plugin_dir, f"{service_name}_service.py")
+        service_filename = f"{service_name}_service.py"
+        service_path = os.path.join(plugin_dir, service_filename)
         with open(service_path, "w", encoding="utf-8") as f:
             f.write(create_service(args.id, args.name, lang))
-        print(f"  ✅ {service_name}_service.py")
+        print(f"  ✅ {service_filename}")
+
+    create_i18n_json(plugin_dir, args.id)
 
     # 프론트엔드 파일 (hidden이 아닐 때만)
     if not args.hidden:
@@ -734,9 +806,14 @@ def main():
     if not args.hidden:
         print("  2. assets/widget.html 에서 UI를 디자인하세요.")
         print("  3. assets/widget.js 의 refresh()에서 데이터 바인딩을 구현하세요.")
+    else:
+        print("  2. 시스템 대시보드를 새로고침하여 서비스가 로드되는지 확인하세요.")
 
     print("  4. manifest.json 의 exports.sensors를 실제 데이터에 맞게 수정하세요.")
-    print("  5. 서버를 재시작하면 자동으로 로드됩니다.")
+    print(
+        "  5. (참고: 모든 핵심 로직은 이제 /static/js/loader/ 모듈에 의해 관리됩니다.)"
+    )
+    print("  6. 서버를 재시작하면 자동으로 로드됩니다.")
 
     if args.permissions:
         print(f"\n🔐 등록된 권한: {', '.join(args.permissions)}")

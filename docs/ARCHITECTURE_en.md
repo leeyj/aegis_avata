@@ -1,154 +1,159 @@
 # AEGIS System Architecture
 
-This document provides a comprehensive reference for the AEGIS Dashboard system's architecture, data flow, design patterns, Routine Manager internals, and environment variable structure. It serves as an essential onboarding reference for new developers and AI instances, and acts as a guardrail against inconsistent code modifications.
+This document provides a comprehensive definition of the AEGIS dashboard system's architecture, data flow, design philosophies, routine management, and environment variable structure. it serves as a vital reference for understanding the system and prevents inconsistent code modifications.
 
 ---
 
-## 1. System Overview
+## 1. System Overview (System Overview)
 
-AEGIS is a modular AI dashboard system built on a proprietary **"Plugin-X"** architecture. A Python Flask backend and a Vanilla JS frontend communicate through a REST API layer.
+AEGIS is a modular AI dashboard system built on the proprietary **"Plugin-X"** architecture and the **"Determinism First"** principle. It features a Python Flask-based backend and a Vanilla JS-based frontend that communicate in real-time via REST APIs and WebSocket (Socket.io) layers.
 
-### 1.1 High-Level Architecture
+### 1.1 High-Level Architecture (v3.7.0)
 
 ```mermaid
 graph TB
-    %% Input & Trigger Layer (Top)
-    TerminalUI["Terminal Widget"] -->|User Command| AIGW["AI Gateway<br/>ai_gateway.js"]
-    DiscordBot["Discord/External Bot"] -->|Receive Message| BotMgr["Bot Manager<br/>bot_gateway.py"]
-    Routine["Routine/Briefing<br/>Scheduler"] -->|Time/Event| AIGW
-    Widgets["Widgets"] -->|Data Request| PluginRoute["Plugin API Router<br/>plugin_proxies.py"]
+    %% Inputs & Triggers (Top)
+    TerminalUI["Terminal Input<br/>terminal.js"] -->|User Command| BotMgr["Bot Manager<br/>bot_gateway.py"]
+    DiscordBot["Discord/Ext Bot"] -->|Receive Msg| BotMgr
+    Routine["Routine/Scheduler"] -->|Time/Event| BotMgr
+    Widgets["Widgets"] -->|Data Req| PluginRoute["Plugin API Router<br/>plugin_proxies.py"]
 
-    %% BotManager Central Routing
-    AIGW -->|Forward Command| BotMgr
-    BotMgr -->|Unified Reasoning| PluginRoute
+    %% BotManager Central Routing (v3.7.0 Core)
+    subgraph Bot_Control_Center [Bot Control Center]
+        BotMgr -->|1. Deterministic Match| ActionIdx["Action Index<br/>(from manifests)"]
+        BotMgr -->|2. Delegated Intent| IntelHub["Intelligence Hub<br/>bot_intelligence.py"]
+        IntelHub -->|AI Query| AIService["AI Service Layer<br/>(ai_base.py)"]
+        ActionIdx -->|Execute| Handler["Plugin Action Handler"]
+    end
     
-    %% AI Gateway & Feedback Flow
-    AIGW -->|Speech Synthesis| TTS["TTS Engine<br/>tts.js"]
-    Routine -->|Scheduled Speech| TTS
+    %% AI Intelligence Layer Details
+    subgraph AI_Intelligence_Layer [AI Intelligence Layer]
+        AIService -->|Use| Schemas["JSON Schemas<br/>ai_schemas.py"]
+        AIService -->|Use| Tools["Agent Tools<br/>ai_tools.py"]
+    end
 
-    %% Backend Core Processing
+    %% Outcome Feedback
+    BotMgr -->|Process Resp| Output["Output Controller"]
+    Output -->|Voice Output| TTS["TTS Engine<br/>tts.js"]
+    Output -->|UI Update| WebSocket["Socket.io<br/>HUD Sync"]
+
+    %% Backend Core
     subgraph Backend_Core ["Backend Core (Python)"]
-        PluginRoute --> AISvc["AI Service (Gemini, etc.)"]
         PluginRoute --> PluginSys["Plugin Registry"]
-        PluginSys -->|Load & Execute| Plugins["Plugin Directory"]
-        BotMgr
+        PluginSys -->|Load & Exec| Plugins["Plugins Directory"]
+        Handler -->|Target Call| Plugins
     end
 
     %% Plugin List
     Plugins --> P1["Alarm/Calendar"]
-    Plugins --> P2["Climate/Weather"]
-    Plugins --> P3["News/Finance"]
-    Plugins --> P4["Gmail/Notion"]
-    Plugins --> P5["Other plugin-x widgets"]
+    Plugins --> P2["Weather/Stock"]
+    Plugins --> P3["News/Notion"]
+    Plugins --> P4["Terminal/System"]
 
-    %% Result Feedback (Dotted)
-    Plugins -.->|Return Results| PluginRoute
-    PluginRoute -.->|Response| BotMgr
-    BotMgr -.->|Send Message| DiscordBot
-    PluginRoute -.->|Response| AIGW
-    AIGW -.->|Rendering| Widgets
+    %% Feedback Loops (Dashed)
+    Plugins -.->|Return Result| PluginRoute
+    PluginRoute -.->|Data Feedback| BotMgr
+    WebSocket -.->|Real-time Sync| Widgets
 ```
 
 ---
 
-## 2. Design Patterns & Philosophy
+## 2. Design Pattern & Philosophy (Design Pattern & Philosophy)
 
-AEGIS strictly follows the principles of **Modularity** and **Separation of Concerns**.
+AEGIS adheres strictly to the principles of **Modularity** and **Deterministic Control**.
 
-1. **Plugin-X Architecture:**
-   * Keep the core lightweight; all extended functionality (weather, calendar, wallpaper, etc.) is isolated into independent folders under `plugins/`.
-   * Each plugin is **self-contained**, with its own router (`router.py`), frontend assets (`widget.js`, `widget.css`), and configuration.
-2. **Frontend-Backend Decoupling:**
-   * Server-side HTML rendering (via Jinja, etc.) is avoided (except for the initial container injection). All data exchange uses JSON-based REST APIs.
-3. **Event-Driven Communication:**
-   * Widgets never reference each other directly. They communicate through global objects (`window.reactionEngine`, `window.speakTTS`) or custom events, maintaining loose coupling.
-4. **Schema-Driven AI:**
-   * Instead of free-form LLM calls, AEGIS enforces a JSON schema (`response_schema` — typically `display`, `voice`, `sentiment` structure) to manage response quality and eliminate parsing errors at the source.
-
----
-
-## 3. Environment Variables & Configuration
-
-AEGIS uses a sophisticated configuration file system to prevent source code hardcoding.
-
-* **`config/secrets.json` (Security Keys):**
-  * Stores all external API keys: `NOTION_TOKEN`, `WEATHER_API_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GEMINI_API_KEY`, etc. (Must not be committed to Git)
-* **`config/api.json` (System Behavior):**
-  * Manages system initialization info: host, port, auth mode (Local/Google), active plugin list.
-* **`config/settings.json` (User Preferences):**
-  * Persistently stores runtime-changeable browser settings such as UI theme, language (`lang`), and fonts.
-* **OS Compatibility (Windows/Linux/Render.com):**
-  * All path operations use `os.path.join` for Linux-based production deployment (Render.com). Security keys can be injected directly from the production server's environment variables.
+1.  **Plugin-X Architecture:**
+    *   Isolates all extensions into independent folders (`plugins/`). Each plugin defines its metadata, permissions, and **Fixed Actions** via `manifest.json`.
+2.  **Determinism First (v3.7.0):**
+    *   To prevent AI hallucinations, commands with clear user intent (e.g., `/play`, `/alarm`) are routed immediately to registered handlers without AI intervention.
+3.  **Tiered Messaging Hub:**
+    *   All inputs converge at `BotManager`, but processing is layered. `BotManager` focuses on routing (delivery), while complex cognition is handled by `IntelligenceHub`, and low-level AI communication is managed by `ai_base`.
+4.  **Event-Driven Sync:**
+    *   State changes trigger the `sync_cmd` protocol to synchronize the screens of all connected clients (Web UI, Desktop HUD) via WebSocket.
+5.  **Schema-Driven AI & Centralized Registry:**
+    *   `ai_schemas.py` centrally manages all AI response schemas to eliminate parsing errors and maintain system consistency.
 
 ---
 
-## 4. Routine Manager & Scheduler
+## 3. Environment Variables & Configuration (Environment Variables & Configuration)
 
-The core engine that enables AEGIS to act **proactively** without user intervention. The frontend's `briefing_scheduler.js` and the backend's `plugins/scheduler` cooperate to function.
+AEGIS operates a sophisticated configuration system to avoid hardcoding.
 
-1. **Polling Loop Mechanism:**
-   * The frontend routine manager (`briefing_scheduler.js`) uses `setInterval` to periodically check the current time (1-minute/1-second intervals).
-2. **Schedule & Condition Matching:**
-   * Compares the current time against pre-configured routines stored as JSON (e.g., "Summarize weather at 8 AM", "Quote summary every hour").
-3. **Automated Execution (Routine Execution):**
-   * When a trigger timing matches, the routine manager invokes the Briefing Manager or AI Gateway in the background.
-   * The backend aggregates data from registered plugins (e.g., Weather, Notion) and calls the `AI Service` to generate summary content.
-4. **Automatic Sound & Motion Mapping:**
-   * The AI-generated summary (`briefing`) text and sentiment state are immediately passed to `tts.js` for voice output, while the motion engine automatically triggers the appropriate avatar emotion.
-
----
-
-## 5. Core Modules & Managers
-
-### 5.1 AI Gateway (`ai_gateway.js` / Backend `ai_service.py`)
-* **Role:** Terminal command routing and LLM query control gateway.
-* **Local Command Parsing:** Detects flags (`--mute`) and aliases via regex.
-* **Response Distribution:** Cleanly separates `display` (UI renderer) and `briefing/voice` (TTS engine) data paths.
-
-### 5.2 TTS Engine (`tts.js`)
-* **Role:** The system's sole **Single Point of Truth for Audio** output.
-* **Specification:** `window.speakTTS(text, audioUrl, visualType, speechText)`
-  * External managers must never create their own audio objects. They must always inject `speechText` (pure text with markdown stripped) into the above function to avoid bugs.
-
-### 5.3 External API Manager (`external_api_manager.js`)
-* **Role:** Receives action events (commands/motions/speech) force-injected via HTTP from external script-based chatbots (e.g., OpenClaw) or external systems, and dispatches them to the internal network. Uses a polling-based queue.
-
-### 5.4 Messaging Hub (`BotManager` / `bot_gateway.py`) [v3.4.0]
-* **Role:** The central cognitive logic hub that manages messaging input/output from all platforms, including Web Terminal, Discord, and Telegram.
-* **Unified Command System:** Interprets the `/@` (Hybrid), `/` (Local), and `/#` (Search) command symbols consistently across all platforms.
-* **Loose Coupling Adapters:** Provides a `BotAdapter` abstract interface that allows adding new platforms (like Discord) without modifying the core system.
-* **Automatic Multi-language Switching:** Supplies localized system instructions to the AI via `utils.get_i18n()` based on the user's language environment.
+*   **`config/secrets.json` (Secret Key Management):**
+    *   Stores all external API keys (`NOTION_TOKEN`, `WEATHER_API_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GEMINI_API_KEY`, etc.). (Must not be uploaded to Git)
+*   **`config/api.json` (System Operation Settings):**
+    *   Manages initialization info (Host, Port, Auth mode (Local/Google), Active plugins list).
+*   **`config/settings.json` (User Settings):**
+    *   Persists runtime browser settings like UI themes, language (`lang`), and fonts.
+*   **OS Compatibility (OS/Render.com):**
+    *   All paths use `os.path.join` for compatibility with Linux-based production platforms (Render). Security keys can be injected directly from environmental variables on the production server.
 
 ---
 
-## 6. Core Widgets & Plugins
+## 4. Routine Manager & Scheduler (Routine Manager Principles)
 
-Each AEGIS feature is isolated and managed in its own folder while maintaining full independence.
+The core proactive "heart" of AEGIS, where `briefing_scheduler.js` (Frontend) and `plugins/scheduler` (Backend) cooperate.
 
-* **Terminal Widget (`terminal`):** The main command hub where users send queries to the system. Controls the system across both frontend and backend.
-  * **HUD-Style Design:** Not a regular widget — it drops from the top of the screen (Quake-style) and is globally callable via shortcut (`Shift + ~` or `` ` ``). Press `Escape` to close.
-  * **How It Works:**
-    1. When the user finishes input and presses `Enter`, it passes through `TerminalUI.appendLog` to `window.CommandRouter.route(cmd, model)`.
-    2. Locally parseable commands (e.g., `/help`, `/term`) are handled immediately on the frontend; all others pass through `ai_gateway.js` to the backend (`POST /api/system/ai/query`).
-  * **Plugin Command Registration:**
-    * Plugins can dynamically register unlimited custom commands via `context.registerCommand(cmd, callback)`.
-    * **Example (Terminal settings):**
-      `/term height 70` → Dynamically adjusts terminal height to 70vh.
-      `/term lines 300` → Increases log line limit to 300.
-  * **Key Integration Parameters & Global Functions:**
-    * `window.appendLog(source, message, isDebug)`: Global API for broadcasting system messages or error logs to the screen. Accessible by all modules.
-    * `modelSelector`: Switches between AI engines (Gemini, Ollama/Llama3, etc.) on-the-fly. Assigned to `window.AEGIS_AI_MODEL` on the frontend and passed to the backend during routing.
-* **System Profile / Title Widget (`system-stats`):** Displays dynamic info such as system IP, CPU/RAM usage, and user welcome messages.
-* **Wallpaper Widget (`wallpaper`):** Renders photos/videos on the background canvas and provides a management API set.
-* **Notion Task & Calendar (`notion-task`):** Real-time schedule and Kanban board card loading via Notion API (periodic data reload pattern).
-* **AI Studio (`studio`):** A control center connecting the browser to PC-local VTS (Vtube Studio), managing avatar models and emotion/reaction scripts.
-* **Alarm Plugin (`alarm`):** An intelligent alarm system integrated with the user's routine. AI can set alarms directly (`[ACTION] SET_ALARM`), or users can manage them via the dashboard widget. All data is precisely synchronized via a standard API.
+1.  **Polling Loop Mechanism:**
+    *   The frontend routine manager uses `setInterval` to check the current time periodically (e.g., every minute/second).
+2.  **Schedule & Condition Comparison:**
+    *   Compares the current time with backend routines (JSON config - e.g., "Weather summary at 8 AM").
+3.  **Routine Execution:**
+    *   Triggers briefings or AI gateway calls in the background when the timing matches.
+    *   The backend aggregates data from active plugins (Weather, Notion, etc.) and calls the `AI Service` to generate summary content.
+4.  **Auto Sound & Motion Mapping:**
+    *   AI-generated `briefing` text and emotions are sent to `tts.js` for speech and trigger matching avatar emotions via the motion engine.
 
 ---
 
-## 7. Component Interaction Sequences
+## 5. Core Modules & Managers (Core Modules)
 
-### Case 1: Dashboard Initialization & Widget Mounting
+### 5.1 Bot Messaging Hub (`bot_gateway.py` & `bot_intelligence.py`) [v3.7.0]
+*   **BotManager**: Oversight of message reception, permission validation, adapter management, and command routing.
+*   **IntelligenceHub**: AI cognition layer. Handles prompt generation, action tag parsing, and NLP fallback.
+*   **BotAdapter**: Abstract interface for platform independence (`bot_adapters.py`).
+*   **Command Priority:**
+    1.  **System Command**: `/help`, `/term`, etc. (Core system control).
+    2.  **Deterministic Action**: Fixed mappings via `manifest.json`.
+    3.  **Hybrid Context (@)**: AI conversation with targeted plugin context.
+    4.  **External Search (#)**: Forced Google search.
+    5.  **AI Fallback**: General conversation.
+
+### 5.2 AI Intelligence Layer (`gemini_service.py`) [v3.7.0]
+*   **GeminiClientWrapper (`ai_base.py`)**: AI client config and base communication.
+*   **Centralized Schemas (`ai_schemas.py`)**: Registry for briefing and command response schemas.
+*   **Agent Tools (`ai_tools.py`)**: Modular set of executable agent functions (Search, System Data).
+
+### 5.3 Plugin Registry (`services/plugin_registry.py`)
+*   Acts as a global registry and data broker. Manages `Context Providers`, `Action Handlers`, and the `Deterministic Index` centrally.
+
+### 5.4 TTS Engine (`tts.js`)
+*   Single endpoint for system audio output. Processes AI `briefing` responses.
+*   Specification: `window.speakTTS(text, audioUrl, visualType, speechText)`. External managers must not create audio objects; they must use `speechText` (sanitized text) to avoid bugs.
+
+---
+
+## 6. Core Widgets & Plugins (Major Widgets)
+
+*   **Plugin-X Standard**: Plugins follow the structure: `manifest.json`, `router.py`, `service.py`, `index.js`, `style.css`.
+*   **Action Registration**: `initialize_plugin()` registers functions as system commands at load time via `register_plugin_action`.
+*   **Terminal Widget (`terminal`)**: The main command hub for user queries, supporting HUD-style Quake interface and keyboard shortcuts (`Shift + ~`).
+    *   **HUD Design**: Not a normal widget; it's a fullscreen-style overlay called with a shortcut (`Escape` to close).
+    *   **Operating Principle**: 
+        1.  Input is passed to `window.CommandRouter.route()`.
+        2.  Local commands (`/help`, `/term`) are processed in the frontend; others are sent to the backend (`POST /api/system/ai/query`).
+    *   **Dynamic Command Registration**:
+        *   Infinite commands can be registered via `context.registerCommand()`.
+        *   **Example**: `/term height 70` (Adjusts terminal height dynamically).
+    *   **Global Integration**:
+        *   `window.appendLog()`: Shared API to display system messages or errors.
+        *   `modelSelector`: Hot-swaps processing engines (Gemini, Ollama).
+
+---
+
+## 7. Component Interaction Sequence (Component Interaction)
+
+### Case 1: Dashboard Initialization & Widget Mount
 
 ```mermaid
 sequenceDiagram
@@ -165,30 +170,32 @@ sequenceDiagram
     Core->>Core: Initialize components
 ```
 
-### Case 2: Complex AI Query Processing Flow
+### Case 2: Complex AI Query Processing (v3.7.0 Modularized)
 
-Shows how commands, APIs, and TTS interweave. Notably, the backend focuses on formatting while UI control is entirely the frontend's responsibility.
+Shows how commands, APIs, and TTS are linked. The backend focuses on formatting while the frontend handles UI control.
 
 ```mermaid
 sequenceDiagram
     participant User as User
     participant Term as Terminal UI
     participant GW as AI Gateway
-    participant Backend as AI Service
-    participant Gemini as Gemini API
+    participant BotMgr as BotManager
+    participant Intel as IntelligenceHub
+    participant Gemini as Gemini AI Service
     participant TTS as TTS Engine
     
-    User->>Term: "Summarize tomorrow's weather and my to-dos"
+    User->>Term: "Summarize tomorrow's weather and tasks"
     Term->>GW: Gateway.route()
     
-    GW->>Backend: POST /api/system/ai/query
+    GW->>BotMgr: POST /api/system/ai/query
+    BotMgr->>Intel: Delegate fallback_to_ai()
+    Intel->>Gemini: Generate content (Apply Schema)
+    Gemini-->>Intel: JSON Response
+    Intel-->>BotMgr: Sanitized Data
     
-    Backend->>Gemini: Forward Prompt
-    Gemini-->>Backend: Structured JSON Response
+    BotMgr-->>GW: Return Result
     
-    Backend-->>GW: Return Data
-    
-    GW->>Term: Render terminal with display data
+    GW->>Term: Render Terminal with display data
     
     opt Is Not Muted
     GW->>TTS: window.speakTTS(display, null, type, voice)
@@ -198,17 +205,17 @@ sequenceDiagram
 
 ---
 
-## 8. System Design Principles (Development Commandments)
+## 8. System Design Principles (Compliance Required)
 
-When modifying code within AEGIS, the following design conventions must be **strictly** observed.
+AI instances must **strictly** follow these conventions when modifying code in AEGIS:
 
-1. **No Plugin-X Encapsulation Violations:**
-   * Do not hardcode specific features (e.g., a calendar query function) into core files (`app_factory.py`, `gods.py`) except for globally shared utility libraries. New features must always be built inside a `plugins/new_feature/` folder.
-2. **Enforce Schema-Driven Communication:**
-   * When processing data with LLMs, do not allow the AI to respond with free-form text. When calling `generate_content`, always use the `response_schema` parameter to enforce JSON format with `display` and `voice` keys.
-3. **(Warning) Gemini Search Tools Conflict:**
-   * When requesting structured JSON output from Gemini 2.0+, having the `Search` property enabled causes a 400 error. Always force-declare `tools=[]` in the API call configuration to prevent this.
-4. **OS Compatibility Defense:**
-   * Write code that is not limited to the development environment (Windows). Never hardcode absolute paths like `C:\`. Always use `os.path.join(BASE_DIR, ...)` to prevent path breakage during Linux (Render.com) deployment.
-5. **No Direct DOM Injection on Output:**
-   * XSS-prone code that directly inserts AI responses into `Element.innerHTML` is prohibited. Use the provided `marked.js` module or component data binding patterns instead.
+1.  **No Plugin-X Encapsulation Violations**:
+    *   Never hardcode specific features into core files (`app_factory.py`, `gods.py`). New features must reside within `plugins/new_feature/`.
+2.  **Mandatory Schema-Driven Communication & Centralization**:
+    *   Never let the AI respond with raw text. Always use schemas defined in `ai_schemas.py` to receive JSON.
+3.  **Avoid Gemini Search Tools Conflicts**:
+    *   Force `tools=[]` when requesting structured output to avoid 400 errors from search tool conflicts in Gemini 2.0+.
+4.  **OS Environment Resilience**:
+    *   Never hardcode absolute paths like `C:\`. Use `os.path.join(BASE_DIR, ...)` for compatibility with Linux (Render.com).
+5.  **No Direct DOM Injection on Output**:
+    *   XSS prevention. Never use `innerHTML` directly with AI responses; use `marked.js` or data binding.

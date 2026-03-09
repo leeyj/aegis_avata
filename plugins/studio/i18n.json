@@ -42,7 +42,10 @@
                 "fix_backup_loc": "📦 백업 위치: OLD 폴더 내 보관됨",
                 "success": "성공",
                 "fail": "실패",
-                "done": "완료"
+                "done": "완료",
+                "alias_saved": "alias.json이 성공적으로 저장되었습니다.",
+                "model_applied": "'{name}' 모델이 성공적으로 적용되었습니다.",
+                "unauthorized": "권한이 없습니다."
             }
         }
     },

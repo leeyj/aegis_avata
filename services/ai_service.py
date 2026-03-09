@@ -2,7 +2,7 @@ import requests
 import re
 import json
 import logging
-from utils import load_json_config, strip_markdown_wrappers
+from utils import load_json_config, clean_ai_text
 from routes.config import API_CONFIG_PATH, SECRETS_CONFIG_PATH
 
 # 로깅 설정
@@ -30,8 +30,7 @@ def query_ai(
 
     source_config = config.get("sources", {}).get(source_key)
     if not source_config or not source_config.get("active"):
-        # Fallback to system default if source is missing or inactive
-        source_key = "general"  # In api.json
+        source_key = "general"
         source_config = config.get("sources", {}).get(source_key)
 
     if not source_config:
@@ -41,30 +40,8 @@ def query_ai(
     model = source_config.get("model")
     api_type = source_config.get("api_type", "ollama")
 
-    # 2. System Persona & Context (Optimized for Freedom of AI)
-    if not system_instruction:
-        system_instruction = "You are AEGIS, a tactical AI assistant."
-        try:
-            from services.gemini_service import _load_plugin_prompt
-
-            hub_prompts = (
-                _load_plugin_prompt("proactive-agent", "EXTERNAL_AI_HUB") or {}
-            )
-            system_instruction = hub_prompts.get(source_key) or hub_prompts.get(
-                "default", system_instruction
-            )
-        except ImportError:
-            logger.warning("Could not import gemini_service for extended instructions.")
-    elif is_system:
-        pass
-
-    # [v2.8.2] 데이터 정제 및 컨텍스트 주입
-    if context_data:
-        from utils import sanitize_context_data
-
-        clean_data = sanitize_context_data(context_data)
-        context_str = json.dumps(clean_data, ensure_ascii=False, indent=1)
-        system_instruction += f"\n\n[CONTEXT DATA]\n{context_str}"
+    # [v3.8.0] ai_service는 순수 LLM 어댑터 역할만 수행.
+    # 페르소나 및 컨텍스트 주입은 IntelligenceHub에서 담당함.
 
     if api_type == "gemini" or source_key == "general":
         try:
@@ -83,7 +60,7 @@ def query_ai(
 
                 # [v2.8.3] 빈 응답 방지 로직 강화
                 if not d_part and raw_text:
-                    d_part = strip_markdown_wrappers(raw_text)
+                    d_part = clean_ai_text(raw_text)
 
                 return {
                     "status": "success",
@@ -91,6 +68,7 @@ def query_ai(
                     "briefing": v_part or d_part or "No briefing available.",
                     "model": "gemini",
                     "sentiment": gemini_result.get("sentiment", "neutral"),
+                    "raw": raw_text,
                 }
             return gemini_result
         except ImportError:
@@ -143,7 +121,9 @@ def query_ai(
             "display": display_part or "No displayable response.",
             "briefing": voice_part or display_part or "No briefing available.",
             "model": model,
+            "raw": full_text,
         }
+
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -187,18 +167,18 @@ def _parse_dual_response(text):
     voice_part = ""
 
     if display_match:
-        display_part = strip_markdown_wrappers(display_match.group(1).strip())
+        display_part = clean_ai_text(display_match.group(1).strip())
     if voice_match:
-        voice_part = strip_markdown_wrappers(voice_match.group(1).strip())
+        voice_part = clean_ai_text(voice_match.group(1).strip())
 
     # 3. 예외 처리: 태그가 누락된 경우
     if not display_part:
         if voice_match:
             # VOICE 태그 이전 부분을 DISPLAY로 간주
-            display_part = strip_markdown_wrappers(text[: voice_match.start()].strip())
+            display_part = clean_ai_text(text[: voice_match.start()].strip())
         else:
             # 완전 태그 없음 -> 전체를 DISPLAY로 사용
-            display_part = strip_markdown_wrappers(text)
+            display_part = clean_ai_text(text)
 
     if not voice_part:
         # VOICE가 없으면 DISPLAY에서 기호 제거하여 생성

@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify
 from routes.decorators import login_required
 from .finance_service import get_market_indices
-from utils import load_json_config
+from utils import load_json_config, get_plugin_i18n
 from services.plugin_registry import register_context_provider
 
 PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,9 +19,11 @@ def get_finance_context():
     return get_market_indices(tickers)
 
 
-register_context_provider(
-    "finance", get_finance_context, aliases=["경제", "환율", "코인"]
+# Aliases는 최대한 다양하게 지원 (한/영 통합)
+aliases = get_plugin_i18n("finance", "aliases", lang="ko") + get_plugin_i18n(
+    "finance", "aliases", lang="en"
 )
+register_context_provider("finance", get_finance_context, aliases=list(set(aliases)))
 
 
 @finance_plugin_bp.route("/api/plugins/finance/indices")

@@ -16,5 +16,35 @@
     "layout": {
         "default_size": "size-1-5"
     },
-    "icon": "📅"
+    "icon": "📅",
+    "actions": [
+        {
+            "id": "add",
+            "commands": [
+                "추가",
+                "등록",
+                "add",
+                "a"
+            ],
+            "params": [
+                "time",
+                "title"
+            ],
+            "desc": "Add a Google Calendar event"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "ls",
+                "l",
+                "요약",
+                "briefing",
+                "b"
+            ],
+            "params": [],
+            "desc": "Show upcoming events"
+        }
+    ]
 }

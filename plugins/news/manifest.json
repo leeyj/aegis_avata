@@ -16,5 +16,21 @@
     "layout": {
         "default_size": "size-2"
     },
-    "icon": "📰"
+    "icon": "📰",
+    "actions": [
+        {
+            "id": "brief",
+            "commands": [
+                "뉴스",
+                "뉴스",
+                "요약",
+                "브리핑",
+                "briefing",
+                "news",
+                "b"
+            ],
+            "params": [],
+            "desc": "Show news briefing"
+        }
+    ]
 }

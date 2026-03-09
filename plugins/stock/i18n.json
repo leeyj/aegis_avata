@@ -2,11 +2,33 @@
     "ko": {
         "panels": {
             "p-stock": "티커 자유모니터"
+        },
+        "actions": {
+            "price": {
+                "desc": "주식 현재가 및 시세를 조회합니다.",
+                "args": [
+                    "종목 코드(symbol)"
+                ]
+            }
+        },
+        "views": {
+            "fail": "주식 시세 정보를 가져올 수 없습니다."
         }
     },
     "en": {
         "panels": {
             "p-stock": "Ticker Monitor"
+        },
+        "actions": {
+            "price": {
+                "desc": "Retrieves the current stock price and market data.",
+                "args": [
+                    "Stock Symbol"
+                ]
+            }
+        },
+        "views": {
+            "fail": "Failed to retrieve stock market information."
         }
     }
 }

@@ -21,5 +21,21 @@
         "zIndex": 10000
     },
     "hidden": false,
-    "icon": "⌨️"
+    "icon": "⌨️",
+    "actions": [
+        {
+            "id": "run",
+            "commands": [
+                "실행",
+                "명령",
+                "run",
+                "ex",
+                "c"
+            ],
+            "params": [
+                "command"
+            ],
+            "desc": "Execute terminal command"
+        }
+    ]
 }

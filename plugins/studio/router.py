@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory
 from routes.decorators import login_required
-from utils import is_sponsor
+from utils import is_sponsor, get_plugin_i18n
 from .studio_service import StudioService
 from services import require_permission
 from routes.config import TEST_MODELS_DIR
@@ -38,7 +38,10 @@ def studio_save_alias(name):
     try:
         StudioService.save_alias(name, request.json)
         return jsonify(
-            {"status": "success", "message": "alias.json saved successfully"}
+            {
+                "status": "success",
+                "message": get_plugin_i18n("studio", "studio.messages.alias_saved"),
+            }
         )
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -52,9 +55,8 @@ def studio_apply_model(name):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
     try:
         StudioService.apply_model(name)
-        return jsonify(
-            {"status": "success", "message": f"Model '{name}' applied successfully!"}
-        )
+        msg = get_plugin_i18n("studio", "studio.messages.model_applied")
+        return jsonify({"status": "success", "message": msg.format(name=name)})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

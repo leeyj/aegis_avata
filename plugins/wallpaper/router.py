@@ -4,6 +4,7 @@ from utils import (
     load_json_config,
     save_json_config,
     is_sponsor,
+    get_plugin_i18n,
 )
 from routes.decorators import login_required
 
@@ -23,17 +24,26 @@ def get_wallpaper_context():
             mode = wp_config.get("mode", "static")
             is_video = wp_config.get("is_video", False)
             current = wp_config.get("current", "Default")
-            return f"배경화면 모드: {mode}, 종류: {'비디오' if is_video else '이미지'}, 현재 파일: {current}"
+
+            type_str = get_plugin_i18n(
+                "wallpaper", "context.video" if is_video else "context.image"
+            )
+            msg = get_plugin_i18n("wallpaper", "context.status")
+            return msg.format(mode=mode, type=type_str, current=current)
     except Exception:
         pass
-    return "배경화면 상태를 불러올 수 없습니다."
+    return get_plugin_i18n("wallpaper", "context.error")
 
 
 # 여기서 임시로 import를 내부에 넣지 않고 상단 혹은 안전하게 처리할 수 있도록 수정
 from services.plugin_registry import register_context_provider
 
+# Aliases는 최대한 다양하게 지원 (한/영 통합)
+aliases = get_plugin_i18n("wallpaper", "aliases", lang="ko") + get_plugin_i18n(
+    "wallpaper", "aliases", lang="en"
+)
 register_context_provider(
-    "wallpaper", get_wallpaper_context, aliases=["배경화면", "월페이퍼", "배경"]
+    "wallpaper", get_wallpaper_context, aliases=list(set(aliases))
 )
 
 
@@ -59,11 +69,21 @@ def get_wallpaper_status():
 def upload_wallpaper():
     try:
         if "file" not in request.files:
-            return jsonify({"status": "error", "message": "No file"}), 400
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": get_plugin_i18n("wallpaper", "errors.no_file"),
+                }
+            ), 400
         file = request.files["file"]
         filename = file.filename
         if not filename:
-            return jsonify({"status": "error", "message": "Empty filename"}), 400
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": get_plugin_i18n("wallpaper", "errors.empty_filename"),
+                }
+            ), 400
 
         save_dir = os.path.join("static", "wallpaper")
         if not os.path.exists(save_dir):
@@ -72,7 +92,12 @@ def upload_wallpaper():
         ext = filename.lower().split(".")[-1]
         is_video = ext in ["mp4", "webm"]
         if not is_sponsor() and is_video:
-            return jsonify({"status": "error", "message": "Sponsors only"}), 403
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": get_plugin_i18n("wallpaper", "errors.sponsors_only"),
+                }
+            ), 403
 
         save_path = os.path.join(save_dir, filename)
         file.save(save_path)

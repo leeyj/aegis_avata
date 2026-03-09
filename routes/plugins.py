@@ -86,6 +86,18 @@ def get_plugin_init_pack_data(rebuild=False):
                                     pack["bundle"][plugin_id] = {}
                                 with open(file_path, "r", encoding="utf-8") as af:
                                     pack["bundle"][plugin_id][key] = af.read()
+
+                    # [v3.7.2] 지원 체계 탐색 (시각화용)
+                    has_commands = any(
+                        a.get("commands") for a in manifest.get("actions", [])
+                    )
+                    has_ai_prompt = os.path.exists(
+                        os.path.join(plugin_path, "ai_prompt.md")
+                    )
+
+                    manifest["support_systematic"] = has_commands
+                    manifest["support_hybrid"] = has_ai_prompt
+
                     pack["plugins"].append(manifest)
             except Exception as e:
                 print(f"[InitPack] Error processing {plugin_id}: {e}")

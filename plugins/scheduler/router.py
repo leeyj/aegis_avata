@@ -2,7 +2,7 @@ import os
 import shutil
 from flask import Blueprint, jsonify, request
 from routes.decorators import login_required
-from utils import load_json_config, save_json_config, is_sponsor
+from utils import load_json_config, save_json_config, is_sponsor, get_plugin_i18n
 from services import require_permission
 
 PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,12 +20,22 @@ def get_scheduler_context():
     routines = config.get("routines", [])
     if routines:
         routine_names = [f"{r['name']}({r['time']} 실행)" for r in routines]
-        return f"현재 {len(routines)}개의 예약된 루틴이 있습니다: {', '.join(routine_names)}"
-    return "현재 등록된 예약 루틴이 없습니다."
+        msg = get_plugin_i18n("scheduler", "scheduler.context.summary")
+        return msg.format(count=len(routines), list=", ".join(routine_names))
+    return get_plugin_i18n("scheduler", "scheduler.context.empty")
 
+
+# Aliases는 최대한 다양하게 지원 (한/영 통합)
+ko_aliases = get_plugin_i18n("scheduler", "scheduler.aliases", lang="ko")
+en_aliases = get_plugin_i18n("scheduler", "scheduler.aliases", lang="en")
+
+# [v3.8.9] 타입 안전성 보장 (list + str 에러 방지)
+aliases = (ko_aliases if isinstance(ko_aliases, list) else []) + (
+    en_aliases if isinstance(en_aliases, list) else []
+)
 
 register_context_provider(
-    "scheduler", get_scheduler_context, aliases=["루틴", "스케줄러", "예약"]
+    "scheduler", get_scheduler_context, aliases=list(set(aliases))
 )
 
 
@@ -113,7 +123,14 @@ def get_scheduler_config():
 def save_scheduler_config():
     data = request.json
     if not data or "routines" not in data:
-        return jsonify({"status": "error", "message": "Invalid scheduler data"}), 400
+        return jsonify(
+            {
+                "status": "error",
+                "message": get_plugin_i18n(
+                    "scheduler", "scheduler.errors.invalid_data"
+                ),
+            }
+        ), 400
 
     routines = data.get("routines", [])
     sponsor_status = is_sponsor()
@@ -121,7 +138,12 @@ def save_scheduler_config():
     for r in routines:
         if not all(k in r for k in ("id", "name", "time", "action", "days")):
             return jsonify(
-                {"status": "error", "message": "Missing required fields"}
+                {
+                    "status": "error",
+                    "message": get_plugin_i18n(
+                        "scheduler", "scheduler.errors.missing_fields"
+                    ),
+                }
             ), 400
 
         premium_actions = ["yt_play", "yt_stop", "yt_volume", "wallpaper_set"]
@@ -129,7 +151,9 @@ def save_scheduler_config():
             return jsonify(
                 {
                     "status": "error",
-                    "message": "Premium Action requires Sponsor account",
+                    "message": get_plugin_i18n(
+                        "scheduler", "scheduler.errors.premium_required"
+                    ),
                 }
             ), 403
 
@@ -139,7 +163,17 @@ def save_scheduler_config():
             shutil.copy2(CONFIG_PATH, backup_path)
 
         if save_json_config(CONFIG_PATH, data, merge=False):
-            return jsonify({"status": "success", "message": "Scheduler config saved"})
-        return jsonify({"status": "error", "message": "Failed to write config"}), 500
+            return jsonify(
+                {
+                    "status": "success",
+                    "message": get_plugin_i18n("scheduler", "scheduler.sync_success"),
+                }
+            )
+        return jsonify(
+            {
+                "status": "error",
+                "message": get_plugin_i18n("scheduler", "scheduler.errors.save_failed"),
+            }
+        ), 500
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

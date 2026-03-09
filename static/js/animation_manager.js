@@ -11,7 +11,8 @@ const AvatarEvents = {
     TTS_STOP: 'TTS_STOP',
     EMOTION: 'EMOTION',
     MOTION: 'MOTION',
-    HAPPY_DANCE: 'HAPPY_DANCE'
+    HAPPY_DANCE: 'HAPPY_DANCE',
+    NOTIFY: 'NOTIFY'
 };
 
 class AnimationManager {
@@ -76,6 +77,13 @@ class AnimationManager {
                 break;
             case AvatarEvents.HAPPY_DANCE:
                 this._startHappyDance(payload.duration || 5000);
+                break;
+            case AvatarEvents.NOTIFY:
+                if (window.AEGIS_HUD && window.AEGIS_HUD.showBubble) {
+                    window.AEGIS_HUD.showBubble(payload.message || "Command Received", "📡");
+                    // 3초 후 자동으로 닫기
+                    setTimeout(() => window.AEGIS_HUD.hideBubble(), 3000);
+                }
                 break;
             default:
                 console.warn(`[AnimationManager] Unknown Event Type: ${type}`);

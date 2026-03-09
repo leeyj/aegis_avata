@@ -32,5 +32,52 @@
             "https://*.googleapis.com"
         ]
     },
-    "icon": "🎵"
+    "icon": "🎵",
+    "actions": [
+        {
+            "id": "play",
+            "commands": [
+                "재생",
+                "play",
+                "p"
+            ],
+            "params": [
+                "target"
+            ],
+            "desc": "Play music or playlist"
+        },
+        {
+            "id": "pause",
+            "commands": [
+                "정지",
+                "중지",
+                "pause",
+                "stop",
+                "s"
+            ],
+            "params": [],
+            "desc": "Pause playback"
+        },
+        {
+            "id": "next",
+            "commands": [
+                "다음",
+                "next",
+                "n",
+                "skip"
+            ],
+            "params": [],
+            "desc": "Next track"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "l"
+            ],
+            "params": [],
+            "desc": "Show playlists"
+        }
+    ]
 }

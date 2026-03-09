@@ -2,6 +2,8 @@ import threading
 import logging
 import os
 from datetime import datetime
+import pytz
+from utils import load_settings
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +54,54 @@ class AlarmService:
                 except ValueError:
                     continue
 
+            # [v3.7.1] HH:MM 형식 지원 (오늘/내일 자동 판별)
             if not target_time:
-                # 최종 폴백: 날짜/시간이 섞인 문자열에서 숫자 추출 시도 등은 복잡하므로 에러 반환
+                try:
+                    time_only = datetime.strptime(clean_time_str, "%H:%M")
+                    now = datetime.now()
+                    target_time = now.replace(
+                        hour=time_only.hour,
+                        minute=time_only.minute,
+                        second=0,
+                        microsecond=0,
+                    )
+                    # 이미 지났으면 내일로 설정
+                    if (target_time - now).total_seconds() <= 0:
+                        from datetime import timedelta
+
+                        target_time += timedelta(days=1)
+
+                    target_time_str = target_time.strftime("%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    pass
+
+            if not target_time:
+                # 최종 폴백
                 return False, f"지원하지 않는 시간 형식입니다: {target_time_str}"
 
-            delay = (target_time - datetime.now()).total_seconds()
+            # [v3.4.8] 타임존 인식형 현재 시각 취득
+            settings = load_settings()
+            tz_name = settings.get("timezone", "Asia/Seoul")
+            try:
+                tz = pytz.timezone(tz_name)
+            except Exception:
+                tz = pytz.timezone("Asia/Seoul")
+
+            now_tz = datetime.now(tz)
+            # target_time을 naive하게 파싱했다면 tz를 주입
+            if target_time and target_time.tzinfo is None:
+                target_time = tz.localize(target_time)
+
+            delay = (target_time - now_tz).total_seconds()
 
             if delay <= 0:
-                return False, "이미 지난 시간입니다."
+                logger.warning(
+                    f"[AlarmService] Past time requested: {target_time_str} (Now: {now_tz})"
+                )
+                return (
+                    False,
+                    f"이미 지난 시간입니다. (현재 {tz_name} 시각: {now_tz.strftime('%H:%M:%S')})",
+                )
 
             # 타이머 시작
             t = threading.Timer(

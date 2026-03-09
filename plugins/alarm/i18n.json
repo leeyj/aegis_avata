@@ -1,0 +1,58 @@
+{
+    "ko": {
+        "panels": {
+            "p-alarm": "알림 설정"
+        },
+        "actions": {
+            "set": {
+                "desc": "정한 날짜와 시간에 알람을 예약합니다.",
+                "args": [
+                    "날짜 및 시간(YYYY-MM-DD HH:MM:SS)",
+                    "알람 내용"
+                ]
+            },
+            "del": {
+                "desc": "예약된 알람을 삭제합니다.",
+                "args": [
+                    "알람 ID"
+                ]
+            },
+            "list": {
+                "desc": "현재 예약된 알람 목록을 확인합니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "예약된 알람이 없습니다.",
+            "format": "[{aid}] {title} ({time})"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-alarm": "Alarms"
+        },
+        "actions": {
+            "set": {
+                "desc": "Schedules an alarm for a specific date and time.",
+                "args": [
+                    "Date & Time (YYYY-MM-DD HH:MM:SS)",
+                    "Alarm Title"
+                ]
+            },
+            "del": {
+                "desc": "Deletes a scheduled alarm.",
+                "args": [
+                    "Alarm ID"
+                ]
+            },
+            "list": {
+                "desc": "Lists all currently active alarms.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "No active alarms found.",
+            "format": "[{aid}] {title} ({time})"
+        }
+    }
+}

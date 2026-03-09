@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify
 from routes.decorators import login_required
 from .gmail_service import get_recent_emails
-from utils import load_json_config
+from utils import load_json_config, get_plugin_i18n
 from services.plugin_registry import register_context_provider
 from services import require_permission
 
@@ -30,11 +30,15 @@ def get_emails_ai_context():
     ]
 
 
+# Aliases는 최대한 다양하게 지원 (한/영 통합)
+aliases = get_plugin_i18n("gmail", "aliases", lang="ko") + get_plugin_i18n(
+    "gmail", "aliases", lang="en"
+)
 register_context_provider(
     "gmail",
     get_emails_context,
     ai_processor=get_emails_ai_context,
-    aliases=["메일", "이메일", "편지", "gmail"],
+    aliases=list(set(aliases)),
 )
 
 

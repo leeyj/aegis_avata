@@ -12,7 +12,34 @@ window.offsetY = 0;
 window.uiPositions = {};
 window.panelVisibility = {};
 window.uiLocked = false;
-window.enableLookAtCursor = true; // [v3.0.2] 마우스 추적(Look-at) 기능 활성화 플래그
+window.enableLookAtCursor = true; // [v3.4.6] 마우스 추적(Look-at) 활성 플래그
+
+// [v3.4.6] 전역 오디오 잠금 해제 함수
+window.unlockAudio = async function () {
+    if (window.AudioContext || window.webkitAudioContext) {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!window._audioCtx) window._audioCtx = new AudioContext();
+            if (window._audioCtx.state === 'suspended') {
+                await window._audioCtx.resume();
+                console.log("[Core] AudioContext unlocked.");
+            }
+            // 무음 버퍼 재생으로 확실하게 해제
+            const buffer = window._audioCtx.createBuffer(1, 1, 22050);
+            const source = window._audioCtx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(window._audioCtx.destination);
+            source.start(0);
+        } catch (e) {
+            console.warn("[Core] Audio unlock failed:", e);
+        }
+    }
+};
+
+// 사용자가 화면의 아무 곳이나 처음 클릭할 때 오디오 잠금 해제 트리거
+document.addEventListener('click', () => window.unlockAudio(), { once: true });
+document.addEventListener('touchstart', () => window.unlockAudio(), { once: true });
+document.addEventListener('keydown', () => window.unlockAudio(), { once: true });
 
 // [v2.0] Global Command Router has been migrated to static/js/widgets/ai_gateway.js
 

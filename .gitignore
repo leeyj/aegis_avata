@@ -51,7 +51,7 @@ OLD/
 # === Project Assets & Models ===
 # 대용량 모델 데이터는 제외
 models/
-test_models/*/
+test_models/
 tmp/
 
 # === Documentation Rules ===

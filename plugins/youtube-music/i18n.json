@@ -9,6 +9,32 @@
             "yt_select": "플레이리스트 선택",
             "yt_auth_prompt": "유튜브 뮤직 'Headers' 또는 'cURL'을 붙여넣으세요.\\n(F12 -> Network -> 요청 우클릭 -> Copy as cURL(bash) 또는 헤더 드래그 복사본 그대로 붙여넣기)",
             "yt_auth_success": "인증 정보가 성공적으로 갱신되었습니다. 페이지를 새로고침합니다."
+        },
+        "actions": {
+            "play": {
+                "desc": "음악 또는 플레이리스트를 재생합니다.",
+                "args": [
+                    "검색어 또는 번호"
+                ]
+            },
+            "pause": {
+                "desc": "음악 재생을 일시 정지합니다.",
+                "args": []
+            },
+            "next": {
+                "desc": "다음 곡을 재생합니다.",
+                "args": []
+            },
+            "list": {
+                "desc": "플레이리스트 목록을 가져옵니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "play_fail": "음악 서비스를 찾을 수 없거나 재생에 실패했습니다.",
+            "play_format": "🎵 '{title} - {artist}' 재생을 시도합니다.",
+            "play_generic": "음악 재생 요청을 처리했습니다.",
+            "list_empty": "플레이리스트가 없습니다."
         }
     },
     "en": {
@@ -21,6 +47,32 @@
             "yt_select": "Select Playlist",
             "yt_auth_prompt": "Paste YouTube Music 'Headers' or 'cURL'.\\n(F12 -> Network -> Right Click Request -> Copy as cURL(bash) or drag and paste raw headers)",
             "yt_auth_success": "Authentication successfully updated. Reloading page..."
+        },
+        "actions": {
+            "play": {
+                "desc": "Plays music or a playlist.",
+                "args": [
+                    "Search query or number"
+                ]
+            },
+            "pause": {
+                "desc": "Pauses the current music playback.",
+                "args": []
+            },
+            "next": {
+                "desc": "Plays the next track in the queue.",
+                "args": []
+            },
+            "list": {
+                "desc": "Retrieves the list of your playlists.",
+                "args": []
+            }
+        },
+        "views": {
+            "play_fail": "Could not find music service or playback failed.",
+            "play_format": "🎵 Attempting to play '{title} - {artist}'.",
+            "play_generic": "Processed music playback request.",
+            "list_empty": "No playlists found."
         }
     }
 }

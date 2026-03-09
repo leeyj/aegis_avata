@@ -1,315 +1,193 @@
 import json
-import os
 import logging
-from utils import load_json_config, load_settings, strip_markdown_wrappers
+from datetime import datetime
+from utils import load_json_config, load_settings
 from routes.config import PLUGINS_DIR, GEMINI_API_KEY
 
-# 로깅 설정
-logger = logging.getLogger(__name__)
+from .ai_base import ai_base, types
+from .ai_schemas import BRIEFING_SCHEMA, COMMAND_SCHEMA
+from .ai_tools import get_internal_system_data, search_the_web
 
-# [Lint Noise Resolution] IDE 인식률 향상을 위한 처리
-try:
-    from google import genai
-    from google.genai import types
-except ImportError:
-    logger.warning("google-genai package not found. AI features will be limited.")
-    genai = None
-    types = None
+logger = logging.getLogger(__name__)
 
 
 def _get_lang():
-    """현재 시스템 언어 설정을 로드합니다."""
     settings = load_settings()
-    return settings.get("lang", "ko")
+    return settings.get("language", "ko")
 
 
 def _load_plugin_prompt(plugin_id, task):
-    """특정 플러그인 폴더 내의 프롬프트를 로드합니다."""
-    lang = _get_lang()
-    plugin_prompt_path = os.path.join(PLUGINS_DIR, plugin_id, "prompts.json")
+    import os
 
-    if os.path.exists(plugin_prompt_path):
+    # 1. 지원되는 언어 확인
+    lang = _get_lang()
+
+    # 2. JSON 기반 프롬프트 로드 시도 (최신 Plugin-X 권장)
+    json_path = os.path.join(PLUGINS_DIR, plugin_id, "prompts.json")
+    if os.path.exists(json_path):
         try:
-            prompts = load_json_config(plugin_prompt_path)
-            # 언어 코드 탐색 -> 전역 탐색
-            return prompts.get(lang, {}).get(task) or prompts.get(task)
-        except Exception as e:
-            print(f"[Gemini] Error loading prompt from {plugin_id}: {e}")
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data.get(lang, {}).get(task) or data.get("ko", {}).get(task)
+        except Exception:
+            pass
+
+    # 3. MD 기반 프롬프트 로드 시도 (하위 호환)
+    path = os.path.join(PLUGINS_DIR, plugin_id, "prompts", f"{task}.md")
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read().strip()
+
     return None
 
 
 def get_briefing(api_key, context_data, debug_mode=False):
-    """
-    대시보드 전술 브리핑 생성 (Schemas 강제 적용)
-    """
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash"
+    """대시보드 전술 브리핑 생성"""
+    client = ai_base.client
+    model_id = ai_base.model_id
 
-    prompt_tpl = _load_plugin_prompt("proactive-agent", "dashboard_briefing")
-    if not prompt_tpl:
-        prompt_tpl = "Analyze context and provide strategic briefing: {{context_data}}"
-
-    print(f"[Gemini] Briefing request for: {list(context_data.keys())}")
+    prompt_tpl = (
+        _load_plugin_prompt("proactive-agent", "dashboard_briefing")
+        or "Analyze context: {{context_data}}"
+    )
     context_str = json.dumps(context_data, ensure_ascii=False, indent=2)
 
-    # [AI Validation Layer] 데이터의 부정확성이나 오류(status: error)를 감지하고 상식적으로 판단하도록 가이드 추가
-    validation_guide = "\n\nCRITICAL: Analyze the provided 'context_data' for any anomalies or explicit error reports (e.g., status: error). If a plugin's data looks corrupted or unrealistic, acknowledge the connectivity issue instead of providing false information."
+    lang = _get_lang()
+    language_instruction = (
+        "\n\nCRITICAL: You MUST respond in KOREAN."
+        if lang == "ko"
+        else f"\n\nCRITICAL: You MUST respond in {lang}."
+    )
+
+    validation_guide = f"{language_instruction}\n\nAnalyze for any anomalies. Acknowledge connectivity issues if data looks corrupted."
     prompt = prompt_tpl.replace("{{context_data}}", context_str) + validation_guide
-    print(f"[Gemini] Final prompt length: {len(prompt)} chars")
 
     config = types.GenerateContentConfig(
-        tools=[],  # Prevent "Search tool" conflict
+        tools=[],
         response_mime_type="application/json",
-        response_schema={
-            "type": "object",
-            "properties": {
-                "briefing": {
-                    "type": "string",
-                    "description": "상황에 대한 5~10문장의 전문적이고 상세한 전술 보고서 (마크다운 가능)",
-                },
-                "voice": {
-                    "type": "string",
-                    "description": "사용자에게 음성으로 들려줄 2~3문장의 따뜻하고 친절한 요약 (존댓말 사용)",
-                },
-                "sentiment": {
-                    "type": "string",
-                    "description": "현재 상황에 가장 적합한 감정 상태",
-                    "enum": ["happy", "neutral", "serious", "alert"],
-                },
-                "visual_type": {
-                    "type": "string",
-                    "description": "강조해야 할 정보의 유형",
-                    "enum": ["weather", "finance", "calendar", "email", "none"],
-                },
-            },
-            "required": ["briefing", "voice", "sentiment", "visual_type"],
-        },
+        response_schema=BRIEFING_SCHEMA,
     )
 
     try:
-        print("[Gemini] Requesting content generation from Gemini...")
         response = client.models.generate_content(
             model=model_id, contents=prompt, config=config
         )
-        print(f"[Gemini] Response received. Raw text: {response.text}")
         res = response.parsed
-        # [v3.0] 필터링 규칙 강제 적용
-        display_raw = res.get("briefing", "")
-        voice_raw = res.get("voice") or display_raw
 
-        print(f"[Gemini] Parsed briefing length: {len(display_raw)} chars")
+        display = res.get("briefing", "")
+        voice = res.get("voice") or display
 
-        result_dict = {
-            "display": strip_markdown_wrappers(display_raw),
-            "briefing": strip_markdown_wrappers(voice_raw),
+        result = {
+            "display": ai_base.clean_response(display),
+            "briefing": ai_base.clean_response(voice),
             "sentiment": res.get("sentiment", "neutral"),
             "visual_type": res.get("visual_type", "none"),
         }
-
         if debug_mode:
-            result_dict["debug_prompt"] = prompt
-            try:
-                result_dict["debug_response"] = json.loads(
-                    strip_markdown_wrappers(response.text)
-                )
-            except Exception:
-                result_dict["debug_response"] = response.text
-
-        return result_dict
+            result["debug_prompt"] = prompt
+        return result
     except Exception as e:
-        print(f"[Gemini] Briefing Schema Error: {e}")
+        logger.error(f"Briefing Error: {e}")
         return {
-            "display": "Briefing analysis failed.",
-            "briefing": "Analysis failed.",
+            "display": "Analysis failed.",
+            "briefing": "Failed.",
             "sentiment": "neutral",
             "visual_type": "none",
         }
 
 
 def get_plugin_briefing(api_key, plugin_id, task, data):
-    """
-    플러그인 전용 AI 서비스 (Schemas 강제 적용)
-    """
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash"
-
-    prompt_tpl = _load_plugin_prompt(plugin_id, task)
-    if not prompt_tpl:
-        prompt_tpl = f"Analyze data for {plugin_id}: {{data}}"
-
-    data_str = json.dumps(data, ensure_ascii=False, indent=2)
-    prompt = prompt_tpl.replace("{{data}}", data_str)
+    """플러그인 전용 AI 서비스"""
+    client = ai_base.client
+    prompt_tpl = _load_plugin_prompt(plugin_id, task) or "Analyze: {{data}}"
+    prompt = prompt_tpl.replace("{{data}}", json.dumps(data, ensure_ascii=False))
 
     config = types.GenerateContentConfig(
-        tools=[],  # Prevent "Search tool" conflict
         response_mime_type="application/json",
-        response_schema={
-            "type": "object",
-            "properties": {
-                "display": {"type": "string"},
-                "voice": {"type": "string"},
-                "sentiment": {
-                    "type": "string",
-                    "enum": ["happy", "neutral", "serious", "alert"],
-                },
-            },
-            "required": ["display", "voice", "sentiment"],
-        },
+        response_schema=BRIEFING_SCHEMA,
     )
 
     try:
         response = client.models.generate_content(
-            model=model_id, contents=prompt, config=config
+            model=ai_base.model_id, contents=prompt, config=config
         )
         res = response.parsed
-        d_raw = res.get("display", "")
-        v_raw = res.get("voice") or d_raw
-
         return {
-            "display": strip_markdown_wrappers(d_raw),
-            "briefing": strip_markdown_wrappers(v_raw),
+            "display": ai_base.clean_response(res.get("briefing", "")),
+            "voice": ai_base.clean_response(res.get("voice", "")),
             "sentiment": res.get("sentiment", "neutral"),
         }
     except Exception as e:
-        print(f"[Gemini] Plugin Briefing Schema Error: {e}")
-        return {
-            "display": "Task analysis failed.",
-            "briefing": "Analysis failed.",
-            "sentiment": "neutral",
-        }
+        logger.error(f"Plugin Briefing Error ({plugin_id}): {e}")
+        return {"display": "Error", "voice": "Error", "sentiment": "neutral"}
 
 
 def get_widget_briefing(api_key, widget_type, widget_data):
-    """
-    특정 위젯 전용 요약 보고 (각 위젯 플러그인 프롬프트 사용)
-    """
-    return get_plugin_briefing(api_key, widget_type, "widget_briefing", widget_data)
+    return get_plugin_briefing(api_key, widget_type, "widget_summary", widget_data)
 
 
 def process_command(api_key, command, context_data):
-    """
-    [v2.5.1] 지능형 에이전트 + 상세 로깅 시스템 (De-hardcoded v3.0)
-    """
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash"
-
-    print(f"\n{'=' * 50}\n[AGENT START] Command: {command}\n{'=' * 50}")
-
-    # [v2.5.1] 도구 1: 내부 시스템 컨텍스트 조회 (정제 필수)
-    def get_internal_system_data():
-        """내부 위젯의 현재 상태 및 시스템 컨텍스트를 조회합니다."""
-        print("[Agent] >>> Tool Call: get_internal_system_data")
-        from utils import sanitize_context_data
-
-        clean_data = sanitize_context_data(context_data)
-        print(f"[Agent] <<< Sanitized Data for: {list(clean_data.keys())}")
-        return clean_data
-
-    # [v2.5.1] 도구 2: 외부 웹 검색 대행
-    def search_the_web(query: str):
-        """실시간 정보 검색을 수행합니다."""
-        print(f"[Agent] >>> Tool Call: search_the_web (Query: {query})")
-        search_config = types.GenerateContentConfig(
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-            system_instruction="Explain results shortly based on search.",
-        )
-        try:
-            sub_res = client.models.generate_content(
-                model=model_id,
-                contents=f"Search result for: {query}",
-                config=search_config,
-            )
-            return sub_res.text
-        except Exception as e:
-            return f"Error: {str(e)}"
-
-    # [v3.0] 동적 프롬프트 로딩 및 플레이스홀더 치환
-    from datetime import datetime
+    """지능형 에이전트 명령어 처리"""
+    client = ai_base.client
+    model_id = ai_base.model_id
 
     available_modules = list(context_data.keys())
     current_time = datetime.now().strftime("%H:%M:%S")
 
-    system_instruction = _load_plugin_prompt("terminal", "command_parsing")
-    if not system_instruction:
-        system_instruction = "You are a tactical assistant. Use tools if needed."
-
+    system_instruction = (
+        _load_plugin_prompt("terminal", "command_parsing")
+        or "You are a tactical assistant."
+    )
     system_instruction = (
         system_instruction.replace("{{current_time}}", current_time)
         .replace("{{modules}}", ", ".join(available_modules))
         .replace("{{context_data}}", "INTERNAL_TOOL")
     )
 
+    # 툴 래핑 (현재 컨텍스트 주입)
+    def call_get_internal_system_data():
+        return get_internal_system_data(context_data)
+
+    def call_search_the_web(query: str):
+        return search_the_web(client, query, model_id)
+
     try:
         chat = client.chats.create(
             model=model_id,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                tools=[get_internal_system_data, search_the_web],
+                tools=[call_get_internal_system_data, call_search_the_web],
                 response_mime_type="application/json",
-                response_schema={
-                    "type": "object",
-                    "properties": {
-                        "response": {"type": "string"},
-                        "briefing": {"type": "string"},
-                        "action": {
-                            "type": "string",
-                            "enum": ["navigate", "toggle", "search", "none"],
-                        },
-                        "target": {"type": "string"},
-                        "sentiment": {
-                            "type": "string",
-                            "enum": ["happy", "neutral", "serious", "alert"],
-                        },
-                    },
-                    "required": ["response", "action", "sentiment"],
-                },
+                response_schema=COMMAND_SCHEMA,
             ),
         )
 
         response = chat.send_message(command)
-        result = response.parsed
-
-        if not result:
-            raw_text = getattr(response, "text", "") or ""
-            if not raw_text:
-                raise Exception("Empty AI response.")
-            result = json.loads(strip_markdown_wrappers(raw_text))
-
-        # [v3.0] 모든 출력 필드에 필터링 강제
-        resp_clean = strip_markdown_wrappers(result.get("response", ""))
-        brief_clean = strip_markdown_wrappers(
-            result.get("briefing") or result.get("response", "")
-        )
-
-        print(f"[Agent] Decision Logged.\n{'=' * 50}\n[AGENT END]\n{'=' * 50}")
+        result = response.parsed or ai_base.parse_json_response(response.text)
 
         return {
-            "display": resp_clean,
-            "briefing": brief_clean,
+            "display": ai_base.clean_response(result.get("response", "")),
+            "briefing": ai_base.clean_response(
+                result.get("briefing") or result.get("response", "")
+            ),
             "action": result.get("action", "none"),
             "target": result.get("target", ""),
             "sentiment": result.get("sentiment", "neutral"),
         }
-
     except Exception as e:
-        print(f"[Gemini] !!! Agent Error: {e}")
+        logger.error(f"Agent Error: {e}")
         return {
-            "display": "Agent error occurred.",
-            "briefing": "Processing failed.",
+            "display": "Error occurred.",
+            "briefing": "Failed.",
             "action": "none",
             "sentiment": "serious",
         }
 
 
 def get_custom_response(api_key, prompt, with_search=True, system_instruction=None):
-    """기존 ad-hoc 질의 유지 (Search 도구 지원 추가)"""
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash"
-
-    config = {}
-    tools = []
-    if with_search:
-        tools.append(types.Tool(google_search=types.GoogleSearch()))
+    """기존 ad-hoc 질의 유지"""
+    client = ai_base.client
+    tools = [types.Tool(google_search=types.GoogleSearch())] if with_search else []
 
     config = types.GenerateContentConfig(
         tools=tools, system_instruction=system_instruction
@@ -317,30 +195,19 @@ def get_custom_response(api_key, prompt, with_search=True, system_instruction=No
 
     try:
         response = client.models.generate_content(
-            model=model_id, contents=prompt, config=config
+            model=ai_base.model_id, contents=prompt, config=config
         )
         text = response.text.strip()
 
-        # [v2.3.4] JSON 응답 감지 및 파싱 시도 (Tag 기반 dual response 처리 강화)
         if "[DISPLAY]" in text or "[VOICE]" in text:
-            return text  # ai_service에서 _parse_dual_response로 처리됨
+            return text
 
-        # Try JSON parsing if it looks like JSON
-        if text.startswith("```json"):
-            cleaned = text[7:-3].strip()
-            try:
-                return json.loads(cleaned)
-            except Exception:
-                pass
-        elif text.startswith("{") and text.endswith("}"):
-            try:
-                return json.loads(text)
-            except Exception:
-                pass
+        parsed = ai_base.parse_json_response(text)
+        if parsed:
+            parsed.update({"status": "success"})
+            return parsed
 
-        # Normal text fallback (Strip markdown wrappers if any)
-        clean_text = strip_markdown_wrappers(text)
-
+        clean_text = ai_base.clean_response(text)
         return {
             "display": clean_text,
             "briefing": clean_text,
@@ -348,17 +215,11 @@ def get_custom_response(api_key, prompt, with_search=True, system_instruction=No
             "sentiment": "neutral",
         }
     except Exception as e:
-        print(f"[Gemini] Custom Error: {e}")
-        return {
-            "display": f"Error during analysis: {e}",
-            "briefing": f"Error during analysis: {e}",
-            "sentiment": "neutral",
-            "status": "error",
-        }
+        logger.error(f"Custom Query Error: {e}")
+        return {"display": f"Error: {e}", "briefing": "Error", "status": "error"}
 
 
 def query_gemini(prompt, system_instruction=None, with_search=True):
-    # 일반 질의 시 Search 기능을 기본 활성화하여 최신 정보(날씨 등) 검색 보장
     res = get_custom_response(
         GEMINI_API_KEY,
         prompt,
@@ -366,7 +227,7 @@ def query_gemini(prompt, system_instruction=None, with_search=True):
         system_instruction=system_instruction,
     )
     if isinstance(res, str):
-        return {"response": res}  # _parse_dual_response용 원문 전달
+        return {"response": res}
     if "text" in res and "response" not in res:
         res["response"] = res["text"]
     return res

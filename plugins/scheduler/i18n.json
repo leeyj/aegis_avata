@@ -28,7 +28,24 @@
                 "reload": "시스템 새로고침: 브라우저 페이지를 새로고침하여 데이터를 초기화합니다.",
                 "terminal_command": "⭐ 범용 명령어: 터미널에 입력하는 명령어를 예약 실행합니다. (예: /ns clean, /memo 할일)",
                 "api_call": "⭐ API 호출: 백엔드 API를 직접 호출합니다. 개발자용 고급 기능입니다."
-            }
+            },
+            "context": {
+                "summary": "현재 {count}개의 예약된 루틴이 있습니다: {list}",
+                "empty": "현재 등록된 예약 루틴이 없습니다."
+            },
+            "errors": {
+                "invalid_data": "유효하지 않은 스케줄러 데이터입니다.",
+                "missing_fields": "필수 필드가 누락되었습니다.",
+                "premium_required": "프리미엄 액션은 스폰서 계정이 필요합니다.",
+                "save_failed": "설정 저장에 실패했습니다."
+            },
+            "aliases": [
+                "루틴",
+                "스케줄러",
+                "예약",
+                "자동화",
+                "알람"
+            ]
         }
     },
     "en": {
@@ -59,7 +76,14 @@
                 "speak": "Speak TTS: Directly outputs the entered text as an AI voice.",
                 "reload": "System Reload: Refreshes the browser page to initialize data.",
                 "terminal_command": "⭐ Terminal Command: Schedules any terminal command for automatic execution. (e.g., /ns clean, /memo todo)",
-                "api_call": "⭐ API Call: Directly calls a backend API endpoint. Advanced feature for developers."
+                "api_call": "⭐ API Call: Directly calls a backend API endpoint. Advanced feature for developers.",
+                "aliases": [
+                    "routine",
+                    "scheduler",
+                    "schedule",
+                    "automation",
+                    "alarm"
+                ]
             }
         }
     }

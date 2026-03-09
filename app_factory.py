@@ -72,15 +72,11 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(widgets_bp)
-    # app.register_blueprint(ai_bp) (Plugin-X로 통합)
     app.register_blueprint(model_bp)
-    # app.register_blueprint(wallpaper_bp, url_prefix="/api/wallpaper") (Plugin-X로 통합)
-    # app.register_blueprint(studio_bp) (Plugin-X로 통합)
     app.register_blueprint(api_v1_bp)
     app.register_blueprint(plugins_bp)
     app.register_blueprint(plugin_proxies_bp)
     app.register_blueprint(i18n_bp)
-    # app.register_blueprint(google_svc_bp) (Plugin-X로 통합)
 
     # [Plugin-X] 동적 백엔드 리포지토리 등록 (Option B)
     plugin_blueprints = discover_plugin_blueprints()
@@ -165,14 +161,6 @@ def create_app():
                 500,
             )
         return e
-
-    # SocketIO 초기화 (앱 컨텍스트 연결)
-    from services.socket_service import socketio
-
-    socketio.init_app(app)
-
-    # 디스코드 등 외부 봇 백그라운드 기동
-    # Flask 재구동 시 봇 중복 실행을 막기 위해 서버 워커(Runtime) 환경에서만 1회 처리
 
     # [v3.4.3] 배포 환경 대응: gods.py를 배포 모드(debug=False)로 직접 실행하거나
     # 상용 WAS(Gunicorn 등)에서 구동될 때 봇이 초기화되도록 보장합니다.

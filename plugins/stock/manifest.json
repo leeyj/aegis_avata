@@ -35,5 +35,21 @@
             }
         ]
     },
-    "icon": "📈"
+    "icon": "📈",
+    "actions": [
+        {
+            "id": "price",
+            "commands": [
+                "가격",
+                "조회",
+                "price",
+                "check",
+                "st"
+            ],
+            "params": [
+                "code"
+            ],
+            "desc": "Check stock price"
+        }
+    ]
 }

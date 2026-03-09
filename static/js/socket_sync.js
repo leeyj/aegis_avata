@@ -10,7 +10,9 @@ class SocketSyncClient {
         this.isConnected = false;
         this._retryCount = 0;
         this._maxRetries = 5;
-        this.init();
+
+        // [v3.5.3] 초기 로딩 시 서버/네트워크 안정화를 위해 1.5초 후 연결 시작
+        setTimeout(() => this.init(), 1500);
     }
 
     init() {
@@ -19,30 +21,44 @@ class SocketSyncClient {
             if (typeof io === 'undefined') {
                 this._retryCount++;
                 if (this._retryCount > this._maxRetries) {
-                    console.warn("[SocketSync] 'io' library not available after max retries. Socket features disabled.");
+                    console.error("[SocketSync] 🛑 'io' library not available. Socket features disabled.");
                     return;
                 }
                 console.warn(`[SocketSync] 'io' library not ready, retrying (${this._retryCount}/${this._maxRetries})...`);
-                setTimeout(() => this.init(), 300);
+                setTimeout(() => this.init(), 500);
                 return;
             }
 
-            // Flask-SocketIO 서버에 연결 (세션 고정 문제를 해결하기 위해 WebSocket 전용 모드 강제)
+            // Flask-SocketIO 서버에 연결 (Proxy 환경에서 에러를 유발하는 websocket 업그레이드 금지)
             this.socket = io({
-                transports: ['websocket'], // polling을 건너뛰고 직접 연결하여 400 에러 방지
+                transports: ['polling'], // [v3.5.3] WebSocket 에러 방지를 위해 Polling 고정
                 reconnection: true,
-                reconnectionAttempts: 10,
+                reconnectionAttempts: 20,
                 reconnectionDelay: 1000,
-                timeout: 20000
+                timeout: 30000
             });
 
             this.socket.on('connect', () => {
-                console.log("[SocketSync] 🛡️ AEGIS Tactical Link Established.");
+                const transport = this.socket.io.engine.transport.name;
+                console.warn(`[SocketSync] 🛡️ AEGIS Tactical Link Established via [${transport}]`);
                 this.isConnected = true;
+                this._retryCount = 0;
             });
 
-            this.socket.on('disconnect', () => {
-                console.warn("[SocketSync] ⚠️ Tactical Link Severed.");
+            this.socket.on('connect_error', (error) => {
+                console.warn("[SocketSync] ⚠️ Connection Error Detail:", error.message);
+            });
+
+            this.socket.on('reconnect_attempt', (attempt) => {
+                console.warn(`[SocketSync] 🔄 Attempting to re-establish link... (${attempt}/20)`);
+            });
+
+            this.socket.on('error', (err) => {
+                console.error("[SocketSync] ‼️ Critical Socket Error:", err);
+            });
+
+            this.socket.on('disconnect', (reason) => {
+                console.warn("[SocketSync] ⚠️ Tactical Link Severed. Reason:", reason);
                 this.isConnected = false;
             });
 
@@ -64,7 +80,8 @@ class SocketSyncClient {
                     reactions.push({
                         type: 'TTS',
                         template: data.briefing || data.response,
-                        visual_type: 'ai'
+                        audioUrl: data.audio_url, // 서버에서 미리 생성된 URL이 있으면 우선 사용
+                        visualType: data.visual_type || 'ai'
                     });
                 } else if (data.motion === 'thinking') {
                     // '생각 중' 단계에서는 텍스트만 표시하거나 짧은 동작 안내 (음성 중복 방지를 위해 템플릿 제외 가능)
@@ -73,6 +90,14 @@ class SocketSyncClient {
                 }
 
                 if (reactions.length > 0) {
+                    // [v3.4.6] 브라우저 오토플레이 차단 방지를 위한 오디오 잠금 해제 시도
+                    if (window.AudioContext || window.webkitAudioContext) {
+                        try {
+                            const AudioContext = window.AudioContext || window.webkitAudioContext;
+                            const ctx = new AudioContext();
+                            if (ctx.state === 'suspended') ctx.resume();
+                        } catch (e) { }
+                    }
                     this.triggerReaction(reactions, data);
                 }
             });
@@ -109,6 +134,12 @@ class SocketSyncClient {
                 ], data);
             });
 
+            // 4. 유튜브 뮤직 동기화 반응 (v3.8.7)
+            this.socket.on('youtube_play', (data) => {
+                console.log("[SocketSync] YouTube Play event received:", data);
+                window.dispatchEvent(new CustomEvent('AEGIS_YOUTUBE_PLAY', { detail: data }));
+            });
+
         } catch (e) {
             console.error("[SocketSync] Engine initialization failed:", e);
         }
@@ -120,6 +151,10 @@ class SocketSyncClient {
     triggerReaction(actions, data) {
         if (window.reactionEngine && window.reactionEngine.commander) {
             // ReactionEvaluator가 템플릿을 파싱할 수 있도록 빈 데이터와 함께 전달
+            // [v3.4.6] 데이터 필드 불일치 해결을 위한 정규화 (SnakeCase -> CamelCase)
+            if (data.audio_url && !data.audioUrl) data.audioUrl = data.audio_url;
+            if (data.visual_type && !data.visualType) data.visualType = data.visual_type;
+
             window.reactionEngine.commander.execute(actions, data, window.reactionEngine.evaluator);
         } else {
             console.error("[SocketSync] ReactionEngine is not ready.");

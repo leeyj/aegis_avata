@@ -1,0 +1,22 @@
+{
+    "ko": {
+        "panels": {
+            "p-mp3": "로컬 MP3 플레이어"
+        },
+        "views": {
+            "active": "로컬 MP3 플레이어 기능 활성화",
+            "error": "로컬 MP3 플레이어 오류",
+            "invalid_filename": "유효하지 않은 파일명입니다."
+        }
+    },
+    "en": {
+        "panels": {
+            "p-mp3": "Local MP3 Player"
+        },
+        "views": {
+            "active": "Local MP3 Player function active",
+            "error": "Local MP3 Player error",
+            "invalid_filename": "Invalid filename."
+        }
+    }
+}

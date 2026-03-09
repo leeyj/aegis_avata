@@ -13,6 +13,7 @@ let isLongPress = false;
  * 아바타 캔버스 상호작용 초기화 (v3.0.3 통합 버전)
  */
 function initInteractions() {
+
     const canvas = document.getElementById('live2d-canvas');
     if (!canvas) return;
 
@@ -53,8 +54,10 @@ function initInteractions() {
 
         clickTimer = setTimeout(() => {
             if (clickCount === 2) {
-                // [Case 1] 더블 클릭: 터미널 토글
-                toggleTerminalInterface();
+                // [Case 1] 더블 클릭: 터미널 토글 (플러그인 API 호출)
+                if (window.TerminalUI && window.TerminalUI.toggle) {
+                    window.TerminalUI.toggle();
+                }
             } else if (clickCount >= 3) {
                 // [Case 2] 트리플 클릭: 아무말 대잔치 (기존 플러그인 이벤트 발생)
                 if (typeof window.dispatchAvatarEvent === 'function') {
@@ -72,27 +75,32 @@ function initInteractions() {
     canvas.addEventListener('contextmenu', e => e.preventDefault());
 
     // 3. 포인터 이동 (아바타 위치 이동 및 마우스 추적)
-    window.onpointermove = (e) => {
+    window.addEventListener('pointermove', (e) => {
         // [v3.0.2] 마우스 추적 (Look-at) 기능 적용
         if (window.enableLookAtCursor && window.currentAvatar) {
+            // [v3.4.6] 댐핑 효과는 pixi-live2d-display 내부 InteractionManager가 처리하도록 유도
+            // autoInteract가 false일 경우를 대비해 직접 추적 좌표 주입
             window.currentAvatar.focus(e.clientX, e.clientY);
         }
 
         if (!window.isDraggingCanvas) return;
 
         // 드래그가 시작되면 롱클릭 타이머 취소 (이동하려는 것이므로)
-        if (Math.abs(e.clientX - lastMouseX) > 5 || Math.abs(e.clientY - lastMouseY) > 5) {
+        if (typeof lastMouseX !== 'undefined' && (Math.abs(e.clientX - lastMouseX) > 5 || Math.abs(e.clientY - lastMouseY) > 5)) {
             clearTimeout(longPressTimer);
         }
 
-        window.offsetX += (e.clientX - lastMouseX);
-        window.offsetY += (e.clientY - lastMouseY);
+        if (typeof lastMouseX !== 'undefined') {
+            window.offsetX += (e.clientX - lastMouseX);
+            window.offsetY += (e.clientY - lastMouseY);
+        }
+
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
 
         if (window._lastAdjust) window._lastAdjust();
         if (window.saveState) window.saveState();
-    };
+    });
 
     // 4. 마우스 휠 (줌 인/아웃)
     window.addEventListener('wheel', (e) => {
@@ -117,35 +125,6 @@ function initInteractions() {
     }, { passive: false });
 
     if (window.logger) window.logger.info("[Interaction] Advanced interactions initialized.");
-}
-
-/**
- * 터미널 인터페이스 토글 (v3.0.4)
- * 플러그인 버전(toggle)과 코어 버전(setTerminalState) 호환성 대응
- */
-function toggleTerminalInterface() {
-    if (!window.TerminalUI) return;
-
-    // 1. 플러그인 버전 (v2.2.5+) 대응
-    if (typeof window.TerminalUI.toggle === 'function') {
-        window.TerminalUI.toggle();
-        return;
-    }
-
-    // 2. 코어 버전 (v1.x) 대응
-    if (typeof window.TerminalUI.setTerminalState === 'function') {
-        const terminalLog = document.getElementById('terminal-log');
-        const isCurrentlyCollapsed = !terminalLog || terminalLog.classList.contains('collapsed');
-        window.TerminalUI.setTerminalState(isCurrentlyCollapsed);
-
-        // 터미널이 열릴 때 자동으로 입력창 포커스
-        if (isCurrentlyCollapsed) {
-            setTimeout(() => {
-                const input = document.getElementById('terminal-input');
-                if (input) input.focus();
-            }, 100);
-        }
-    }
 }
 
 /**
