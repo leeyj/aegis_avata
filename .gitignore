@@ -40,6 +40,14 @@ dist/
 *.pyd
 *.exe
 
+# 🛡️ Security Core Exceptions (Upload only binary, not source)
+core_security.py
+utils.py
+!core_security.cpython*.so
+!utils.cpython*.so
+!core_security.cp*.pyd
+!utils.cp*.pyd
+
 # 📝 System Garbage
 Thumbs.db
 .DS_Store
