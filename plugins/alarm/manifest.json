@@ -1,0 +1,69 @@
+{
+    "id": "alarm",
+    "hybrid_level": 4,
+    "name": "알람",
+    "version": "1.1.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "aliases": [
+        "알람",
+        "alram"
+    ],
+    "permissions": [
+        "api.io_control",
+        "api.ai_gateway",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1"
+    },
+    "icon": "⏰",
+    "actions": [
+        {
+            "id": "set",
+            "commands": [
+                "설정",
+                "추가",
+                "set",
+                "s",
+                "예약"
+            ],
+            "params": [
+                "time",
+                "title"
+            ],
+            "desc": "Set an alarm"
+        },
+        {
+            "id": "del",
+            "commands": [
+                "삭제",
+                "del",
+                "rm"
+            ],
+            "params": [
+                "id"
+            ],
+            "desc": "Delete an alarm"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "ls",
+                "l",
+                "알람",
+                "alarm"
+            ],
+            "params": [],
+            "desc": "Show scheduled alarms"
+        }
+    ],
+    "engine_version": 4
+}

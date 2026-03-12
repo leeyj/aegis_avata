@@ -1,0 +1,45 @@
+{
+    "id": "gmail",
+    "name": "이메일",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.google_suite",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "icon": "📧",
+    "aliases": [
+        "메일",
+        "이메일",
+        "수신함",
+        "지메일",
+        "mail",
+        "email",
+        "gmail"
+    ],
+    "actions": [
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "조회",
+                "list",
+                "ls",
+                "메일",
+                "mail"
+            ],
+            "params": [],
+            "desc": "Check recent emails"
+        }
+    ],
+    "engine_version": 4
+}

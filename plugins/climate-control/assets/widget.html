@@ -1,0 +1,30 @@
+<div class="climate-widget">
+    <div class="climate-header">
+        <span class="indicator neon-cyan"></span>
+        <span class="title" data-i18n="climate.title">CLIMATE CONTROL</span>
+    </div>
+
+    <div class="temp-container">
+        <div class="temp-label" data-i18n="climate.current_temp">Indoor Temp</div>
+        <div class="temp-value">
+            <span id="cc-temp">--</span><span class="unit">°C</span>
+        </div>
+    </div>
+
+    <div class="status-panel">
+        <div class="status-item">
+            <span class="label" data-i18n="climate.ac_status">AC Status</span>
+            <span id="cc-status" class="status-text off" data-i18n="climate.off">Stopped</span>
+        </div>
+    </div>
+
+    <div class="control-actions">
+        <button id="cc-on-btn" class="ctrl-btn on" data-i18n="climate.turn_on">ON</button>
+        <button id="cc-off-btn" class="ctrl-btn off" data-i18n="climate.turn_off">OFF</button>
+    </div>
+
+    <div class="tactical-footer">
+        <span class="serial">AEGIS-IOT v1.2</span>
+        <span class="refresh-time" id="cc-last-update">00:00:00</span>
+    </div>
+</div>

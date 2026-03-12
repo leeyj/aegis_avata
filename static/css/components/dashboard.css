@@ -1,0 +1,144 @@
+/* --- Floating Toggle Button --- */
+.sidebar-toggle {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    z-index: var(--z-overlay);
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    color: var(--neon);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-toggle:hover {
+    background: var(--neon);
+    color: #000;
+    box-shadow: 0 0 15px var(--neon);
+}
+
+
+/* --- Avatar Loading HUD (v2.3.0) --- */
+#model-loading-hud {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    padding: 30px;
+    background: rgba(10, 15, 25, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 255, 0.1);
+    z-index: var(--z-modal);
+    /* Above almost everything */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    text-align: center;
+}
+
+#model-loading-hud.hidden {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+    display: none;
+}
+
+#model-loading-hud.active {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.hud-scanner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
+    background-size: 100% 200%;
+    animation: hud-scan 2s infinite linear;
+    border-radius: 15px;
+}
+
+@keyframes hud-scan {
+    0% {
+        background-position: 0 -100%;
+    }
+
+    100% {
+        background-position: 0 100%;
+    }
+}
+
+.hud-status {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hud-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 3px;
+    font-family: 'Orbitron';
+}
+
+.hud-value {
+    font-size: 18px;
+    color: var(--neon);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px var(--neon);
+}
+
+.hud-progress-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.hud-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--neon);
+    box-shadow: 0 0 10px var(--neon);
+    animation: bar-load 2s infinite ease-in-out;
+}
+
+@keyframes bar-load {
+    0% {
+        width: 0%;
+        left: 0;
+    }
+
+    50% {
+        width: 70%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.hud-info {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+    letter-spacing: 1px;
+}

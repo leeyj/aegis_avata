@@ -1,0 +1,19 @@
+{
+    "id": "markov",
+    "name": "(비용0원) 아무말 대잔치",
+    "version": "1.0",
+    "description": "클라이언트단 랜덤 마르코프 체인으로 비용 없이 아바타와 농담 따먹기 (말걸기/찌르기)",
+    "type": "widget",
+    "entry": {
+        "js": "assets/widget.js"
+    },
+    "hidden": true,
+    "priority": 10,
+    "layout": {
+        "layer": "back",
+        "fixed": true,
+        "width": "100vw",
+        "height": "100vh"
+    },
+    "engine_version": 4
+}

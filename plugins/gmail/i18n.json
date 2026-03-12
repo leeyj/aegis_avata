@@ -1,0 +1,42 @@
+{
+    "ko": {
+        "panels": {
+            "p-gmail": "수신함"
+        },
+        "widgets": {
+            "gmail_title": "보안 통신망 (GMAIL)"
+        },
+        "aliases": ["메일", "이메일", "수신함", "지메일"],
+        "actions": {
+            "list": {
+                "desc": "최근 이메일 목록을 조회합니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "수신함이 비어 있습니다.",
+            "format": "• [{from}] {subject}",
+            "unknown": "알 수 없음"
+        }
+    },
+    "en": {
+        "panels": {
+            "p-gmail": "Inbox"
+        },
+        "widgets": {
+            "gmail_title": "SECURE COMMUNICATIONS (GMAIL)"
+        },
+        "aliases": ["mail", "email", "inbox", "gmail"],
+        "actions": {
+            "list": {
+                "desc": "Show recent emails.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "No recent emails found.",
+            "format": "• [{from}] {subject}",
+            "unknown": "Unknown"
+        }
+    }
+}

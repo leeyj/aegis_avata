@@ -1,0 +1,90 @@
+{
+    "meta": {
+        "name": "🇺🇸 ENGLISH"
+    },
+    "sidebar": {
+        "panel_control": "PANEL CONTROL",
+        "save_settings": "SAVE CLOUD SETTINGS",
+        "lock_widgets": "LOCK WIDGETS",
+        "unlock_widgets": "UNLOCK WIDGETS",
+        "studio": "LIVE2D STUDIO",
+        "logout": "SYSTEM LOGOUT",
+        "sync_success": "Layout synced to server.",
+        "routine_manager": "🕒 ROUTINE MANAGER"
+    },
+    "widgets": {
+        "loading": "Loading Data...",
+        "no_data": "No Data Available.",
+        "refresh": "Refresh",
+        "briefing": "AI Briefing",
+        "search_placeholder": "Type to search and press Enter..."
+    },
+    "panels": {
+        "p-profit": "Trading Profit"
+    },
+    "directions": {
+        "up": "rising",
+        "down": "falling",
+        "rise": "surging",
+        "fall": "dropping"
+    },
+    "bot": {
+        "default_briefing": "Please summarize and brief the latest information.",
+        "hybrid_instruction": "You are a strategic AI assistant. Analyze the provided widget(@{plugin}) data and combine it with your knowledge (web search, etc.) to respond.",
+        "local_instruction": "Strict Guideline: You are a 'Local Data Analyzer' reporting ONLY the information in the provided [CONTEXT DATA]. DO NOT perform any external web searches.",
+        "user_request_label": "User Request",
+        "system_command_received": "✅ System command received",
+        "hud_refer_briefing": "(Please check the HUD avatar's voice briefing for details)",
+        "persona": "Analyze the user's request and respond. You are the AEGIS Strategic AI Assistant.",
+        "current_time_label": "Current System Time",
+        "current_server_time": "Current Server Time",
+        "polite_instruction": "Be polite and provide clear, concise answers focused on key information.",
+        "timezone_importance": "**IMPORTANT: All time operations (alarms, etc.) MUST be based on the {tz} system time above. NEVER use UTC.**",
+        "kst_importance": "**IMPORTANT: All time calculations MUST be based on the server time above. NEVER use UTC.**",
+        "executable_actions_label": "[Executable System Actions & Rules]",
+        "ai_error_no_response": "AI failed to generate a response.",
+        "no_action_parsed": "⚠️ No system actions were parsed from the AI response.",
+        "ai_fallback_error": "❌ AI Integration Error",
+        "ai_system_error": "⚠️ System error occurred during AI processing",
+        "report_generated": "Tactical report generated.",
+        "unknown_command": "'{root} {action}' is an unknown command. Please check '/help'.",
+        "action_success": "Action executed successfully.",
+        "action_fail": "Action execution failed.",
+        "no_data_fallback": "No results or list is empty.",
+        "unauthorized": "Unauthorized access.",
+        "hybrid_not_supported": "⚠️ The '{plugin}' widget does not support 'Intelligent Hybrid (/@)' commands yet. Please use deterministic commands (/) or general AI search (#)."
+    },
+    "help": {
+        "title": "### 🛰️ AEGIS Tactical Interface Help (v3.7.1)",
+        "mode_1_title": "**1. ⚡ Deterministic Command (/) - Systematic**",
+        "mode_1_desc": "- Logic executed directly without passing through AI. (Saves Quota)",
+        "mode_1_format": "- **Format:** `/plugin_name action_name arg1 | arg2`",
+        "mode_1_tip": "- **Input Tip:** Multiple parameters are separated by `|`, but spaces are also supported for simple inputs.",
+        "widget_ref_label": "**[Widget Action Reference]**",
+        "mode_2_title": "**2. 🧠 Intelligent Hybrid (/@) - Hybrid**",
+        "mode_2_desc": "- Combines specific plugin data with AI judgment to interpret natural language.",
+        "mode_2_example": "- **Ex:** `/@schedule set alarm for 2 PM`",
+        "mode_2_alias_label": "- **Current recognized aliases:**",
+        "mode_3_title": "**3. 🌐 Pure AI & Search (/# or #) - Pure AI**",
+        "mode_3_desc": "- Forces AI knowledge or Google search without plugin context.",
+        "mode_3_example": "- **Ex:** `/#Tesla stock price`, `/#Explain quantum mechanics`",
+        "mode_4_title": "**4. 🔇 Other Options**",
+        "mode_4_desc": "- Add `--m` to the end of a command to skip voice briefing and reply with text only.",
+        "footer": "*(All inputs trigger reactions of the desktop HUD avatar in real-time)*",
+        "table_header": {
+            "widget": "Widget",
+            "action": "Action",
+            "params": "Parameters",
+            "desc": "Description"
+        }
+    },
+    "help_center": {
+        "loading": "Decrypting tactical docs...",
+        "error": "Failed to load data",
+        "status": "Status",
+        "no_data": "No status data available.",
+        "actions": "Actions",
+        "aliases": "Aliases",
+        "doc_not_found": "Document not found"
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "ko": {
+        "weather": {
+            "bad": {
+                "condition": "['RAINY', 'STORM', 'SNOWY'].includes(status)",
+                "actions": [
+                    {
+                        "type": "EMOTION",
+                        "alias": "sad"
+                    },
+                    {
+                        "type": "MOTION",
+                        "alias": "idle"
+                    },
+                    {
+                        "type": "WEATHER_EFFECT",
+                        "value": "{status}"
+                    }
+                ]
+            },
+            "good": {
+                "condition": "status === 'SUNNY'",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "HAPPY_DANCE",
+                        "duration": 5000
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "WEATHER_EFFECT",
+                        "value": "CLEAR"
+                    }
+                ]
+            }
+        }
+    },
+    "en": {
+        "weather": {
+            "bad": {
+                "condition": "['RAINY', 'STORM', 'SNOWY'].includes(status)",
+                "actions": [
+                    {
+                        "type": "EMOTION",
+                        "alias": "sad"
+                    },
+                    {
+                        "type": "MOTION",
+                        "alias": "idle"
+                    },
+                    {
+                        "type": "WEATHER_EFFECT",
+                        "value": "{status}"
+                    }
+                ]
+            },
+            "good": {
+                "condition": "status === 'SUNNY'",
+                "actions": [
+                    {
+                        "type": "EVENT",
+                        "value": "HAPPY_DANCE",
+                        "duration": 5000
+                    },
+                    {
+                        "type": "EMOTION",
+                        "alias": "joy"
+                    },
+                    {
+                        "type": "WEATHER_EFFECT",
+                        "value": "CLEAR"
+                    }
+                ]
+            }
+        }
+    }
+}

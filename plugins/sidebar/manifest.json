@@ -1,0 +1,22 @@
+{
+    "id": "sidebar",
+    "name": "System Controller",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "priority": -1,
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css"
+    },
+    "layout": {
+        "zIndex": 2000,
+        "fixed": true,
+        "width": "300px",
+        "height": "700px",
+        "top": "auto",
+        "left": "20px",
+        "bottom": "80px"
+    },
+    "engine_version": 4
+}

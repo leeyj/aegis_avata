@@ -1,0 +1,11 @@
+{
+    "_comment": "Agent 음성 TTS(Text-To-Speech) 설정",
+    "voices": {
+        "ko": "ko-KR-SunHiNeural",
+        "en": "en-US-AvaNeural"
+    },
+    "rate": "+10%",
+    "pitch": "+20Hz",
+    "volume": "+0%",
+    "cache_limit": 50
+}

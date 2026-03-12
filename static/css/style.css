@@ -1,0 +1,88 @@
+/* 
+   AEGIS Tactical Core CSS - Main Entry
+   This file imports modularized CSS components for better maintainability.
+*/
+
+@import url('base.css');
+@import url('layout.css');
+@import url('components/dashboard.css');
+
+/* --- Wallpaper Engine Z-Layer Correction --- */
+body.host-app {
+    background: radial-gradient(circle at center, #1a2030 0%, #05060a 100%) !important;
+}
+
+html {
+    background: none !important;
+    background-color: transparent !important;
+}
+
+#wallpaper-image,
+#wallpaper-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1000 !important;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: cover;
+}
+
+/* Ensure canvas is transparent to show the background */
+#live2d-canvas {
+    background: transparent !important;
+}
+
+/* Base background (when no wallpaper is set) - Moved to body.host-app directly */
+
+/* Clear weather bg if it blocks the wallpaper */
+.weather-bg {
+    background: transparent !important;
+}
+
+/* [v2.0] Disable all background layers in desktop mode */
+body.desktop-mode::before,
+body.desktop-mode #wallpaper-image,
+body.desktop-mode #wallpaper-video,
+body.desktop-mode #weather-background,
+body.desktop-mode #weather-effects,
+body.desktop-mode .scan-line {
+    display: none !important;
+    content: none !important;
+}
+
+/* --- Core Voice Widget Customization (Standard Widget Base) --- */
+/* 위젯 프레임은 유지하되 시각적인 박스만 제거하여 'iframe 자체를 말풍선처럼' 사용 */
+div.glass-panel-v4#core-voice {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* 상단 드래그 핸들도 평상시엔 완전히 투명, 호버 시에만 약하게 노출 */
+#core-voice .widget-drag-handle-v4 {
+    background: transparent !important;
+    border-bottom: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease;
+}
+
+#core-voice:hover .widget-drag-handle-v4 {
+    opacity: 0.5 !important;
+    background: rgba(0, 242, 255, 0.05) !important;
+}
+
+#core-voice .widget-resizer-v4 {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease;
+}
+
+#core-voice:hover .widget-resizer-v4 {
+    opacity: 0.3 !important;
+}

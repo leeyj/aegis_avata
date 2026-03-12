@@ -1,0 +1,51 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.news-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 12px;
+    box-sizing: border-box;
+    color: #e0e6ed;
+}
+
+.panel-label {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.news-ticker {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.loading-text {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+.news-provider {
+    color: var(--neon);
+    font-size: 10px;
+    margin-bottom: 2px;
+}
+
+.news-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}

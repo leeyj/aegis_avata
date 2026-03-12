@@ -1,0 +1,225 @@
+#back-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-wallpaper);
+    pointer-events: none;
+}
+
+#live2d-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 101vw;
+    height: 100vh;
+    z-index: var(--z-model);
+    /* Above Wallpaper, below UI Layers */
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-ui-layer);
+    /* Above model-canvas sibling (10) */
+    pointer-events: none;
+    padding: 0;
+    /* [v2.4.1] Remove Flex to avoid content-based layout shifts */
+}
+
+.fixed-plugin-wrapper {
+    position: fixed;
+    pointer-events: none;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Glass Panel System --- */
+.glass-panel-v4 {
+    background: var(--widget-bg);
+    backdrop-filter: var(--widget-blur);
+    border: var(--widget-border);
+    padding: 20px;
+    /* Restore Default Padding */
+    border-radius: 12px;
+    pointer-events: none;
+    /* [v4.0] Passthrough by default to avoid blocking screen */
+    box-shadow: var(--widget-shadow);
+    position: absolute;
+    cursor: default;
+    /* Changed from 'move' to allow internal selection */
+    user-select: none;
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s, border 0.3s;
+    overflow: hidden;
+    resize: none; /* Rely on custom resizer and drag manager */
+    display: flex;
+    flex-direction: column;
+
+    /* [v4.0] Robust Default Sizing to prevent full-screen expansion */
+    min-width: 150px;
+    min-height: 80px;
+    max-width: 95vw;
+    max-height: 90vh;
+}
+
+/* [v4.0] Frameless Widget (Iframes) */
+.glass-panel-v4.frameless-widget {
+    padding: 0 !important;
+}
+
+/* [v4.2.6] Frameless widget (hover to show handle/bg) */
+.glass-panel-v4.frameless-hover-only {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.glass-panel-v4.frameless-hover-only:hover {
+    background: var(--widget-bg) !important;
+    backdrop-filter: var(--widget-blur) !important;
+    border: var(--widget-border) !important;
+    box-shadow: var(--widget-shadow) !important;
+}
+
+.glass-panel-v4.frameless-hover-only .widget-drag-handle-v4,
+.glass-panel-v4.frameless-hover-only .widget-resizer-v4 {
+    opacity: 0;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease;
+}
+
+.glass-panel-v4.frameless-hover-only:hover .widget-drag-handle-v4,
+.glass-panel-v4.frameless-hover-only:hover .widget-resizer-v4 {
+    opacity: 1;
+    pointer-events: auto !important;
+}
+
+/* [v4.0] Dedicated Widget Drag Handle */
+.widget-drag-handle-v4 {
+    width: 100%;
+    height: 32px;
+    min-height: 32px;
+    background: rgba(0, 242, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    cursor: move !important;
+    pointer-events: auto !important;
+    /* [v4.0] Explicitly catch events for dragging */
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--neon);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    user-select: none;
+    z-index: 10;
+}
+
+.widget-drag-handle-v4:hover {
+    background: rgba(0, 242, 255, 0.12);
+}
+
+.handle-dots {
+    opacity: 0.6;
+    letter-spacing: 2px;
+}
+
+/* [v4.0.1] Glow only on handle active, not panel */
+.glass-panel-v4:has(.widget-drag-handle-v4:active) {
+    box-shadow: 0 0 20px var(--neon);
+    z-index: var(--z-overlay);
+}
+
+/* Locked state (Plugin-X Global) */
+.glass-panel-v4.locked {
+    cursor: default !important;
+    resize: none !important;
+}
+
+.glass-panel-v4.locked .widget-resizer-v4 {
+    display: none !important;
+}
+
+/* Base Component Styles using Semantic Tokens */
+.glass-panel-v4 select,
+.glass-panel-v4 input {
+    background: var(--input-bg);
+    border: var(--input-border);
+    border-radius: var(--input-radius);
+    color: inherit;
+    font-family: inherit;
+}
+
+/* Scrollbar Styling */
+.glass-panel-v4::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.glass-panel-v4::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.glass-panel-v4::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.2);
+    border-radius: 10px;
+}
+
+.glass-panel-v4::-webkit-scrollbar-thumb:hover {
+    background: var(--neon);
+}
+
+/* [v4.0] Widget Resizer */
+.widget-resizer-v4 {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 25px;
+    height: 25px;
+    cursor: nwse-resize;
+    z-index: 1000; /* Ensure on top of iframe */
+    background: linear-gradient(135deg, transparent 50%, rgba(0, 242, 255, 0.8) 50%);
+    pointer-events: auto;
+    border-bottom-right-radius: 8px;
+    transition: background 0.2s;
+    display: block;
+}
+
+.glass-panel-v4.locked .widget-resizer-v4 {
+    display: none !important;
+}
+
+.widget-resizer-v4:hover {
+    background: linear-gradient(135deg, transparent 50%, rgba(0, 242, 255, 0.6) 50%);
+}
+
+/* --- Grid System --- */
+.size-1 {
+    width: var(--grid-unit);
+}
+
+.size-1-5 {
+    width: calc(var(--grid-unit) * 1.5 + (var(--grid-gap) * 0.5));
+}
+
+.size-2 {
+    width: calc(var(--grid-unit) * 2 + var(--grid-gap));
+}
+
+.size-3 {
+    width: calc(var(--grid-unit) * 3 + (var(--grid-gap) * 2));
+}
+
+.size-half {
+    width: calc(var(--grid-unit) / 2 - 10px);
+}

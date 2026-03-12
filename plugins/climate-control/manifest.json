@@ -1,0 +1,49 @@
+{
+    "id": "climate-control",
+    "name": "에어컨 통합 제어",
+    "version": "1.0.0",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.climate_control"
+    ],
+    "layout": {
+        "default_size": "size-1"
+    },
+    "exports": {
+        "sensors": [
+            {
+                "id": "indoor_temp",
+                "name": "실내 온도",
+                "unit": "°C",
+                "type": "number",
+                "endpoint": "/api/plugins/climate-control/status",
+                "field": "temp"
+            },
+            {
+                "id": "ac_status",
+                "name": "에어컨 상태",
+                "unit": "boolean",
+                "type": "boolean",
+                "endpoint": "/api/plugins/climate-control/status",
+                "field": "is_ac_on"
+            }
+        ],
+        "commands": [
+            {
+                "prefix": "/ac",
+                "name": "에어컨 제어",
+                "examples": [
+                    "/ac on",
+                    "/ac off",
+                    "/ac set 24"
+                ]
+            }
+        ]
+    },
+    "engine_version": 4
+}

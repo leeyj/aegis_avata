@@ -1,0 +1,89 @@
+{
+    "id": "youtube-music",
+    "name": "유튜브 뮤직",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "width": "320px",
+        "height": "480px",
+        "zIndex": "var(--z-widget)"
+    },
+    "csp_domains": {
+        "script-src": [
+            "https://www.youtube.com",
+            "https://s.ytimg.com"
+        ],
+        "frame-src": [
+            "https://www.youtube.com"
+        ],
+        "img-src": [
+            "https://i.ytimg.com",
+            "https://*.googleusercontent.com"
+        ],
+        "connect-src": [
+            "https://*.youtube.com",
+            "https://*.googleapis.com"
+        ]
+    },
+    "icon": "🎵",
+    "actions": [
+        {
+            "id": "play",
+            "commands": [
+                "재생",
+                "play",
+                "p"
+            ],
+            "params": [
+                "target"
+            ],
+            "desc": "Play music or playlist"
+        },
+        {
+            "id": "pause",
+            "commands": [
+                "정지",
+                "중지",
+                "pause",
+                "stop",
+                "s"
+            ],
+            "params": [],
+            "desc": "Pause playback"
+        },
+        {
+            "id": "next",
+            "commands": [
+                "다음",
+                "next",
+                "n",
+                "skip"
+            ],
+            "params": [],
+            "desc": "Next track"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "l",
+                "유튜브",
+                "youtube",
+                "music"
+            ],
+            "params": [],
+            "desc": "Show playlists"
+        }
+    ],
+    "engine_version": 4
+}

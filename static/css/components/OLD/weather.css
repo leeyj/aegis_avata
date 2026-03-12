@@ -1,0 +1,69 @@
+/* --- Weather Dynamics --- */
+.weather-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    transition: all 2s ease-in-out;
+}
+
+.weather-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Theme Variatons */
+.sunny-theme {
+    background: linear-gradient(135deg, #001f3f 0%, #0074D9 100%);
+}
+
+.rainy-theme {
+    background: linear-gradient(135deg, #111111 0%, #2c3e50 100%);
+}
+
+.cloudy-theme {
+    background: linear-gradient(135deg, #2c3e50 0%, #bdc3c7 100%);
+}
+
+.storm-theme {
+    background: linear-gradient(135deg, #000000 0%, #4b0082 100%);
+}
+
+/* Rain Animation */
+.rain-drop {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    width: 1px;
+    height: 15px;
+    top: -20px;
+    animation: rain-fall 0.8s linear infinite;
+}
+
+@keyframes rain-fall {
+    to {
+        transform: translateY(100vh);
+    }
+}
+
+/* Snow Animation */
+.snow-flake {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.8;
+    top: -10px;
+    animation: snow-fall linear infinite;
+}
+
+@keyframes snow-fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}

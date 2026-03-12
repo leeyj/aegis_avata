@@ -1,0 +1,52 @@
+body {
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.panel-label {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.stat-unit {
+    margin-bottom: 12px;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-family: 'Orbitron', sans-serif;
+}
+
+.stat-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.uptime {
+    margin-top: 10px;
+    font-size: 9px;
+    opacity: 0.5;
+    text-align: right;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}

@@ -1,0 +1,54 @@
+{
+    "id": "calendar",
+    "name": "전술 캘린더",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.google_suite",
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "icon": "📅",
+    "actions": [
+        {
+            "id": "add",
+            "commands": [
+                "추가",
+                "등록",
+                "add",
+                "a"
+            ],
+            "params": [
+                "time",
+                "title"
+            ],
+            "desc": "Add a Google Calendar event"
+        },
+        {
+            "id": "list",
+            "commands": [
+                "목록",
+                "list",
+                "ls",
+                "l",
+                "요약",
+                "briefing",
+                "b",
+                "일정",
+                "캘린더",
+                "calendar"
+            ],
+            "params": [],
+            "desc": "Show upcoming events"
+        }
+    ],
+    "engine_version": 4
+}

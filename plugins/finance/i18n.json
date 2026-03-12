@@ -1,0 +1,20 @@
+{
+    "ko": {
+        "panels": {
+            "p-finance": "시장 지표"
+        },
+        "system_alerts": {
+            "finance_change": "금융 지수 변동: {name} {change}% 감지"
+        },
+        "aliases": ["금융", "지수", "환율", "경제", "시장", "시장지표", "finance"]
+    },
+    "en": {
+        "panels": {
+            "p-finance": "Market Indices"
+        },
+        "system_alerts": {
+            "finance_change": "Financial Index Alert: {name} detected {change}% change"
+        },
+        "aliases": ["finance", "index", "economy", "market", "exchange"]
+    }
+}

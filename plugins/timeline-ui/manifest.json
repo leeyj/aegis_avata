@@ -1,0 +1,17 @@
+{
+    "id": "timeline-ui",
+    "name": "일정 타임라인",
+    "version": "1.0.0",
+    "author": "Antigravity",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "layout": {
+        "default_size": "size-2"
+    },
+    "icon": "📅",
+    "engine_version": 4
+}

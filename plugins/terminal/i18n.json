@@ -1,0 +1,42 @@
+{
+    "ko": {
+        "terminal": {
+            "placeholder": "명령을 입력하세요... (/ 도움말)"
+        },
+        "actions": {
+            "run": {
+                "desc": "시스템 명령어를 터미널에서 실행합니다.",
+                "args": [
+                    "실행할 명령어"
+                ]
+            }
+        },
+        "views": {
+            "error_prefix": "❌ 오류: ",
+            "unknown_error": "알 수 없는 오류",
+            "stderr_label": "⚠️ **Stderr:**",
+            "exit_code_format": "명령어가 종료되었습니다. (Exit Code: {code})"
+        },
+        "aliases": ["터미널", "실습", "쉘", "콘솔", "명령어", "terminal", "console"]
+    },
+    "en": {
+        "terminal": {
+            "placeholder": "Type a command... (/help)"
+        },
+        "actions": {
+            "run": {
+                "desc": "Executes a system command in the terminal.",
+                "args": [
+                    "Command to run"
+                ]
+            }
+        },
+        "views": {
+            "error_prefix": "❌ Error: ",
+            "unknown_error": "Unknown Error",
+            "stderr_label": "⚠️ **Stderr:**",
+            "exit_code_format": "Command exited. (Exit Code: {code})"
+        },
+        "aliases": ["terminal", "shell", "console", "cmd", "command line"]
+    }
+}

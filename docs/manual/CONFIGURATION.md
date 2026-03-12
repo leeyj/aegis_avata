@@ -1,0 +1,117 @@
+# ⚙️ AEGIS 통합 설정 가이드 (Complete Configuration Guide)
+
+이 문서는 AEGIS 시스템의 모든 동작을 제어하는 `config/` 디렉토리 내 모든 설정 파일에 대한 통합 가이드입니다. 사용자는 이 문서를 참조하여 시스템의 외형, 지능, 보안 등을 완벽하게 커스터마이징할 수 있습니다.
+
+---
+
+## 1. 핵심 시스템 설정 (Core System)
+
+### 1.1 `api.json` (AI 연동 및 모델 설정)
+터미널에서 선택 가능한 외부 AI 엔진(Grok, Ollama 등)의 연결 정보를 관리합니다.
+- `default_source`: 대시보드 시작 시 기본 선택될 AI 키.
+- `sources.{key}.model`: 호출할 AI 모델 이름 (예: `grok-4-1-fast-reasoning`).
+- `sources.{key}.api_type`: `ollama` (로컬) 또는 `openai` (외부 서비스 호환).
+- `sources.{key}.active`: 시스템 활성화 여부.
+- `sources.{key}.mock`: `true` 설정 시 실제 API 비용 지출 없이 응답 시뮬레이션 가능.
+
+### 1.2 `secrets.json` (보안 및 API 키)
+⚠️ **가장 중요한 파일**로, 절대 외부에 공유하지 마십시오.
+- `GEMINI_API_KEY`: 핵심 분석 및 자동 브리핑용 구글 제미나이 키.
+- `AI_PROVIDER_KEYS`: xAI(Grok), OpenAI 등 엔진별 실제 서비스 키.
+- `EXTERNAL_API_KEYS`: 터미널 위젯과 서버 간 통신 보안용 인터페이스 키.
+- `USER_CREDENTIALS`: 대시보드 로그인용 사용자 ID/PW.
+
+### 1.3 `system.json` (서버 모니터링)
+- `disks`: 모니터링할 저장 장치 경로 (예: `Nas`, `Root` 등).
+- `show_cpu / show_memory`: 리소스 막대 그래프 표시 여부.
+
+### 1.4 `settings.json` (사용자 환경 설정)
+대시보드의 화면 배치, 언어, 타임존 등 사용자별 개인화 설정을 관리합니다. (루트 디렉토리에 위치)
+- `lang`: 시스템 표시 언어 (`ko` 또는 `en`).
+- `timezone`: 사용자 현지 타임존 (예: `Asia/Seoul`, `America/New_York`). AI 브리핑 및 알람 기준 시각으로 사용됩니다.
+- `ui_positions`: 각 위젯 패널의 화면 상 위치 데이터.
+- `panel_visibility`: 각 패널의 활성화/비활성화 상태.
+- `user_zoom / offset_x / offset_y`: 화면 전체 배율 및 중심 위치 조정값. 이 값은 자동으로 저장되며 사용자가 직접 수정할 필요가 없습니다.
+
+### 1.5 `settings.json` - 네트워크 및 보안 (Network & Security) [v3.4.5]
+역방향 프록시 환경 대응 및 브라우저 보안 정책(CSP)을 설정합니다.
+- `network.use_proxy`: Nginx, Render.com 등 역방향 프록시 뒤에서 실행 시 `true`로 설정 (IP/HTTPS 인식 개선).
+- `network.proxy_count`: 거치는 프록시 서버의 개수 (보통 `1`).
+- `network.csp_allow_list`: 보안 정책상 기본적으로 차단되는 외부 도메인을 수동으로 허용합니다.
+    - `connect-src`: Socket.IO(웹소켓) 연결이 차단될 때 서버 주소를 추가합니다. (예: `["https://my-aegis.com", "ws://127.0.0.1:8001"]`)
+    - `script-src / img-src`: 수동으로 추가한 외부 스크립트나 이미지 호스트가 있을 때 사용합니다.
+
+---
+
+## 2. 지능형 비서 설정 (Intelligent Assistant)
+
+### 2.1 `prompts.json` (페르소나 및 지침)
+비서의 말투와 응답 전략을 결정합니다. (상세 내용은 [프롬프트 가이드](./prompts.md) 참조)
+- `DASHBOARD_INTERNAL`: 브리핑 및 선제적 알림 말투.
+- `EXTERNAL_AI_HUB`: 터미널 질의 시 각 AI 엔진별 맞춤 지침 (Grok, Ollama 등).
+- `NLP_COMMAND_ENGINE`: 자연어 명령 분석 규칙.
+
+### 2.2 `proactive.json` (선제적 알림 기준)
+비서가 특정 상황에서 먼저 말을 거는 임계값을 설정합니다.
+- `thresholds.finance_change_abs`: 주가지수가 일정 % 이상 변동 시 알림.
+- `thresholds.calendar_lead_time_min`: 일정 시작 전 알림 시간(분).
+- `thresholds.system_cpu_percent`: CPU 부하가 높을 때 알림 기준.
+
+### 2.3 `tts.json` (목소리 설정)
+- `lang`: 목소리 언어 (기본 `ko-KR`).
+- `rate / pitch`: 목소리 속도와 톤 높낮이 조절.
+
+---
+
+## 3. 위젯 및 리액션 (Widgets & Reactions)
+
+### 3.1 실시간 데이터 위젯 관련
+- **`plugins/weather/config.json`**: 조회 도시(`city`) 및 갱신 주기(`update_interval_min`) 설정. 비/눈 효과는 이 데이터와 `reactions.json`이 연동되어 자동 트리거됩니다.
+- **`plugins/stock/config.json`**: 대시보드 상단에 표시할 시장 지수(`tickers`) 및 폰트 크기.
+- **`plugins/news/config.json`**: RSS 피드 주소(`rss_urls`) 및 표시할 기사 수(`max_items`).
+- **`plugins/clock/config.json`**: 시계 표시 형식(`format`) 및 텍스트 색상(`color`).
+- **`plugins/notion/config.json`**: 노션 워크스페이스 세부 설정 및 연동 DB ID 관리.
+
+### 3.2 `reactions.json` (아바타 자동 반응)
+데이터 변화에 따라 아바타가 수행할 모션과 대사 규칙입니다. (상세 내용은 [리액션 가이드](./reactions_guide.md) 참조)
+- `condition`: 반응이 발동될 조건 (예: `change_pct >= 3`).
+- `actions`: 수행할 모션(`MOTION`), 표정(`EMOTION`), 대사(`TTS`), 환경 효과(`WEATHER_EFFECT`)의 집합.
+
+### 3.4 `Live2D Studio` (아바타 개발 환경)
+- 신규 모델 테스트 및 `alias.json` 최적화를 위한 전용 툴입니다. (상세 내용은 [스튜디오 가이드](./live2d_studio.md) 참조)
+- `test_models/` 하위 자산 관리 및 운영 배포 기능을 지원합니다.
+
+---
+
+## 4. 노션 통합 관리 (Notion Integration)
+
+### 4.1 연동 준비 (`secrets.json`)
+노션 API를 사용하기 위해 다음 두 항목이 필수입니다.
+- `NOTION_API_KEY`: [Notion Developers](https://www.notion.so/my-integrations)에서 생성한 내부 통합 토큰.
+- `NOTION_DATABASE_ID`: 연동할 데이터베이스 페이지 URL의 마지막 32자리 UUID.
+
+### 4.2 다중 워크스페이스 설정 (`notion.json`)
+메모와 할 일을 목적지별로 분리하여 관리할 수 있습니다.
+- `workspaces`: 사용할 데이터베이스 리스트.
+    - `name`: 사용자 인식용 이름 (예: "업무").
+    - `alias`: 터미널 접두사 (예: "@업무").
+    - `id`: 해당 데이터베이스의 UUID.
+    - `is_default`: 별칭 없이 입력 시 저장될 기본 장소 여부 (`true`/`false`).
+
+### 4.3 자동 정리 규칙 (`notion_rules.json`)
+데이터베이스를 깔끔하게 유지하기 위한 자동화 규칙을 정의합니다.
+- `active`: 규칙 엔진 활성화 여부.
+- `rules`: 개별 규칙 리스트.
+    - `name`: 규칙 이름 (예: "완료 항목 폐기").
+    - `conditions`: 발동 조건 (제목 포함 단어, 정규식, 특정 속성 비어있음 여부 등).
+    - `action`: 수행할 동작 (특정 속성을 지정된 값으로 변경).
+
+---
+
+## 5. 커스터마이징 팁
+1. **서버 재시작**: 대부분의 JSON 설정 변경은 서버를 재시작하거나 페이지를 새로고침해야 반영됩니다.
+2. **백업 권장**: 설정 변경 전 `config/` 디렉토리를 백업해두면 문제 발생 시 쉽게 복구할 수 있습니다.
+3. **오류 해결**: JSON 파일에 오타(`쉼표`, `중괄호` 누락 등)가 있으면 서버 구동에 실패할 수 있으니 주의하십시오.
+
+---
+*최종 업데이트: 2026-03-04 (v2.2.0)*

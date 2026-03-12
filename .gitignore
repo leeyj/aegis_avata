@@ -1,0 +1,48 @@
+# AEGIS v4.0 .gitignore
+
+# 🔒 Personal & Sensitive Data (MUST NOT BE UPLOADED)
+.env
+config/secrets.json
+config/google.json
+config/notion.json
+config/weather.json
+headers_auth.json
+headers_auth.txt
+token*.json
+credentials.json
+sponsor_key.txt
+
+# ⚙️ Local Settings & Temporary Data
+settings.json
+data/
+logs/
+*.log
+tmp/
+__pycache__/
+*.pyc
+
+# 📦 Storage & Downloads (Large Files)
+models/
+test_models/
+tools/
+assets/avatars/
+assets/reports/
+static/audio/test_*.mp3
+test_tts_check.mp3
+
+# 🛠️ Build & IDE
+.vscode/
+.idea/
+.pytest_cache/
+build/
+dist/
+*.so
+*.pyd
+*.exe
+
+# 📝 System Garbage
+Thumbs.db
+.DS_Store
+startup_log.txt
+web_debug.log
+img/

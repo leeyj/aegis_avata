@@ -1,0 +1,216 @@
+/**
+ * AEGIS Core - Management & Bootstrapper
+ * Orchestrates all modules and handles persistent state.
+ */
+
+window.app = null;
+window.currentAvatar = null;
+window.activeModelName = "";
+window.userZoom = 1.0;
+window.offsetX = 0;
+window.offsetY = 0;
+window.uiPositions = {};
+window.panelVisibility = {};
+window.uiLocked = false;
+window.enableLookAtCursor = true; // [v3.4.6] 마우스 추적(Look-at) 활성 플래그
+
+// [v3.4.6] 전역 오디오 잠금 해제 함수
+window.unlockAudio = async function () {
+    if (window.AudioContext || window.webkitAudioContext) {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!window._audioCtx) window._audioCtx = new AudioContext();
+            if (window._audioCtx.state === 'suspended') {
+                await window._audioCtx.resume();
+                console.log("[Core] AudioContext unlocked.");
+            }
+            // 무음 버퍼 재생으로 확실하게 해제
+            const buffer = window._audioCtx.createBuffer(1, 1, 22050);
+            const source = window._audioCtx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(window._audioCtx.destination);
+            source.start(0);
+        } catch (e) {
+            console.warn("[Core] Audio unlock failed:", e);
+        }
+    }
+};
+
+// 사용자가 화면의 아무 곳이나 처음 클릭할 때 오디오 잠금 해제 트리거
+document.addEventListener('click', () => window.unlockAudio(), { once: true });
+document.addEventListener('touchstart', () => window.unlockAudio(), { once: true });
+document.addEventListener('keydown', () => window.unlockAudio(), { once: true });
+
+// [v2.0] Global Command Router has been migrated to static/js/widgets/ai_gateway.js
+
+let saveTimeout;
+
+/**
+ * [1] Initialize Dashboard Engine
+ * Boosted Bootstrapper - Optimized for parallel execution.
+ */
+async function initEngine() {
+    if (window.logger) window.logger.info(`[Core] Bootstrapping engine...`);
+
+    try {
+        // 1. 병렬 초기화 시작 (네트워크 대기 시간 최소화)
+        const [settings, _, __] = await Promise.all([
+            fetch('/get_settings').then(r => r.json()),
+            window.briefingScheduler ? window.briefingScheduler.init() : Promise.resolve(),
+            typeof I18nManager !== 'undefined' ? I18nManager.init() : Promise.resolve()
+        ]);
+
+        // 2. 기본 상태 반영
+        window.userZoom = settings.zoom || 1.0;
+        window.offsetX = settings.offset_x || 0;
+        window.offsetY = settings.offset_y || 0;
+        window.activeModelName = settings.last_avatar || "hiyori_vts";
+        window.activeAiEngine = settings.last_ai_engine || "gemini";
+        window.uiPositions = settings.ui_positions || {};
+        window.panelVisibility = settings.panel_visibility || {};
+        window.uiLocked = settings.ui_locked || false;
+
+        // 3. 로컬 캐시 동기화 (Override server defaults with browser-specific settings)
+        try {
+            const localSettings = JSON.parse(localStorage.getItem('aegis_settings') || '{}');
+            if (localSettings.last_avatar) window.activeModelName = localSettings.last_avatar;
+            if (localSettings.zoom) window.userZoom = localSettings.zoom;
+            if (localSettings.offset_x !== undefined) window.offsetX = localSettings.offset_x;
+            if (localSettings.offset_y !== undefined) window.offsetY = localSettings.offset_y;
+            if (localSettings.panel_visibility) {
+                // Merge panel visibility to allow new widgets from server while keeping local preferences
+                Object.assign(window.panelVisibility, localSettings.panel_visibility);
+            }
+            if (localSettings.lang) window.currentLang = localSettings.lang;
+            console.log("[Core] Local browser settings applied.");
+        } catch (e) {
+            console.warn("[Core] Local settings sync failed:", e);
+        }
+
+        // 4. 독립적 모듈 동시 기동 (중요)
+        // 렌더러와 위젯을 기다리지 않고 바로 시작합니다.
+        if (typeof initPixiApp === 'function') initPixiApp();
+        if (typeof initUI === 'function') initUI();
+
+        // 위젯 공통 설정 및 외부 API 초기화
+        if (typeof loadSystemConfigs === 'function') await loadSystemConfigs();
+        if (typeof initExternalAPI === 'function') initExternalAPI();
+
+        // [v3.0] Command Router 초기화 (알리아스 동기화)
+        if (window.CommandRouter) window.CommandRouter.init();
+
+        // [Plugin-X] 플러그인 동적 로딩 시작
+        if (window.PluginLoader) window.PluginLoader.init();
+
+        // 5. 아바타 로딩 (무거운 작업이므로 백그라운드 병렬 처리)
+        (async () => {
+            if (typeof loadModel === 'function') await loadModel(window.activeModelName);
+        })();
+
+        if (window.logger) window.logger.info("[Core] Critical path loaded. UI and Widgets ready.");
+    } catch (e) {
+        console.error("[Core] Fast boot failed, falling back to sequential:", e);
+    }
+}
+
+/**
+ * [2] Persistence - Sync state to server
+ */
+window.saveSettings = () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        const localState = {
+            zoom: window.userZoom,
+            offset_x: window.offsetX,
+            offset_y: window.offsetY,
+            ui_positions: window.uiPositions,
+            panel_visibility: window.panelVisibility,
+            last_avatar: window.activeModelName,
+            last_ai_engine: window.activeAiEngine,
+            ui_locked: window.uiLocked,
+            lang: window.currentLang // [추가] 현재 선택된 언어 저장
+        };
+        
+        // [v4.2.8] localStorage 브라우저 독립 저장 복원
+        localStorage.setItem('aegis_settings', JSON.stringify(localState));
+
+        const serverSync = {
+            last_avatar: window.activeModelName,
+            last_ai_engine: window.activeAiEngine,
+            lang: window.currentLang,
+            ui_positions: window.uiPositions,
+            panel_visibility: window.panelVisibility,
+            ui_locked: window.uiLocked,
+            zoom: window.userZoom,
+            offset_x: window.offsetX,
+            offset_y: window.offsetY
+        };
+        fetch('/save_settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(serverSync)
+        });
+    }, 500);
+}
+
+/**
+ * [v4.2] 위젯/시스템 공통 설정 로드 (widgets.js 통합)
+ */
+async function loadSystemConfigs() {
+    try {
+        await Promise.all([
+            // 1. TTS 설정 로드
+            (async () => {
+                const ttsRes = await fetch('/api/plugins/proactive-agent/config/tts');
+                const ttsData = await ttsRes.json();
+                if (window.globalTtsConfig) Object.assign(window.globalTtsConfig, ttsData);
+            })(),
+            // 2. Briefing 설정 로드
+            (async () => {
+                if (typeof window.applyBriefingConfig === 'function') {
+                    await window.applyBriefingConfig();
+                }
+            })()
+        ]);
+        if (window.logger) window.logger.info("[Core] System configurations loaded.");
+    } catch (e) {
+        console.error("[Core] Config loading failed:", e);
+    }
+}
+
+// 윈도우 로드가 아닌 DOM이 준비되자마자 즉시 시작
+document.addEventListener('DOMContentLoaded', initEngine);
+
+/**
+ * [v2.2.1] Native Desktop Integration
+ * Called by desktop/desktop.py when toggling accessory mode.
+ */
+window.onDesktopModeChanged = (mode) => {
+    if (mode === 'accessory') {
+        document.body.classList.add('desktop-accessory');
+        document.body.classList.add('desktop-mode');
+        if (window.logger) window.logger.info("[DNA] Accessory mode activated.");
+    } else {
+        document.body.classList.remove('desktop-accessory');
+        document.body.classList.remove('desktop-mode');
+        if (window.logger) window.logger.info("[DNA] Standard mode restored.");
+    }
+};
+
+/**
+ * [v2.4.0] Native System Statistics Bridge
+ * Receives CPU/RAM data from C# desktop application.
+ */
+window.onNativeStatsReceived = (stats) => {
+    // 1. 글로벌 상태 저장
+    window.nativeStats = stats;
+
+    // 2. 로그 (테스트용)
+    if (window.logger && stats.cpu > 80) {
+        window.logger.warn(`[Native] High CPU Load Detected: ${stats.cpu}%`);
+    }
+
+    // 3. 커스텀 이벤트 발생 (위젯들이 구독 가능)
+    const event = new CustomEvent('aegis:native-stats', { detail: stats });
+    window.dispatchEvent(event);
+};

@@ -1,0 +1,23 @@
+{
+    "id": "search",
+    "name": "AEGIS Global Search",
+    "version": "2.0.0",
+    "author": "AEGIS Core",
+    "description": "Floating global search window for Notion and other system queries.",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css"
+    },
+    "permissions": [
+        "api.notion"
+    ],
+    "layout": {
+        "width": "600px",
+        "height": "450px",
+        "zIndex": "var(--z-widget)"
+    },
+    "system_plugin": true,
+    "hidden": true,
+    "engine_version": 4
+}

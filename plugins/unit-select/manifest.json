@@ -1,0 +1,17 @@
+{
+    "id": "unit-select",
+    "name": "유닛 컨트롤 센터",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [],
+    "layout": {
+        "default_size": "size-1"
+    },
+    "engine_version": 4
+}

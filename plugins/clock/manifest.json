@@ -1,0 +1,17 @@
+{
+    "id": "clock",
+    "name": "전술 시간 동기화 유닛 (시계)",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "engine_version": 4
+}

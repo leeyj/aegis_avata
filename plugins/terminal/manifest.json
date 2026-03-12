@@ -1,0 +1,48 @@
+{
+    "id": "terminal",
+    "name": "AEGIS Core Terminal",
+    "version": "2.0.0",
+    "author": "AEGIS Core",
+    "description": "System command center",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [
+        "api.ai_gateway",
+        "api.io_control",
+        "api.ai_agent"
+    ],
+    "layout": {
+        "width": "800px",
+        "height": "500px",
+        "default_size": "size-3",
+        "zIndex": "var(--z-widget)"
+    },
+    "hidden": false,
+    "icon": "⌨️",
+    "actions": [
+        {
+            "id": "run",
+            "commands": [
+                "실행",
+                "명령",
+                "run",
+                "ex",
+                "c",
+                "터미널",
+                "terminal",
+                "콘솔",
+                "console"
+            ],
+            "params": [
+                "command"
+            ],
+            "desc": "Execute terminal command"
+        }
+    ],
+    "engine_version": 4
+}

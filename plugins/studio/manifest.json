@@ -1,0 +1,27 @@
+{
+    "id": "studio",
+    "name": "AEGIS Studio",
+    "version": "4.0.0",
+    "author": "Antigravity",
+    "description": "Live2D Studio for model testing and asset management",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/js/core.js",
+        "css": "assets/css/studio.css",
+        "backend": "router.py"
+    },
+    "icon": "💎",
+    "type": "fixed",
+    "permissions": [
+        "storage",
+        "system_event",
+        "avatar_control",
+        "briefing_control"
+    ],
+    "category": "utility",
+    "priority": -5,
+    "hybrid_level": 1,
+    "launch_target": "window",
+    "window_features": "width=1200,height=800,menubar=no,toolbar=no,location=no,status=no",
+    "engine_version": 4
+}

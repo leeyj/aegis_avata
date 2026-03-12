@@ -1,0 +1,5 @@
+{
+    "max_emails": 2,
+    "refresh_interval_min": 1,
+    "token_file": "token_work.json"
+}

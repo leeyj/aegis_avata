@@ -1,0 +1,33 @@
+<div class="notion-widget-container">
+    <div class="panel-label" data-i18n="panels.p-notion">
+        NOTION INTELLIGENCE
+        <div class="panel-controls">
+            <button id="notion-refresh-btn" class="widget-refresh-btn" title="Refresh">🔄</button>
+            <button id="notion-brief-btn" class="widget-brief-btn" title="AI Briefing">🔊</button>
+        </div>
+    </div>
+    <div id="notion-list" class="notion-list">
+        <div class="loading-text">Synchronizing with Notion Hub...</div>
+    </div>
+</div>
+<div id="search-plugin-wrapper" class="search-plugin-wrapper">
+    <div id="notion-search-window" class="search-overlay">
+        <div class="search-header" id="search-window-header">
+            <h3><span class="search-icon">🔍</span> AEGIS GLOBAL SEARCH</h3>
+            <button class="search-close" id="search-close-btn">&times;</button>
+        </div>
+        
+        <div class="search-content">
+            <div id="search-status" class="search-status">
+                Type to search and press Enter...
+            </div>
+            <ul id="search-results-list" class="search-results-list">
+                <!-- Results injected here -->
+            </ul>
+        </div>
+
+        <!-- Resize handle -->
+        <div class="resize-handle" id="search-window-resize"></div>
+    </div>
+</div>
+

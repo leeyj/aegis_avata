@@ -1,0 +1,237 @@
+/* AEGIS Terminal - Premium V4 Style (v4.1.0) */
+
+:host {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+}
+
+.terminal-plugin-wrapper {
+    width: 100%;
+    height: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(5, 7, 12, 0.9);
+}
+
+.terminal-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Terminal Log --- */
+.terminal-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 242, 255, 0.3) transparent;
+}
+
+.terminal-log::-webkit-scrollbar {
+    width: 4px;
+}
+
+.terminal-log::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.3);
+    border-radius: 4px;
+}
+
+.terminal-log::-webkit-scrollbar-thumb:hover {
+    background: #00f2ff;
+}
+
+/* --- Prompt Area --- */
+.terminal-prompt-area {
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(0, 242, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-prompt-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 12px;
+}
+
+.model-badge {
+    background: rgba(0, 242, 255, 0.1);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-radius: 4px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+}
+
+.terminal-select {
+    background: transparent;
+    border: none;
+    color: #00f2ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.prompt-cursor {
+    color: #00f2ff;
+    font-weight: 700;
+    font-size: 16px;
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-family: 'Rajdhani', sans-serif;
+    outline: none;
+    letter-spacing: 0.5px;
+}
+
+#terminal-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Status Bar --- */
+.terminal-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 24px;
+    background: rgba(0, 242, 255, 0.05);
+    border-top: 1px solid rgba(0, 242, 255, 0.05);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    color: rgba(0, 242, 255, 0.6);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.status-left, .status-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 6px;
+    height: 6px;
+    background: #00f2ff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #00f2ff;
+}
+
+.status-node {
+    font-weight: 700;
+    color: #00f2ff;
+}
+
+.status-info {
+    opacity: 0.7;
+}
+
+.status-version {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Log Elements --- */
+.log-entry {
+    display: flex;
+    gap: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.log-source {
+    font-weight: 700;
+    min-width: 80px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    color: #00f2ff;
+    text-align: right;
+    padding-top: 3px;
+}
+
+.log-message {
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Markdown Specifics */
+.log-message p { margin: 0 0 5px 0; }
+.log-message p:last-child { margin: 0; }
+.log-message code {
+    background: rgba(0, 242, 255, 0.1);
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+.log-message pre {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+.log-message pre code {
+    background: transparent;
+    padding: 0;
+}
+.log-message table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+}
+.log-message th, .log-message td {
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    padding: 4px 8px;
+    text-align: left;
+}
+.log-message th {
+    background: rgba(0, 242, 255, 0.1);
+    font-weight: 700;
+}
+
+.source-user { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+.source-system { color: #aaa; }
+.source-ai { color: #00f2ff; text-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+
+.log-time {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 10px;
+    min-width: 60px;
+    text-align: right;
+    padding-top: 4px;
+}

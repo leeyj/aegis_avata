@@ -1,0 +1,43 @@
+{
+    "context_sanitization": {
+        "skip_keys": [
+            "id",
+            "tasklist_id",
+            "threadId",
+            "nextPageToken",
+            "kind",
+            "etag",
+            "selfLink",
+            "resourceId"
+        ]
+    },
+    "response_filtering": {
+        "tags_to_strip": [
+            "RESPONSE",
+            "AI",
+            "ASSISTANT",
+            "SYSTEM",
+            "AEGIS",
+            "HUB"
+        ],
+        "prefixes_to_strip": [
+            "Response:",
+            "AI:",
+            "Assistant:",
+            "AEGIS:",
+            "Result:",
+            "리스폰스:",
+            "답변:",
+            "응답:",
+            "결과:"
+        ],
+        "suffixes_to_strip": [
+            "Response",
+            "End of Response",
+            "리스폰스",
+            "답변 완료",
+            "이상입니다"
+        ],
+        "generic_label_regex": "^[a-zA-Z가-힣\\s]+[:：]\\s*"
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "ko": {
+        "scheduler": {
+            "manager_title": "🕒 AEGIS 루틴 매니저",
+            "gatekeeper": "🛡️ 게이트키퍼 (활성 시간)",
+            "routines": "📅 자동화 루틴",
+            "add_routine": "+ 추가",
+            "save_all": "모든 설정 저장",
+            "sync_success": "스케줄러 설정이 저장되었습니다.",
+            "hourly": "매 시 정각",
+            "days": {
+                "0": "일",
+                "1": "월",
+                "2": "화",
+                "3": "수",
+                "4": "목",
+                "5": "금",
+                "6": "토"
+            },
+            "action_descriptions": {
+                "tactical_briefing": "전체 요약 브리핑: 뉴스, 주식, 날씨 등 모든 정보를 하나로 요약하여 보고합니다.",
+                "widget_briefing": "특정 위젯 브리핑: 지정한 단일 위젯(예: 'news', 'stock')의 상세 정보를 보고합니다.",
+                "yt_play": "YouTube 재생: 특정 플레이리스트 ID를 입력하여 음악 재생을 시작합니다.",
+                "yt_stop": "YouTube 정지: 현재 재생 중인 음악을 즉시 중단합니다.",
+                "yt_volume": "YouTube 볼륨: 음악 재생 볼륨을 지정된 수치(0-100)로 설정합니다.",
+                "wallpaper_set": "배경화면 변경: 이미지/영상 URL 또는 로컬 경로를 사용하여 배경을 교체합니다.",
+                "speak": "TTS 음성 출력: 입력한 텍스트를 AI 음성으로 직접 출력합니다.",
+                "reload": "시스템 새로고침: 브라우저 페이지를 새로고침하여 데이터를 초기화합니다.",
+                "terminal_command": "⭐ 범용 명령어: 터미널에 입력하는 명령어를 예약 실행합니다. (예: /ns clean, /memo 할일)",
+                "api_call": "⭐ API 호출: 백엔드 API를 직접 호출합니다. 개발자용 고급 기능입니다."
+            },
+            "context": {
+                "summary": "현재 {count}개의 예약된 루틴이 있습니다: {list}",
+                "empty": "현재 등록된 예약 루틴이 없습니다."
+            },
+            "errors": {
+                "invalid_data": "유효하지 않은 스케줄러 데이터입니다.",
+                "missing_fields": "필수 필드가 누락되었습니다.",
+                "premium_required": "프리미엄 액션은 스폰서 계정이 필요합니다.",
+                "save_failed": "설정 저장에 실패했습니다."
+            },
+            "aliases": [
+                "루틴",
+                "스케줄러",
+                "예약",
+                "자동화"
+            ]
+        }
+    },
+    "en": {
+        "scheduler": {
+            "manager_title": "🕒 AEGIS ROUTINE MANAGER",
+            "gatekeeper": "🛡️ GATEKEEPER (ACTIVE HOURS)",
+            "routines": "📅 AUTOMATION ROUTINES",
+            "add_routine": "+ ADD",
+            "save_all": "SAVE ALL CONFIGURATIONS",
+            "sync_success": "Scheduler config saved.",
+            "hourly": "Hourly",
+            "days": {
+                "0": "Sun",
+                "1": "Mon",
+                "2": "Tue",
+                "3": "Wed",
+                "4": "Thu",
+                "5": "Fri",
+                "6": "Sat"
+            },
+            "action_descriptions": {
+                "tactical_briefing": "Tactical Briefing: Provides an integrated summary report of news, stocks, and weather.",
+                "widget_briefing": "Widget Briefing: Provides detailed info for a specific widget (e.g., 'news', 'stock').",
+                "yt_play": "YouTube Play: Starts playing music by entering a specific Playlist ID.",
+                "yt_stop": "YouTube Stop: Immediately stops current music playback.",
+                "yt_volume": "YouTube Volume: Sets the music playback volume to a specified level (0-100).",
+                "wallpaper_set": "Set Wallpaper: Changes the background using an image/video URL or local path.",
+                "speak": "Speak TTS: Directly outputs the entered text as an AI voice.",
+                "reload": "System Reload: Refreshes the browser page to initialize data.",
+                "terminal_command": "⭐ Terminal Command: Schedules any terminal command for automatic execution. (e.g., /ns clean, /memo todo)",
+                "api_call": "⭐ API Call: Directly calls a backend API endpoint. Advanced feature for developers."
+            },
+            "aliases": [
+                "routine",
+                "scheduler",
+                "schedule",
+                "automation"
+            ]
+        }
+    }
+}

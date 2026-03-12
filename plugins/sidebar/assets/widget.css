@@ -1,0 +1,230 @@
+/* Sidebar Plugin Widget Styles (v2.4) */
+
+* {
+    box-sizing: border-box;
+}
+
+:host {
+    position: absolute;
+    z-index: 2000;
+}
+
+.sidebar-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10500;
+    background: var(--glass);
+    backdrop-filter: blur(35px);
+    border: 1px solid var(--border);
+    border-radius: 0; /* Let host handle rounding if any */
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    pointer-events: auto;
+    border-bottom: 2px solid var(--neon);
+    overflow: hidden;
+}
+
+.menu-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.menu-section h3 {
+    font-family: 'Orbitron';
+    font-size: 11px;
+    color: var(--neon);
+    margin-bottom: 20px; /* Increased margin to prevent overlap */
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+}
+
+#sidebar-widgets-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 12px;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon) transparent;
+}
+
+#sidebar-widgets-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+#sidebar-widgets-list::-webkit-scrollbar-thumb {
+    background: var(--neon);
+    border-radius: 10px;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid rgba(0, 242, 255, 0.1);
+    margin: 16px 0;
+}
+
+/* Sidebar Action Buttons */
+.sidebar-action-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-btn:hover {
+    background: rgba(0, 242, 255, 0.1);
+    border-color: var(--neon);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+}
+
+.sidebar-btn.primary {
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    font-family: 'Orbitron';
+    font-size: 0.75rem;
+    background: rgba(0, 242, 255, 0.05);
+}
+
+.sidebar-btn.accent {
+    color: #ffcc00;
+    border-color: #ffcc00;
+}
+
+.sidebar-btn.studio {
+    width: 100%;
+    border: 1px solid #eb00ff;
+    color: #eb00ff;
+    background: rgba(235, 0, 255, 0.05);
+    font-family: 'Orbitron';
+    font-size: 0.75rem;
+    box-shadow: 0 0 10px rgba(235, 0, 255, 0.2);
+    display: flex;
+    /* Ensure inner alignment */
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.sidebar-btn.studio:hover {
+    background: rgba(235, 0, 255, 0.15);
+    box-shadow: 0 0 20px rgba(235, 0, 255, 0.4);
+}
+
+.logout-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.logout-link:hover {
+    color: #ff4444;
+}
+
+/* Custom Toggle Switch for Widgets */
+.sidebar-widget-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-widget-item span {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 18px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--neon);
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+.lang-grid {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+.lang-btn {
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.lang-btn.active {
+    background: var(--neon);
+    color: #000;
+    font-weight: bold;
+}

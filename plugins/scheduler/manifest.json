@@ -1,0 +1,18 @@
+{
+    "id": "scheduler",
+    "name": "루틴 관리 시스템",
+    "version": "1.5.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "priority": 0,
+    "permissions": [
+        "api.io_control"
+    ],
+    "system_plugin": true,
+    "engine_version": 4
+}

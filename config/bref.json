@@ -1,0 +1,6 @@
+{
+    "_comment": "말풍선(Speech Bubble) UI 설정",
+    "color": "rgba(255, 215, 0, 0.8)",
+    "max_width": "500px",
+    "font_size": "14px"
+}

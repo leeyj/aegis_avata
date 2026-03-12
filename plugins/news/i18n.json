@@ -1,0 +1,38 @@
+{
+    "ko": {
+        "panels": {
+            "p-news": "뉴스 브리핑"
+        },
+        "actions": {
+            "brief": {
+                "desc": "최신 뉴스 브리핑을 제공합니다.",
+                "args": [
+                    "카테고리(선택)"
+                ]
+            }
+        },
+        "views": {
+            "fail": "최신 뉴스를 가져올 수 없습니다.",
+            "format": "{bullet} {title} [{source}]"
+        },
+        "aliases": ["뉴스", "소식", "브리핑", "속보", "헤드라인", "news"]
+    },
+    "en": {
+        "panels": {
+            "p-news": "News Briefing"
+        },
+        "actions": {
+            "brief": {
+                "desc": "Provides a briefing of the latest news.",
+                "args": [
+                    "Category (Optional)"
+                ]
+            }
+        },
+        "views": {
+            "fail": "Failed to retrieve the latest news.",
+            "format": "{bullet} {title} [{source}]"
+        },
+        "aliases": ["news", "briefing", "headlines", "latest news"]
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "id": "adapter-discord",
+    "name": "Discord Connector",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "description": "AEGIS와 디스코드를 연결하는 플러그인 어댑터입니다.",
+    "entry": {
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.bot_gateway"
+    ],
+    "hidden": true,
+    "engine_version": 4
+}

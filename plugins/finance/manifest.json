@@ -1,0 +1,20 @@
+{
+    "id": "finance",
+    "name": "글로벌 시장 인덱스",
+    "version": "1.1.0",
+    "author": "AEGIS Core",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.briefing_scheduler"
+    ],
+    "layout": {
+        "default_size": "size-1-5"
+    },
+    "icon": "📈",
+    "engine_version": 4
+}

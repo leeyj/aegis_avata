@@ -1,0 +1,26 @@
+{
+    "ko": {
+        "title": "환경 제어 시스템",
+        "current_temp": "현재 실내 온도",
+        "ac_status": "에어컨 상태",
+        "turn_on": "가동",
+        "turn_off": "정지",
+        "on": "가동 중",
+        "off": "정지 중",
+        "setting_temp": "설정 온도",
+        "control_success": "에어컨 상태가 변경되었습니다.",
+        "control_fail": "제어 명령 전송에 실패했습니다."
+    },
+    "en": {
+        "title": "Climate Control System",
+        "current_temp": "Indoor Temp",
+        "ac_status": "AC Status",
+        "turn_on": "ON",
+        "turn_off": "OFF",
+        "on": "Running",
+        "off": "Stopped",
+        "setting_temp": "Set Temp",
+        "control_success": "AC state updated.",
+        "control_fail": "Failed to send command."
+    }
+}

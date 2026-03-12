@@ -1,0 +1,76 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.notion-widget-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 12px;
+    box-sizing: border-box;
+    color: #e0e6ed;
+}
+
+.panel-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.notion-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+/* Custom Scrollbar */
+.notion-list::-webkit-scrollbar {
+    width: 4px;
+}
+.notion-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.2);
+    border-radius: 10px;
+}
+
+.notion-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--neon);
+    padding: 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.notion-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.notion-item-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.notion-item-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* End of Notion styles */

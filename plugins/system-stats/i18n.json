@@ -1,0 +1,36 @@
+{
+    "ko": {
+        "panels": {
+            "p-system": "시스템 정보",
+            "p-system-stats": "시스템 정보"
+        },
+        "actions": {
+            "report": {
+                "desc": "현재 시스템 자원 사용량 보고서를 출력합니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "fail": "시스템 정보를 가져올 수 없습니다.",
+            "title": "📊 **시스템 상태:**"
+        },
+        "aliases": ["상태", "점검", "부하", "리소스", "CPU", "메모리", "성능", "system"]
+    },
+    "en": {
+        "panels": {
+            "p-system": "System Stats",
+            "p-system-stats": "System Stats"
+        },
+        "actions": {
+            "report": {
+                "desc": "Outputs a report on current system resource usage.",
+                "args": []
+            }
+        },
+        "views": {
+            "fail": "Failed to retrieve system information.",
+            "title": "📊 **System Status:**"
+        },
+        "aliases": ["system", "stats", "status", "resources", "performance", "cpu", "memory"]
+    }
+}

@@ -1,0 +1,126 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.todo-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 12px;
+    box-sizing: border-box;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0e6ed;
+}
+
+.widget-header {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--neon-accent);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.todo-input-group {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.todo-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+/* Scrollbar */
+.todo-list::-webkit-scrollbar {
+    width: 4px;
+}
+.todo-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.2);
+    border-radius: 10px;
+}
+
+.todo-input-group input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.add-btn {
+    background: var(--neon);
+    color: black;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.todo-item-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+}
+
+.todo-item-container.pending {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+
+.todo-check {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--neon);
+    border-radius: 3px;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.todo-check.checked {
+    background: var(--neon);
+}
+
+.todo-content {
+    flex: 1;
+}
+
+.todo-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.todo-title.temp {
+    color: var(--neon);
+    opacity: 0.7;
+}
+
+.sync-tag {
+    font-size: 9px;
+    opacity: 0.5;
+}
+
+.todo-notes {
+    font-size: 10px;
+    opacity: 0.5;
+    margin-top: 2px;
+}

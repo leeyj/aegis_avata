@@ -1,0 +1,75 @@
+{
+    "id": "notion",
+    "name": "노션 허브",
+    "version": "1.0.0",
+    "author": "AEGIS Core",
+    "complexity": 1,
+    "description": "Notion plugin with support for workspace management and AI-assisted organization.",
+    "entry": {
+        "html": "assets/widget.html",
+        "js": "assets/widget.js",
+        "css": "assets/widget.css",
+        "backend": "router.py"
+    },
+    "permissions": [
+        "api.notion",
+        "api.ai_gateway",
+        "api.briefing_scheduler"
+    ],
+    "priority": 0,
+    "layout": {
+        "default_size": "size-2"
+    },
+    "exports": {
+        "commands": [
+            {
+                "prefix": "/ns",
+                "name": "노션 제어",
+                "examples": [
+                    "/ns clean",
+                    "/ns switch @업무",
+                    "/ns search 키워드"
+                ]
+            },
+            {
+                "prefix": "/memo",
+                "name": "노션 메모 추가",
+                "examples": [
+                    "/memo 오늘 할일 정리"
+                ]
+            }
+        ],
+        "actions": [
+            {
+                "id": "clean_workspace",
+                "name": "노션 지식 베이스 정리",
+                "description": "설정된 규칙에 따라 노션 페이지들을 자동으로 분류하고 정리합니다.",
+                "type": "terminal_command",
+                "payload": {
+                    "command": "/ns clean"
+                }
+            }
+        ]
+    },
+    "icon": "📝",
+    "actions": [
+        {
+            "id": "add",
+            "commands": [
+                "추가",
+                "기록",
+                "add",
+                "w",
+                "노션",
+                "notion",
+                "메모",
+                "memo"
+            ],
+            "params": [
+                "text"
+            ],
+            "desc": "Add a memo to Notion"
+        }
+    ],
+    "engine_version": 4
+}

@@ -1,0 +1,62 @@
+{
+    "ko": {
+        "panels": {
+            "p-calendar": "일일 일정"
+        },
+        "widgets": {
+            "calendar_title": "전략 캘린더 (GOOGLE)"
+        },
+        "system_alerts": {
+            "calendar_start": "곧 일정이 시작됩니다: {summary} ({diff}분 전)"
+        },
+        "actions": {
+            "add": {
+                "desc": "새로운 일정을 캘린더에 추가합니다. (예: /일정 추가 회의 | 14:00)",
+                "args": [
+                    "제목",
+                    "시간"
+                ]
+            },
+            "list": {
+                "desc": "오늘의 일정을 확인합니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "오늘 일정이 없습니다.",
+            "unknown_title": "제목 없음",
+            "unknown_start": "??:??"
+        },
+        "aliases": ["일정", "캘린더", "스케줄", "약속", "행사", "calendar"]
+    },
+    "en": {
+        "panels": {
+            "p-calendar": "Daily Schedule"
+        },
+        "widgets": {
+            "calendar_title": "STRATEGIC CALENDAR (GOOGLE)"
+        },
+        "system_alerts": {
+            "calendar_start": "Upcoming Event: {summary} (in {diff} min)"
+        },
+        "actions": {
+            "add": {
+                "desc": "Adds a new schedule to the calendar. (e.g., /calendar add meeting | 14:00)",
+                "args": [
+                    "Summary",
+                    "Time"
+                ]
+            },
+            "list": {
+                "desc": "Check today's schedule.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "No events scheduled for today.",
+            "unknown_title": "No Title",
+            "unknown_start": "??:??"
+        },
+        "aliases": ["calendar", "schedule", "events", "meeting", "appointment"]
+    }
+}

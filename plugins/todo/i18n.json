@@ -1,0 +1,72 @@
+{
+    "ko": {
+        "panels": {
+            "p-todo": "할 일 목록"
+        },
+        "widgets": {
+            "todo_title": "일 관리",
+            "todo_placeholder": "할 일을 입력하세요...",
+            "todo_syncing": "(동기화 중...)",
+            "no_objectives": "진행 중인 작전 목표가 없습니다."
+        },
+        "actions": {
+            "add": {
+                "desc": "새로운 할 일을 목록에 추가합니다.",
+                "args": [
+                    "할 일 제목",
+                    "상세 메모(선택)"
+                ]
+            },
+            "done": {
+                "desc": "완료된 할 일을 체크 표시하거나 목록에서 제거합니다.",
+                "args": [
+                    "완료한 할 일 제목"
+                ]
+            },
+            "list": {
+                "desc": "오늘의 할 일 목록을 가져옵니다.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "할 일 목록이 비어 있습니다.",
+            "unknown": "알 수 없음"
+        },
+        "aliases": ["할일", "투두", "목표", "작전", "리스트", "업무", "todo"]
+    },
+    "en": {
+        "panels": {
+            "p-todo": "Todo List"
+        },
+        "widgets": {
+            "todo_title": "Tactical Todo Management",
+            "todo_placeholder": "Enter task...",
+            "todo_syncing": "(Syncing...)",
+            "no_objectives": "No active objectives."
+        },
+        "actions": {
+            "add": {
+                "desc": "Adds a new task to your todo list.",
+                "args": [
+                    "Task Title",
+                    "Detail Notes (Optional)"
+                ]
+            },
+            "done": {
+                "desc": "Marks a task as completed or removes it from the list.",
+                "args": [
+                    "Completed Task Title"
+                ]
+            },
+            "list": {
+                "desc": "Retrieves today's todo list.",
+                "args": []
+            }
+        },
+        "views": {
+            "empty": "Your todo list is currently empty.",
+            "unknown": "Unknown"
+        },
+        "aliases": ["todo", "task", "objective", "mission", "list"]
+    }
+}

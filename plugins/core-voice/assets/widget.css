@@ -1,0 +1,116 @@
+/* Core Voice & HUD Styles (Iframe / Multi-environment) */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: transparent !important; /* Ensure host transparency */
+    pointer-events: auto; /* Restore normal interaction */
+}
+
+#speech-bubble {
+    position: relative;
+    width: 92%;
+    max-width: 580px;
+    background: linear-gradient(135deg, rgba(10, 15, 25, 0.9) 0%, rgba(15, 25, 40, 0.8) 100%);
+    backdrop-filter: blur(25px) saturate(200%);
+    border: 1px solid rgba(0, 242, 255, 0.5);
+    border-radius: 24px;
+    padding: 22px 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.9), 
+        0 0 25px rgba(0, 242, 255, 0.2), 
+        inset 0 0 15px rgba(0, 242, 255, 0.1);
+    display: none;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+    user-select: none;
+    pointer-events: auto;
+    overflow: visible;
+}
+
+#speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: 24px;
+    background: linear-gradient(45deg, transparent 40%, rgba(0, 242, 255, 0.3) 50%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.speech-bubble {
+    position: relative;
+    width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    background: rgba(10, 15, 25, 0.85);
+    backdrop-filter: blur(15px) saturate(180%);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(0, 242, 255, 0.3);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 242, 255, 0.1);
+    z-index: 2000;
+    display: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    cursor: default;
+    pointer-events: auto;
+    /* Enable interaction within bubble */
+    transition: box-shadow 0.3s, background 0.3s;
+}
+
+.speech-bubble::-webkit-scrollbar {
+    width: 6px;
+}
+.speech-bubble::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.5);
+    border-radius: 3px;
+}
+
+.speech-bubble:hover {
+    background: rgba(10, 15, 25, 0.95);
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+#bubble-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: var(--bubble-font-size, 16px);
+    line-height: 1.5;
+    color: #fff;
+    word-break: break-word;
+}
+
+/* --- Visualizer --- */
+.visualizer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 30px;
+    width: 60px;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+}
+
+.visualizer-bar {
+    width: 2px;
+    background: var(--neon, #00f2ff);
+    border-radius: 1px;
+    transition: height 0.1s ease;
+    box-shadow: 0 0 8px var(--neon, #00f2ff);
+    opacity: 0.6;
+}
+
+.glass-panel {
+    /* Standard system variables fallback */
+    --neon: #00f2ff;
+    --border: rgba(0, 242, 255, 0.3);
+}
