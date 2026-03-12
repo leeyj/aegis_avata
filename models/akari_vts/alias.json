@@ -1,0 +1,13 @@
+{
+    "expressions": {
+        "angry": "expressions/SignAngry.exp3.json",
+        "joy": "expressions/EyesLove.exp3.json",
+        "sad": "expressions/EyesCry.exp3.json",
+        "shock": "expressions/SignShock.exp3.json"
+    },
+    "motions": {
+        "idle": "animations/Idle_2.motion3.json",
+        "shock": "animations/Shock.motion3.json",
+        "touch_body": "animations/Shock.motion3.json"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "motions": {
+        "idle": "animations/00_idle.motion3.json",
+        "joy": "animations/02.motion3.json",
+        "shock": "animations/03.motion3.json",
+        "sad": "animations/04.motion3.json",
+        "thinking": "animations/05.motion3.json"
+    },
+    "expressions": {}
+}
