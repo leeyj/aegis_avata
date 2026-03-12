@@ -23,7 +23,9 @@ __pycache__/
 
 # 📦 Storage & Downloads (Large Files)
 models/
+!models/akari_vts/
 test_models/
+!test_models/hijiki_vts/
 tools/
 assets/avatars/
 assets/reports/
@@ -53,4 +55,3 @@ Thumbs.db
 .DS_Store
 startup_log.txt
 web_debug.log
-img/
