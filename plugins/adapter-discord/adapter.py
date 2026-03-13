@@ -47,7 +47,7 @@ class DiscordAdapter(BotAdapter):
             if message.author == self.bot.user:
                 return
 
-            print(f"[Discord] 📥 Received from {message.author}: {message.content}")
+            logger.debug(f"[Discord] 📥 Received from {message.author}: {message.content}")
 
             # AEGIS BotManager에게 처리 위임
             try:

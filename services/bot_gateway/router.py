@@ -117,7 +117,7 @@ class MessageRouter:
                 if action_info:
                     action_params = remaining # 인자 복구
 
-            logger.info(f"[Router Debug] target_plugin_id={target_plugin_id}, action_keyword={action_keyword}, action_info={action_info}")
+            logger.debug(f"[Router Debug] target_plugin_id={target_plugin_id}, action_keyword={action_keyword}, action_info={action_info}")
             
             if action_info:
                 result_msg = self.manager.executor.execute_deterministic_action(

@@ -88,6 +88,9 @@ function initSidebar() {
             const panel = document.getElementById('sidebar');
             const isCurrentlyVisible = panel && panel.style.display !== 'none';
             window.togglePanel('sidebar', !isCurrentlyVisible);
+            
+            // [v4.2.9] Only persist overall UI state when the main menu is toggled
+            saveState();
         };
     }
 
@@ -105,8 +108,6 @@ function initSidebar() {
             if (id === 'sidebar' && mainToggleBtn) {
                 mainToggleBtn.innerText = isVisible ? '✕' : '•••';
             }
-
-            saveState();
         }
     };
 }

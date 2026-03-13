@@ -18,7 +18,10 @@ def get_today_tasks():
     """오늘의 할 일 목록 가져오기"""
     service = get_tasks_service()
     if not service:
-        return {"status": "AUTH_REQUIRED", "message": "Credentials missing."}
+        return {
+            "status": "AUTH_REQUIRED",
+            "message": "Google authentication required. Please check token_personal.json or server console.",
+        }
 
     try:
         results = service.tasklists().list().execute()
@@ -64,7 +67,10 @@ def add_task(title):
     """새 할 일 추가"""
     service = get_tasks_service()
     if not service:
-        return {"status": "AUTH_REQUIRED"}
+        return {
+            "status": "AUTH_REQUIRED",
+            "message": "Google authentication required.",
+        }
 
     try:
         tasklists = service.tasklists().list().execute().get("items", [])
@@ -84,7 +90,10 @@ def complete_task(tasklist_id, task_id):
     """할 일 완료 처리"""
     service = get_tasks_service()
     if not service:
-        return {"status": "AUTH_REQUIRED"}
+        return {
+            "status": "AUTH_REQUIRED",
+            "message": "Google authentication required.",
+        }
 
     try:
         task = service.tasks().get(tasklist=tasklist_id, task=task_id).execute()

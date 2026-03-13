@@ -6,7 +6,38 @@ AEGIS v3.1 Core Engine
 import os
 import json
 import sys
+import logging
+import logging
 from flask import Flask, request
+
+# [v4.2.11] Centralized Logging management via log_lv
+def setup_logging(settings):
+    log_lv = settings.get("log_lv", "info").lower()
+    
+    # Mapping for log_lv: none, info, critical, all
+    level_map = {
+        "none": 99,  # Absolute silence
+        "critical": logging.CRITICAL,
+        "info": logging.INFO,
+        "all": logging.DEBUG
+    }
+    target_level = level_map.get(log_lv, logging.INFO)
+    
+    # Configure root logger
+    logging.basicConfig(
+        level=target_level,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    
+    # Suppress Werkzeug logs unless level is 'all'
+    if log_lv != "all":
+        logging.getLogger("werkzeug").setLevel(logging.ERROR)
+    else:
+        logging.getLogger("werkzeug").setLevel(logging.INFO)
+
 from routes.main import main_bp
 from routes.auth import auth_bp
 from routes.widgets import widgets_bp
@@ -43,6 +74,7 @@ def create_app():
         return {}
 
     settings = get_settings()
+    setup_logging(settings)
     network_config = settings.get("network", {})
     if not isinstance(network_config, dict):
         network_config = {}

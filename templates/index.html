@@ -18,15 +18,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <script>
         window.AEGIS_TEST_MODE = {{ 'true' if settings.get('test_mode') else 'false' }};
+        window.AEGIS_LOG_LV = "{{ settings.get('log_lv', 'info') }}";
         window.IS_SPONSOR = {{ 'true' if is_sponsor() else 'false' }};
         window.AEGIS_BASE_URL = "{{ url_for('main.index') }}".replace(/\/$/, '');
         window.currentAvatar = null; // Initialize current avatar state
-        if (!window.AEGIS_TEST_MODE) {
-            // [UX] 테스트 모드가 아닐 때 콘솔 지우기 및 로그 비활성화
+
+        // [v4.2.11] Unified Logic handling console suppression
+        const shouldSuppress = !window.AEGIS_TEST_MODE || window.AEGIS_LOG_LV === 'none' || window.AEGIS_LOG_LV === 'critical';
+        if (shouldSuppress) {
+            // [UX] 테스트 모드가 아니거나 로그 레벨이 'none'/'critical'인 경우 콘솔 정리
             console.log = () => {};
             console.debug = () => {};
             console.info = () => {};
-            // console.warn, console.error는 시스템 모니터링을 위해 남겨둠
+            // console.warn, console.error는 남겨둠
         }
     </script>
 

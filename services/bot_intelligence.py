@@ -74,7 +74,7 @@ class IntelligenceHub:
         sid: Optional[str] = None,
     ):
         """AI Hub 연동 및 응답 처리 핵심 로직"""
-        print(
+        logger.debug(
             f"[IntelligenceHub] 👉 AI Query initiated for: {text} (Target: {target_id}, Context: {restrict_to_plugin_id})"
         )
 
@@ -174,7 +174,7 @@ class IntelligenceHub:
                     match = re.search(pattern, raw_response, re.IGNORECASE)
                     if match:
                         action_data = match.group(2).strip()
-                        print(f"[IntelligenceHub] 🎯 Action Triggered: {action_key}")
+                        logger.debug(f"[IntelligenceHub] 🎯 Action Triggered: {action_key}")
                         try:
                             handler(action_data, target_id)
                             action_triggered = True

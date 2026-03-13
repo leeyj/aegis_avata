@@ -1,6 +1,9 @@
 import yfinance as yf
 import json
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_stock_data(tickers):
@@ -29,7 +32,7 @@ def get_stock_data(tickers):
                     "change_pct": round(change_pct, 2),
                     "direction": "up" if change >= 0 else "down",
                 }
-                print(
+                logger.debug(
                     f"[StockService] {name}({symbol}) fetched: {results[name]['price']} ({results[name]['change_pct']}%)"
                 )
         except Exception as e:

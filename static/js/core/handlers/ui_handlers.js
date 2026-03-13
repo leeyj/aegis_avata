@@ -113,7 +113,6 @@ export const UiHandlers = {
             }
             if (window.panelVisibility) {
                 window.panelVisibility[data.id] = data.visible;
-                if (window.saveSettings) window.saveSettings();
             }
             return { success: true };
         } else if (data.visible && window.PluginLoader) {

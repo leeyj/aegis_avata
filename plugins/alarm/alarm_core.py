@@ -130,7 +130,7 @@ class AlarmService:
         return sorted(self.alarms, key=lambda x: x["time"])
 
     def _trigger_alarm(self, time_str, title, target_id=None):
-        logger.info(f"[AlarmService] 🔔 Alarm Triggered: {title} for {target_id}")
+        logger.debug(f"[AlarmService] 🔔 Alarm Triggered: {title} for {target_id}")
 
         # 알람 목록에서 제거 및 저장
         self.alarms = [a for a in self.alarms if a["time"] != time_str]

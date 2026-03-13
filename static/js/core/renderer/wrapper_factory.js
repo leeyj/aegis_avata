@@ -26,13 +26,6 @@ export class WrapperFactory {
         if (layout.default_size) wrapper.classList.add(layout.default_size);
         if (layout.zIndex) wrapper.style.zIndex = layout.zIndex;
 
-        // [v4.0] Initial Visibility Guard
-        if (window.panelVisibility && window.panelVisibility[manifest.id] === false) {
-            wrapper.style.display = 'none';
-        } else if (manifest.hidden) {
-            wrapper.style.display = 'none';
-        }
-
         if (isFixed) {
             this._applyFixedStyles(wrapper, layout, isFullScreen);
             // [v4.0] If it's a window-like fixed widget, it needs dragging initialization
@@ -45,6 +38,13 @@ export class WrapperFactory {
             if (window.initSinglePanelDraggingV4) {
                 window.initSinglePanelDraggingV4(wrapper);
             }
+        }
+
+        // [v4.0] Initial Visibility Guard (Must be applied after styles to avoid display property override)
+        if (window.panelVisibility && window.panelVisibility[manifest.id] === false) {
+            wrapper.style.display = 'none';
+        } else if (manifest.hidden) {
+            wrapper.style.display = 'none';
         }
 
         if (window.uiLocked) wrapper.classList.add('locked');

@@ -1,5 +1,38 @@
 # AEGIS Intelligence - 업데이트 로그 (UPDATE LOG)
 
+## [v4.0.1] Emergency Security Patch & Asset Inclusion (2026-03-12)
+
+### 🚀 주요 변경 사항 (Core Updates)
+
+1. **보안 코어 소스 보호 (Source Hardening)**
+   - `core_security.py` 및 `utils.py` 소스 코드를 원격 저장소에서 제거하고, 대신 컴파일된 바이너리(`.pyd` for Windows, `.so` for Linux)만 릴리즈하여 핵심 로직 및 스폰서 권한 시스템을 보호했습니다.
+   - `.gitignore`를 강화하여 보안 소스가 실수로 업로드되는 것을 방지했습니다.
+
+2. **사용자 편의성 강화 (Asset Inclusion)**
+   - **기본 모델 포함**: `akari_vts`, `hijiki_vts` 모델을 저장소에 포함시켜 신규 사용자가 즉시 테스트할 수 있도록 조치했습니다.
+   - **이미지 자산 통합**: 가이드 및 UI 배경을 위한 `img/`, `static/img/` 폴더를 정식 릴리즈에 포함했습니다.
+
+3. **향후 로드맵 수립 (v4.0.1 Roadmap)**
+   - 터미널 단축 명령어(`/@`, `/#`) 처리 로직 분석 및 Spine 모델링 지원을 위한 기술 로드맵(`docs/v4.0.1_analysis_roadmap.md`)을 작성했습니다.
+
+---
+
+## [v4.0.0] AEGIS V4 "Plugin-X" Ecosystem Official Release (2026-03-12)
+
+### 🚀 주요 변경 사항 (Core Updates)
+
+1. **공식 메인 브랜치 승격 (Main Release)**
+   - AEGIS V4 아키텍처를 `main` 브랜치로 승격하여 공식 릴리즈를 수행했습니다.
+   - 기존 v3.8 레거시 코드는 `v3.8-legacy` 브랜치로 분리하여 보존했습니다.
+
+2. **저장소 최적화 (Clean Release)**
+   - 2.8GB에 달하던 로컬 데이터를 정밀 스캔하여 불필요한 로그, 임시 파일, 대용량 모델을 제외한 710개의 클린한 파일로 저장소를 최적화했습니다.
+
+3. **UI/UX 폴리싱**
+   - 아바타 위치 강제 초기화 기능 제거, 시스템 모니터링 위젯 여백 조정, 스튜디오 창 닫기 버튼 제거 등 실사용 피드백을 반영한 최종 폴리싱을 완료했습니다.
+
+---
+
 ## [v4.1.9] Intelligent Alias System & Home Server Deployment (2026-03-12)
 
 ### 🚀 주요 변경 사항 (Core Updates)

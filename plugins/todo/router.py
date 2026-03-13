@@ -16,8 +16,13 @@ todo_plugin_bp = Blueprint("todo_plugin", __name__)
 def get_todo_context():
     """브리핑 및 대시보드에서 사용할 최신 데이터 추출 API (기본)"""
     res = get_today_tasks()
-    if isinstance(res, dict) and res.get("status") == "SUCCESS":
-        return res.get("tasks", [])
+    if isinstance(res, dict):
+        if res.get("status") == "SUCCESS":
+            return res.get("tasks", [])
+        elif res.get("status") == "AUTH_REQUIRED":
+            return False, f"⚠️ {res.get('message', 'Authentication required')}"
+        else:
+            return False, f"❌ {res.get('message', 'Unknown error')}"
     return []
 
 
