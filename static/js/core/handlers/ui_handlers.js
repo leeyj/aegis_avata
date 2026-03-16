@@ -161,5 +161,16 @@ export const UiHandlers = {
             broker.send(source, data.type, eventData);
         });
         return { success: true, observed: data.type };
+    },
+
+    'REG_SCHEDULE': async (data, source, requestId, broker) => {
+        if (window.briefingScheduler) {
+            console.log(`[UiHandlers] Registering schedule for ${source}: ${data.name} (${data.unit})`);
+            window.briefingScheduler.registerWidget(data.name, data.unit, () => {
+                broker.send(source, 'EXEC_SCHEDULE', { name: data.name });
+            });
+            return { success: true };
+        }
+        return { success: false, error: 'BriefingScheduler not found' };
     }
 };
